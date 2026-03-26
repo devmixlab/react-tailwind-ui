@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "outDir": "dist", // <-- where compiled JS + types go
+        "declaration": true, // <-- generate .d.ts files
+        "declarationMap": true, // optional, helpful for debugging
+        "target": "ES2020",
+        "module": "ESNext",
+        "jsx": "react-jsx",
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "strict": true,
+        "skipLibCheck": true
+    },
+    "include": ["src", "index.ts"]
+}
