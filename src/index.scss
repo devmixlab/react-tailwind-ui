@@ -1,0 +1,143 @@
+@use 'scss/abstracts/config' as *;
+@use 'scss/abstracts/variables' as *;
+@use 'scss/abstracts/functions' as *;
+@use 'scss/abstracts/mixins' as *;
+@use 'scss/abstracts/animations' as *;
+@use "sass:color";
+@use "sass:map";
+
+#{$p}button {
+    transition: background-color 0.2s, box-shadow 0.2s, color 0.2s, opacity 0.1s;
+    border-radius: 0.25rem; // rounded
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    box-shadow: 0 0 0 rgba(0,0,0,0); // default state
+    &#{$p}disabled {
+        pointer-events: none;
+    }
+    &#{$p}loading {
+        pointer-events: none;
+        cursor: wait;
+
+        &#{$p}loading-center {
+            color: transparent; // hide text & icon
+            position: relative;
+
+            &::after {
+                content: '';
+                position: absolute;
+                inset: 0;
+                margin: auto;
+            }
+        }
+        &#{$p}loading-start {
+            &::before {
+                content: '';
+            }
+        }
+        &#{$p}loading-end {
+             &::after {
+                 content: '';
+             }
+        }
+        &#{$p}loading-start, &#{$p}loading-end {
+            gap: 0.5rem;
+        }
+    }
+    &#{$p}pill{
+        border-radius: 9999px;
+    }
+    &#{$p}full-width{
+        width: 100%;
+    }
+    &#{$p}fixed{
+        pointer-events: none;
+    }
+    @each $size, $props in $button-sizes {
+        &#{$p}#{$size} {
+            min-height: map.get($props, height);
+            padding: map.get($props, padding);
+            font-size: map.get($props, font);
+
+            $icon-only: map.get($props, icon-only);
+            &#{$p}icon-only { @include iconOnly(map.get($icon-only, size)); }
+
+            $text-icon: map.get($props, text-icon);
+            &#{$p}text-icon { @include textIcon(map.get($text-icon, gap), map.get($text-icon, size)); }
+        }
+    }
+    &#{$p}solid {
+        --text-color: white;
+        --ring-color: #d1d5db;
+        --ring-offset-color: green;
+        border: 1px solid transparent; // border border-transparent
+        font-weight: 500; // font-medium
+        color: var(--text-color);
+
+        &:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--ring-offset-color), // ring-offset-2 light mode
+            0 0 0 4px var(--ring-color); // ring-2 ring-gray-300
+        }
+
+        &#{$p}disabled {
+            cursor: not-allowed;
+        }
+
+        @include button-colors($palette-colors, 'light');
+
+        @include dark {
+            @include button-colors($dark-palette-colors, 'dark');
+        }
+    }
+    &#{$p}outlined {
+        background-color: transparent;
+        border-width: 1px;
+        font-weight: 500;
+
+        @each $name, $color in $palette-colors {
+            &#{$p}#{"" + $name} {
+                border-color: #{$color};
+                color: #{$color};
+
+                &:hover {
+                    //background-color: btn-hover-color($color, 'light'); // subtle light fill
+                    //background-color: color.adjust($color, $lightness: 60%);
+                    //color: #fff;
+                }
+                &:active {
+                    background-color: color.adjust($color, $lightness: 80%);
+                }
+                &#{$p}disabled {
+                    border-color: color.adjust($color, $lightness: 60%);
+                    color: color.adjust($color, $lightness: 60%);
+                    cursor: not-allowed;
+                }
+            }
+        }
+
+        @include dark {
+            @each $name, $color in $dark-palette-colors {
+                &#{$p}#{"" + $name} {
+                    border-color: #{color.adjust($color, $lightness: 10%)};
+                    color: #{color.adjust($color, $lightness: 20%)};
+
+                    &:hover {
+                        background-color: color.adjust($color, $lightness: 0%);
+                        color: #fff;
+                    }
+                    &:active {
+                        background-color: color.adjust($color, $lightness: 15%);
+                    }
+                    &#{$p}disabled {
+                        border-color: color.adjust($color, $lightness: 40%);
+                        color: color.adjust($color, $lightness: 40%);
+                        cursor: not-allowed;
+                    }
+                }
+            }
+        }
+    }
+}

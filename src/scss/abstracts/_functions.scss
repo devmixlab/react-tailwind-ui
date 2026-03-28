@@ -1,0 +1,43 @@
+@use "sass:color";
+
+@function btn-hover-color($color, $mode: 'light') {
+    @if $mode == 'light' {
+        //@return darken($color, 10%);
+        @return color.adjust($color, $lightness: -10%);
+    } @else {
+        //@return lighten($color, 10%);
+        @return color.adjust($color, $lightness: 10%);
+    }
+}
+
+@function btn-active-color($color, $mode: 'light') {
+    @if $mode == 'light' {
+        //@return darken($color, 15%);
+        @return color.adjust($color, $lightness: -15%);
+    } @else {
+        //@return lighten($color, 15%);
+        @return color.adjust($color, $lightness: 15%);
+    }
+}
+
+@function btn-disabled-color($color, $mode: 'light') {
+    @if $mode == 'light' {
+        @return color.adjust($color, $lightness: 20%);
+    } @else {
+        @return color.adjust($color, $lightness: -20%);
+    }
+}
+
+@function spinner-color($name, $mode: 'light') {
+    @if $mode == 'light' {
+        @if $name == light {
+            @return #000;
+        }
+        @return #fff;
+    } @else {
+        @if $name == dark {
+            @return #000;
+        }
+        @return #fff;
+    }
+}
