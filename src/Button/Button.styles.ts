@@ -5,6 +5,7 @@ import { variants } from '../tokens/common';
 const b = (name: string) => `dru--${name}`;
 
 export const buttonStyles: {
+    wrapper: string;
     base: string;
     disabled: string;
     active: string;
@@ -13,6 +14,10 @@ export const buttonStyles: {
     pill: string;
     iconOnly: string;
     textIcon: string;
+    number: {
+        base: string;
+        big: string;
+    };
     loading: {
         base: string;
         position: Record<LodaingPosition, string>;
@@ -21,6 +26,7 @@ export const buttonStyles: {
     view: Record<View, string>;
     variant: Record<Variant, string>;
 } = {
+    wrapper: b('wrapper'),
     base: b('button'),
     disabled: b('disabled'),
     active: b('active'),
@@ -29,6 +35,10 @@ export const buttonStyles: {
     pill: b('pill'),
     iconOnly: b('icon-only'),
     textIcon: b('text-icon'),
+    number: {
+        base: b('number'),
+        big: b('big-number'),
+    },
 
     loading: {
         base: b('loading'),
@@ -49,6 +59,7 @@ export const buttonStyles: {
     view: {
         solid: b('solid'),
         outlined: b('outlined'),
+        outlined_filled: b('outlined-filled'),
         link: b('solid'),
         ghost: b('solid'),
     },

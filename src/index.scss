@@ -6,23 +6,40 @@
 @use "sass:color";
 @use "sass:map";
 
+#{$p}wrapper{
+    display: inline-block;
+    &#{$p}disabled {
+        cursor: not-allowed;
+    }
+    &#{$p}full-width{
+        display: block;
+    }
+}
 #{$p}button {
+    --ring-offset-color: #fff;
+    @include dark {
+        --ring-offset-color: #000;
+    }
     transition: background-color 0.2s, box-shadow 0.2s, color 0.2s, opacity 0.1s;
     border-radius: 0.25rem; // rounded
+    border-width: 1px;
+    border-style: solid;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     vertical-align: middle;
     box-shadow: 0 0 0 rgba(0,0,0,0); // default state
+
     &#{$p}disabled {
         pointer-events: none;
+        //cursor: not-allowed;
     }
     &#{$p}loading {
         pointer-events: none;
         cursor: wait;
 
         &#{$p}loading-center {
-            color: transparent; // hide text & icon
+            color: transparent!important; // hide text & icon
             position: relative;
 
             &::after {
@@ -61,6 +78,15 @@
             padding: map.get($props, padding);
             font-size: map.get($props, font);
 
+            &#{$p}number {
+                font-variant-numeric: tabular-nums;
+                padding: 0;
+                min-width: map.get($props, height);
+                &#{$p}big-number {
+                    padding: 0 0.5rem;
+                }
+            }
+
             $icon-only: map.get($props, icon-only);
             &#{$p}icon-only { @include iconOnly(map.get($icon-only, size)); }
 
@@ -68,10 +94,21 @@
             &#{$p}text-icon { @include textIcon(map.get($text-icon, gap), map.get($text-icon, size)); }
         }
     }
+    &:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 2px var(--ring-offset-color), // ring-offset-2 light mode
+        0 0 0 4px var(--ring-color); // ring-2 ring-gray-300
+    }
+    &:active {
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        @include dark {
+            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.2);
+        }
+    }
     &#{$p}solid {
         --text-color: white;
         --ring-color: #d1d5db;
-        --ring-offset-color: green;
+        //--ring-offset-color: green;
         border: 1px solid transparent; // border border-transparent
         font-weight: 500; // font-medium
         color: var(--text-color);
@@ -82,10 +119,6 @@
             0 0 0 4px var(--ring-color); // ring-2 ring-gray-300
         }
 
-        &#{$p}disabled {
-            cursor: not-allowed;
-        }
-
         @include button-colors($palette-colors, 'light');
 
         @include dark {
@@ -93,51 +126,32 @@
         }
     }
     &#{$p}outlined {
-        background-color: transparent;
-        border-width: 1px;
-        font-weight: 500;
+        //--text-color: white;
+        border: 1px solid transparent; // border border-transparent
+        font-weight: 500; // font-medium
+        //color: var(--text-color);
 
-        @each $name, $color in $palette-colors {
-            &#{$p}#{"" + $name} {
-                border-color: #{$color};
-                color: #{$color};
-
-                &:hover {
-                    //background-color: btn-hover-color($color, 'light'); // subtle light fill
-                    //background-color: color.adjust($color, $lightness: 60%);
-                    //color: #fff;
-                }
-                &:active {
-                    background-color: color.adjust($color, $lightness: 80%);
-                }
-                &#{$p}disabled {
-                    border-color: color.adjust($color, $lightness: 60%);
-                    color: color.adjust($color, $lightness: 60%);
-                    cursor: not-allowed;
-                }
-            }
+        &#{$p}disabled {
+            cursor: not-allowed;
         }
 
-        @include dark {
-            @each $name, $color in $dark-palette-colors {
-                &#{$p}#{"" + $name} {
-                    border-color: #{color.adjust($color, $lightness: 10%)};
-                    color: #{color.adjust($color, $lightness: 20%)};
+        @include outlined-button-colors($light-outlined-palette-colors, 'light');
 
-                    &:hover {
-                        background-color: color.adjust($color, $lightness: 0%);
-                        color: #fff;
-                    }
-                    &:active {
-                        background-color: color.adjust($color, $lightness: 15%);
-                    }
-                    &#{$p}disabled {
-                        border-color: color.adjust($color, $lightness: 40%);
-                        color: color.adjust($color, $lightness: 40%);
-                        cursor: not-allowed;
-                    }
-                }
-            }
+        @include dark {
+            @include outlined-button-colors($dark-outlined-palette-colors, 'dark');
+        }
+    }
+    &#{$p}outlined-filled {
+        //--text-color: white;
+        //--ring-color: #d1d5db;
+        border: 1px solid transparent; // border border-transparent
+        font-weight: 500; // font-medium
+        //color: var(--text-color);
+
+        @include outlined-filled-button-colors($palette-colors, $light-outlined-palette-colors, 'light');
+
+        @include dark {
+            @include outlined-filled-button-colors($dark-palette-colors, $dark-outlined-palette-colors, 'dark');
         }
     }
 }

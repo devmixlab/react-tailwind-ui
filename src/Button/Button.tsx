@@ -10,6 +10,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLElement> {
     view?: View;
     variant?: Variant;
     size?: Size;
+    number?: number;
     disabled?: boolean;
     active?: boolean;
     fixed?: boolean;
@@ -30,6 +31,7 @@ const Button = forwardRef<HTMLElement, ButtonProps>(
             view = 'solid',
             variant = 'primary',
             size = 'md',
+            number,
             disabled = false,
             active = false,
             fixed = false,
@@ -47,9 +49,36 @@ const Button = forwardRef<HTMLElement, ButtonProps>(
     ) => {
         const [showSpinner, setShowSpinner] = useState(false);
 
+        const isLongNumber = (value?: number, length = 2) => {
+            // if (value === undefined || isNaN(value)) return false;
+            // return value.toString().length > length; // true if 3 or more digits
+
+            if (value === undefined || value === null) return false;
+
+            // Convert to string for length check
+            const str = value.toString();
+
+            // Check if it contains only digits
+            if (!/^\d+$/.test(str)) return false;
+
+            // Return true if length exceeds threshold
+            return str.length > length;
+        };
+
+        const wrapperClass = useMemo(
+            () =>
+                clsx(bs.wrapper, {
+                    [bs.disabled]: disabled,
+                    [bs.fullWidth]: fullWidth,
+                }),
+            [disabled, fullWidth],
+        );
+
         const buttonClass = useMemo(
             () =>
                 clsx(bs.base, bs.view[view], bs.variant[variant], bs.size[size], {
+                    [bs.number.base]: number,
+                    [bs.number.big]: isLongNumber(number, 2),
                     [bs.disabled]: disabled,
                     [bs.active]: active,
                     [bs.fixed]: fixed,
@@ -64,6 +93,7 @@ const Button = forwardRef<HTMLElement, ButtonProps>(
                 view,
                 variant,
                 size,
+                number,
                 disabled,
                 active,
                 fixed,
@@ -73,6 +103,7 @@ const Button = forwardRef<HTMLElement, ButtonProps>(
                 textIcon,
                 showSpinner,
                 loadingPosition,
+                children,
             ],
         );
 
@@ -83,7 +114,9 @@ const Button = forwardRef<HTMLElement, ButtonProps>(
                 t = setTimeout(() => setShowSpinner(true), spinnerDelay);
             } else {
                 // defer state update to next tick
-                setTimeout(() => setShowSpinner(false), 0);
+                // setTimeout(() => setShowSpinner(false), 0);
+                const frame = requestAnimationFrame(() => setShowSpinner(false));
+                return () => cancelAnimationFrame(frame);
             }
 
             return () => clearTimeout(t);
@@ -99,18 +132,20 @@ const Button = forwardRef<HTMLElement, ButtonProps>(
         };
 
         return (
-            <HeadlessButton
-                aria-busy={loading}
-                aria-disabled={disabled || loading}
-                as={as}
-                ref={ref}
-                className={buttonClass}
-                disabled={as === 'button' ? disabled : undefined}
-                {...props}
-                onClick={handleClick}
-            >
-                {children}
-            </HeadlessButton>
+            <div className={wrapperClass}>
+                <HeadlessButton
+                    aria-busy={loading}
+                    aria-disabled={disabled || loading}
+                    as={as}
+                    ref={ref}
+                    className={buttonClass}
+                    disabled={as === 'button' ? disabled : undefined}
+                    {...props}
+                    onClick={handleClick}
+                >
+                    {number !== undefined ? number : children}
+                </HeadlessButton>
+            </div>
         );
     },
 );

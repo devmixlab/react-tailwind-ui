@@ -3,7 +3,7 @@
 @function btn-hover-color($color, $mode: 'light') {
     @if $mode == 'light' {
         //@return darken($color, 10%);
-        @return color.adjust($color, $lightness: -10%);
+        @return color.adjust($color, $lightness: -3%);
     } @else {
         //@return lighten($color, 10%);
         @return color.adjust($color, $lightness: 10%);
@@ -13,7 +13,7 @@
 @function btn-active-color($color, $mode: 'light') {
     @if $mode == 'light' {
         //@return darken($color, 15%);
-        @return color.adjust($color, $lightness: -15%);
+        @return color.adjust($color, $lightness: -7%);
     } @else {
         //@return lighten($color, 15%);
         @return color.adjust($color, $lightness: 15%);
@@ -39,5 +39,44 @@
             @return #000;
         }
         @return #fff;
+    }
+}
+
+@function text-color-map($name, $mode: 'light', $default: #fff) {
+    @if ($mode == 'light') {
+        @if index((light, warning, yellow), $name) {
+            @return #1f2937;
+        }
+    } @else {
+        @if $name == dark {
+            @return #000;
+        }
+        @if $name == light {
+            @return #fff;
+        } @else if ($name == warning) {
+            @return #1f2937;
+        } @else if index((info, zinc, neutral, stone, amber, yellow, lime, green, emerald, teal, cyan, sky), $name) {
+            @return #111827;
+        }
+    }
+
+    @return $default;
+}
+
+
+// OUTLINED BUTTON FUNCTIONS
+@function btn-outlined-hover-color($color, $mode: 'light') {
+    @if ($mode == 'light') {
+        @return rgba(red($color), green($color), blue($color), 0.05);
+    } @else {
+        @return rgba(red($color), green($color), blue($color), 0.1);
+    }
+}
+
+@function btn-outlined-active-color($color, $mode: 'light') {
+    @if ($mode == 'light') {
+        @return rgba(red($color), green($color), blue($color), 0.15);
+    } @else {
+        @return rgba(red($color), green($color), blue($color), 0.2);
     }
 }
