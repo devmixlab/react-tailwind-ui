@@ -14,6 +14,11 @@ export const buttonStyles: {
     pill: string;
     iconOnly: string;
     textIcon: string;
+    group: {
+        group: string;
+        groupItem: string;
+        orientation: Record<'horizontal' | 'vertical', string>;
+    };
     number: {
         base: string;
         big: string;
@@ -35,6 +40,14 @@ export const buttonStyles: {
     pill: b('pill'),
     iconOnly: b('icon-only'),
     textIcon: b('text-icon'),
+    group: {
+        group: b('group'),
+        groupItem: b('group-item'),
+        orientation: {
+            horizontal: b('horizontal-orientation'),
+            vertical: b('vertical-orientation'),
+        },
+    },
     number: {
         base: b('number'),
         big: b('big-number'),

@@ -19,9 +19,11 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLElement> {
     iconOnly?: boolean;
     textIcon?: boolean;
     loading?: boolean;
+    groupItem?: boolean;
     loadingPosition?: LodaingPosition;
     spinnerDelay?: number;
     as?: React.ElementType;
+    className?: string;
 }
 
 const Button = forwardRef<HTMLElement, ButtonProps>(
@@ -40,9 +42,11 @@ const Button = forwardRef<HTMLElement, ButtonProps>(
             iconOnly = false,
             textIcon = false,
             loading = false,
+            groupItem = false,
             loadingPosition = 'center',
             spinnerDelay = 150,
             as = 'button',
+            className,
             ...props
         },
         ref,
@@ -76,7 +80,7 @@ const Button = forwardRef<HTMLElement, ButtonProps>(
 
         const buttonClass = useMemo(
             () =>
-                clsx(bs.base, bs.view[view], bs.variant[variant], bs.size[size], {
+                clsx(className, bs.base, bs.view[view], bs.variant[variant], bs.size[size], {
                     [bs.number.base]: number,
                     [bs.number.big]: isLongNumber(number, 2),
                     [bs.disabled]: disabled,
@@ -88,8 +92,10 @@ const Button = forwardRef<HTMLElement, ButtonProps>(
                     [bs.textIcon]: textIcon,
                     [bs.loading.base]: showSpinner,
                     [bs.loading.position[loadingPosition]]: showSpinner,
+                    [bs.group.groupItem]: groupItem,
                 }),
             [
+                className,
                 view,
                 variant,
                 size,
@@ -104,6 +110,7 @@ const Button = forwardRef<HTMLElement, ButtonProps>(
                 showSpinner,
                 loadingPosition,
                 children,
+                groupItem,
             ],
         );
 
