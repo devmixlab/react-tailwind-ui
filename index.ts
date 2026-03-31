@@ -1,7 +1,8 @@
-import './index.css'; // import Tailwind styles
+// import './src/index.scss';
+
 import * as buttonTokens from './src/tokens/button';
 import * as commonTokens from './src/tokens/common';
 
-export { default as Button } from './src/Button/Button';
-export { default as Group } from './src/Button/Group';
+export { Button } from './src/Button/Button';
+export { Group } from './src/Button/Group';
 export { buttonTokens, commonTokens };

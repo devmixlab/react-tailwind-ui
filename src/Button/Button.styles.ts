@@ -1,5 +1,5 @@
-import { type View, type LodaingPosition } from '@/tokens/button';
-import { type Size, type Variant } from '@/tokens/common';
+import { type View, type LodaingPosition } from '../tokens/button';
+import { type Size, type Variant } from '../tokens/common';
 import { variants } from '../tokens/common';
 
 const b = (name: string) => `dru--${name}`;

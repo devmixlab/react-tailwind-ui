@@ -1,12 +1,12 @@
 import React, { useEffect, useState, forwardRef, useMemo } from 'react';
 import { Button as HeadlessButton } from '@headlessui/react';
 import clsx from 'clsx';
-import { type View, type LodaingPosition } from '@/tokens/button';
+import { type View, type LodaingPosition } from '../tokens/button';
 import { buttonStyles as bs } from './Button.styles';
-import { type Size, type Variant } from '@/tokens/common';
+import { type Size, type Variant } from '../tokens/common';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLElement> {
-    children: React.ReactNode;
+    children?: React.ReactNode;
     view?: View;
     variant?: Variant;
     size?: Size;
@@ -159,4 +159,4 @@ const Button = forwardRef<HTMLElement, ButtonProps>(
 
 Button.displayName = 'Button'; // optional, improves devtools & error messages
 
-export default Button;
+export { Button };

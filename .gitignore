@@ -1,6 +1,9 @@
 # Node modules
 node_modules/
 
+# Dev output
+dev/
+
 # Build output
 dist/
 
