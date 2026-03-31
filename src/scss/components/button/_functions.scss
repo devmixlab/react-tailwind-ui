@@ -44,7 +44,7 @@
 
 @function text-color-map($name, $mode: 'light', $default: #fff) {
     @if ($mode == 'light') {
-        @if index((light, warning, yellow), $name) {
+        @if index((light, yellow), $name) {
             @return #1f2937;
         }
     } @else {
