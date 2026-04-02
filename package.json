@@ -2,8 +2,8 @@
     "name": "react-tailwind-ui",
     "type": "module",
     "version": "1.0.0",
-    "main": "dist/index.js",
-    "module": "dist/index.js",
+    "main": "dev/index.js",
+    "module": "dev/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
         "build": "rollup -c",

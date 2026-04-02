@@ -1,0 +1,41 @@
+@use './config' as *;
+
+@mixin dark {
+    @if $dark-mode == 'class' {
+        .#{$dark-selector} & {
+            @content;
+        }
+    } @else if $dark-mode == 'media' {
+        @media (prefers-color-scheme: dark) {
+            @content;
+        }
+    }
+}
+
+@mixin iconOnly($size) {
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: $size;
+    height: $size;
+
+    svg {
+        width: 70%;
+        height: 70%;
+    }
+}
+
+@mixin textIcon($gap: 0.5rem, $iconSize: 1em) {
+    padding-top: 0;
+    padding-bottom: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: $gap;
+
+    svg {
+        width: $iconSize;
+        height: $iconSize;
+    }
+}
