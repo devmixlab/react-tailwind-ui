@@ -2,6 +2,10 @@ export const sizes = ['xs', 'sm', 'md', 'lg'] as const;
 
 export type Size = (typeof sizes)[number];
 
+export const radiuses = ['sm', 'md', 'lg', 'full'] as const;
+
+export type Radius = (typeof radiuses)[number];
+
 export const baseVariants = [
     'primary',
     'secondary',

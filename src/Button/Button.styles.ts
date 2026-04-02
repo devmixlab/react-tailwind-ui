@@ -1,6 +1,6 @@
 import { type View, type LodaingPosition } from '../tokens/button';
-import { type Size, type Variant } from '../tokens/common';
-import { variants } from '../tokens/common';
+import { type Size, type Variant, type Radius } from '../tokens/common';
+import { variants, radiuses } from '../tokens/common';
 
 const b = (name: string) => `dru--${name}`;
 
@@ -11,7 +11,7 @@ export const buttonStyles: {
     active: string;
     fixed: string;
     fullWidth: string;
-    pill: string;
+    radius: Record<Radius, string>;
     iconOnly: string;
     textIcon: string;
     group: {
@@ -37,7 +37,7 @@ export const buttonStyles: {
     active: b('active'),
     fixed: b('fixed'),
     fullWidth: b('full-width'),
-    pill: b('pill'),
+    // pill: b('pill'),
     iconOnly: b('icon-only'),
     textIcon: b('text-icon'),
     group: {
@@ -76,6 +76,14 @@ export const buttonStyles: {
         link: b('solid'),
         ghost: b('solid'),
     },
+
+    radius: radiuses.reduce(
+        (acc, v) => {
+            acc[v] = b('radius-' + v);
+            return acc;
+        },
+        {} as Record<(typeof radiuses)[number], string>,
+    ),
 
     variant: variants.reduce(
         (acc, v) => {

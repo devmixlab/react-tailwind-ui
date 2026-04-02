@@ -3,7 +3,7 @@ import { Button as HeadlessButton } from '@headlessui/react';
 import clsx from 'clsx';
 import { type View, type LodaingPosition } from '../tokens/button';
 import { buttonStyles as bs } from './Button.styles';
-import { type Size, type Variant } from '../tokens/common';
+import { type Size, type Variant, type Radius } from '../tokens/common';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLElement> {
     children?: React.ReactNode;
@@ -15,7 +15,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLElement> {
     active?: boolean;
     fixed?: boolean;
     fullWidth?: boolean;
-    pill?: boolean;
+    radius?: Radius;
     iconOnly?: boolean;
     textIcon?: boolean;
     loading?: boolean;
@@ -38,7 +38,7 @@ const Button = forwardRef<HTMLElement, ButtonProps>(
             active = false,
             fixed = false,
             fullWidth = false,
-            pill = false,
+            radius = 'sm',
             iconOnly = false,
             textIcon = false,
             loading = false,
@@ -87,7 +87,7 @@ const Button = forwardRef<HTMLElement, ButtonProps>(
                     [bs.active]: active,
                     [bs.fixed]: fixed,
                     [bs.fullWidth]: fullWidth,
-                    [bs.pill]: pill,
+                    [bs.radius[radius]]: radius,
                     [bs.iconOnly]: iconOnly,
                     [bs.textIcon]: textIcon,
                     [bs.loading.base]: showSpinner,
@@ -104,7 +104,7 @@ const Button = forwardRef<HTMLElement, ButtonProps>(
                 active,
                 fixed,
                 fullWidth,
-                pill,
+                radius,
                 iconOnly,
                 textIcon,
                 showSpinner,

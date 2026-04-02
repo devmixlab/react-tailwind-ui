@@ -161,7 +161,7 @@
     @each $name, $color in $palette {
         &#{$p}#{"" + $name} {
             --ring-color: #{$color};
-            border-color: $color;
+            --border-color: #{$color};
 
             @if ($mode == 'light') {
                 @if $name == light {
@@ -209,8 +209,9 @@
         &#{$p}#{"" + $name} {
             $outlined-spinner-color: $color;
             --ring-color: #{$color};
-            border-color: map.get($outlined-palette, $name);
-            color: map.get($outlined-palette, $name);
+            //border-color: map.get($outlined-palette, $name);
+            --border-color: #{map.get($outlined-palette, $name)};
+            //color: map.get($outlined-palette, $name);
 
             @if ($mode == 'light') {
                 @if $name == light {
@@ -227,12 +228,12 @@
             &:hover {
                 color: text-color-map($name, $mode);
                 background-color: btn-hover-color($color, $mode);
-                border-color: btn-hover-color($color, $mode);
+                //--border-color: #{btn-hover-color($color, $mode)};
             }
 
             &:active {
                 background-color: btn-active-color($color, $mode);
-                border-color: btn-active-color($color, $mode);
+                //border-color: btn-active-color($color, $mode);
                 @if ($name == 'light') {
                     box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.2);
                     @if ($mode == 'light') {
