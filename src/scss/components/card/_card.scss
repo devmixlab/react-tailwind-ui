@@ -1,0 +1,309 @@
+@use '../../abstracts/config' as *;
+@use '../../abstracts/variables' as *;
+@use '../../abstracts/mixins' as *;
+
+@use './variables' as *;
+
+@use 'sass:map';
+@use 'sass:color';
+
+@function text-color-map($name, $mode: 'light', $default: #fff) {
+    @if ($mode == 'light') {
+        @if index((light, yellow), $name) {
+            @return #1f2937;
+        }
+    } @else {
+        //@return map.get($dark-palette-colors-text, $name);
+        @if index((dark, warning, info, zinc, neutral, stone, amber, yellow, lime, green, emerald, teal, cyan, sky), $name) {
+            @return #111827;
+        }
+    }
+
+    @return $default;
+}
+
+@mixin perColorPalette($color-palette, $mode: 'light') {
+    @each $name, $color in $color-palette {
+        &#{$p}#{"" + $name} {
+            $text-color: text-color-map($name, $mode);
+            background-color: $color;
+            color: $text-color;
+            border-color: $color;
+
+            &#{$p}outlined {
+                background-color: color.change($color, $alpha: 20%);
+                border-color: color.change($color, $alpha: 30%);
+                //border-color: red;
+                @if ($mode == 'dark') {
+                    color: color.adjust($color, $lightness: 20%);
+                    @if ($name == light) {
+                        color: color.adjust($color, $lightness: 60%);
+                    } @else if index((slate, gray), $name) {
+                        color: color.adjust($color, $lightness: 30%);
+                    }
+                } @else {
+                    color: color.adjust($color, $lightness: -20%);
+                    @if ($name == light) {
+                        color: color.adjust($color, $lightness: -60%);
+                    } @else if index((slate, gray), $name) {
+                        color: color.adjust($color, $lightness: -20%);
+                    }
+                }
+            }
+
+            //&#{$p}accent {
+            //    border-left-width: 4px;
+            //    border-left-color: color.adjust($color, $lightness: -20%);
+            //    @if($mode == 'dark') {
+            //        border-left-color: color.adjust($color, $lightness: 40%);
+            //        @if ($name == dark) {
+            //            border-left-color: color.adjust($text-color, $lightness: 50%);
+            //        }
+            //    }
+            //    &#{$p}outlined {
+            //        border-left-color: color.change($color, $alpha: 60%);
+            //        @if($mode == 'dark') {
+            //            //border-left-color: color.adjust($color, $lightness: 40%);
+            //            @if ($name == light) {
+            //                border-left-color: color.adjust($text-color, $lightness: -60%);
+            //            }
+            //        } @else {
+            //            @if ($name == light) {
+            //                border-left-color: color.adjust($text-color, $lightness: 60%);
+            //            }
+            //        }
+            //    }
+            //}
+        }
+    }
+}
+
+@mixin groupPerColorPalette($color-palette, $mode: 'light') {
+    @each $name, $color in $color-palette {
+        &#{$p}#{"" + $name} {
+            //$text-color: text-color-map($name, $mode);
+            //background-color: $color;
+            //color: $text-color;
+            //border-color: $color;
+            //border-color: color.change($color, $alpha: 30%);
+            //border-color: color.change($color, $alpha: 50%);
+            //outline: 1px solid color.change($color, $alpha: 30%);
+            //outline-offset: -0.5px;
+
+            #{$p}card {
+                &#{$p}outlined {
+                    //background-color: color.change($color, $alpha: 20%);
+                    //border-color: color.change($color, $alpha: 30%);
+                    //border-left-color: transparent;
+                    //border-top-color: transparent;
+                    border-color: transparent;
+                    outline: 1px solid color.change($color, $alpha: 30%);
+                    outline-offset: -0.5px;
+                }
+            }
+
+            //&#{$p}outlined {
+            //    background-color: color.change($color, $alpha: 20%);
+            //    border-color: color.change($color, $alpha: 30%);
+            //    @if ($mode == 'dark') {
+            //        color: color.adjust($color, $lightness: 20%);
+            //        @if ($name == light) {
+            //            color: color.adjust($color, $lightness: 60%);
+            //        } @else if index((slate, gray), $name) {
+            //            color: color.adjust($color, $lightness: 30%);
+            //        }
+            //    } @else {
+            //        color: color.adjust($color, $lightness: -20%);
+            //        @if ($name == light) {
+            //            color: color.adjust($color, $lightness: -60%);
+            //        } @else if index((slate, gray), $name) {
+            //            color: color.adjust($color, $lightness: -20%);
+            //        }
+            //    }
+            //}
+        }
+    }
+}
+
+
+$radius: (
+    sm: 0.25rem,   // 4px
+    md: 0.5rem,    // 8px
+    lg: 0.75rem,   // 12px
+);
+
+$card-gaps: (
+    sm: 0.5rem,
+    md: 1rem,
+    lg: 1.5rem,
+    none: 0,
+);
+
+#{$p}card-group-wrapper {
+    border: 1px solid rgba(255,255,255, .3);
+    border-radius: $border-radius;
+    overflow: hidden;
+}
+
+#{$p}card-group {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr); // 👈 important
+    gap: map.get($card-gaps, lg); // default
+
+    &#{$p}collapse {
+        //border-radius: 1rem;
+        overflow: hidden;
+        margin: -1px;
+        //border: 1px solid transparent;
+        #{$p}card {
+            border-radius: 0;
+        }
+        //@each $name, $value in $radius {
+        //    &#{$p}#{'rounded-' + $name} {
+        //        border-radius: $value;
+        //    }
+        //}
+    }
+
+    @each $name, $value in $card-gaps {
+        &.gap-#{$name} {
+            gap: $value;
+        }
+    }
+
+    #{$p}card {
+        grid-column: span 12 / span 12; // 👈 default full width
+    }
+
+    // spans
+    @for $i from 1 through 12 {
+        $items-per-row: floor(12 / $i); // integer division
+
+        .col-#{$i} {
+            grid-column: span #{$i} / span #{$i};
+
+            // remove right border if it's the last in the row
+            //&:nth-child(#{$items-per-row}n) {
+            //    border-right-color: transparent !important;
+            //}
+
+            // Remove bottom border on last row
+            // last row items = total items modulo items-per-row
+            // In CSS, approximate by selecting last $items-per-row elements
+            //&:nth-last-child(-n + #{$items-per-row}) {
+            //    border-bottom-color: transparent !important;
+            //}
+        }
+
+
+        // remove right border if it's the last in the row
+        //&:nth-child(#{$i}n) {
+        //    border-right-color: red;
+        //}
+    }
+
+    // breakpoints
+    @media (min-width: 640px) {
+        @for $i from 1 through 12 {
+            .sm-col-#{$i} {
+                grid-column: span #{$i} / span #{$i};
+            }
+
+            // remove right border if it's the last in the row
+            //&:nth-child(#{$i}n) {
+            //    border-right-color: red;
+            //}
+        }
+    }
+
+    @media (min-width: 768px) {
+        @for $i from 1 through 12 {
+            .md-col-#{$i} {
+                grid-column: span #{$i} / span #{$i};
+
+                // remove right border if it's the last in the row
+                &:nth-child(#{$i}n) {
+                    border-right-color: transparent;
+                }
+            }
+        }
+    }
+
+    @media (min-width: 1024px) {
+        @for $i from 1 through 12 {
+            .lg-col-#{$i} {
+                grid-column: span #{$i} / span #{$i};
+            }
+        }
+    }
+
+    @media (min-width: 1280px) {
+        @for $i from 1 through 12 {
+            .xl-col-#{$i} {
+                grid-column: span #{$i} / span #{$i};
+            }
+        }
+    }
+
+    @include groupPerColorPalette($palette-colors, 'light');
+    @include dark {
+        @include groupPerColorPalette($dark-palette-colors, 'dark');
+    }
+
+    //display: grid;
+    //gap: 1rem; // default gap
+    //grid-template-columns: repeat(12, 1fr);
+
+    // dynamic cols for breakpoints
+    //&.cols-1 { grid-template-columns: repeat(1, 1fr); }
+    //&.cols-2 { grid-template-columns: repeat(2, 1fr); }
+    //&.cols-3 { grid-template-columns: repeat(3, 1fr); }
+    //&.cols-4 { grid-template-columns: repeat(4, 1fr); }
+    //&.cols-5 { grid-template-columns: repeat(5, 1fr); }
+    //&.cols-6 { grid-template-columns: repeat(6, 1fr); }
+    //@for $i from 1 through 12 {
+    //    .col-#{$i} {
+    //        grid-column: span #{$i} / span #{$i};
+    //    }
+    //}
+
+    //@media (min-width: 640px) { // sm
+    //    &.sm-cols-1 { grid-template-columns: repeat(1, 1fr); }
+    //    &.sm-cols-2 { grid-template-columns: repeat(2, 1fr); }
+    //    &.sm-cols-3 { grid-template-columns: repeat(3, 1fr); }
+    //    &.sm-cols-4 { grid-template-columns: repeat(4, 1fr); }
+    //}
+    //@media (min-width: 768px) { // md
+    //    &.md-cols-3 { grid-template-columns: repeat(3, 1fr); }
+    //}
+    //@media (min-width: 1024px) { // lg
+    //    &.lg-cols-4 { grid-template-columns: repeat(4, 1fr); }
+    //}
+}
+
+#{$p}card {
+    border-width: 1px;
+    border-style: solid;
+    border-radius: $border-radius;
+    padding: 10px;
+    //border: 1px solid map.get($palette-colors, gray);
+    //background-color: map.get($palette-colors, light);
+    //background-color: blue;
+    //padding: 1rem;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+
+    //&.shadow-md {
+    //    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    //}
+    //
+    //&.hoverEffect:hover {
+    //    transform: translateY(-2px);
+    //    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    //    cursor: pointer;
+    //}
+
+    @include perColorPalette($palette-colors, 'light');
+    @include dark {
+        @include perColorPalette($dark-palette-colors, 'dark');
+    }
+}

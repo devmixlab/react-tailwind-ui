@@ -15,7 +15,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLElement> {
     active?: boolean;
     fixed?: boolean;
     fullWidth?: boolean;
-    radius?: Radius;
+    rounded?: Radius;
     iconOnly?: boolean;
     textIcon?: boolean;
     loading?: boolean;
@@ -38,7 +38,7 @@ const Button = forwardRef<HTMLElement, ButtonProps>(
             active = false,
             fixed = false,
             fullWidth = false,
-            radius = 'sm',
+            rounded = 'sm',
             iconOnly = false,
             textIcon = false,
             loading = false,
@@ -87,7 +87,7 @@ const Button = forwardRef<HTMLElement, ButtonProps>(
                     [bs.active]: active,
                     [bs.fixed]: fixed,
                     [bs.fullWidth]: fullWidth,
-                    [bs.radius[radius]]: radius,
+                    [bs.radius[rounded]]: rounded,
                     [bs.iconOnly]: iconOnly,
                     [bs.textIcon]: textIcon,
                     [bs.loading.base]: showSpinner,
@@ -104,7 +104,7 @@ const Button = forwardRef<HTMLElement, ButtonProps>(
                 active,
                 fixed,
                 fullWidth,
-                radius,
+                rounded,
                 iconOnly,
                 textIcon,
                 showSpinner,

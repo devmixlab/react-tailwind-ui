@@ -1,0 +1,25 @@
+import { createContext, useContext } from 'react';
+import { type Variant } from '../tokens/common';
+import { type Shadow, type View } from '../tokens/card';
+
+// Define the context type
+export type CardContextProps = {
+    variant: Variant;
+    view: View;
+};
+
+// Create the context with undefined as default
+// This forces consumers to check/use the Provider
+const CardContext = createContext<CardContextProps | undefined>(undefined);
+
+// Helper hook to use the context safely
+export const useCardContext = (): CardContextProps => {
+    const context = useContext(CardContext);
+    if (!context) {
+        throw new Error('CardContext must be used within a <Card.Provider>');
+    }
+    return context;
+};
+
+// Export the Provider for wrapping Card component
+export const CardProvider = CardContext.Provider;
