@@ -1,19 +1,28 @@
 // import React from 'react';
 import React, { useMemo, ElementType, ComponentPropsWithoutRef } from 'react';
-import { type Shadow, type View } from '../tokens/card';
-import { type Size, type Variant, type Radius } from '../tokens/common';
+import {
+    type Shadow,
+    type View,
+    type Col,
+    type Size,
+    type SizeWithNone,
+    type Radius,
+    type RadiusWithNone,
+} from '../tokens/card';
+import { type Variant } from '../tokens/common';
 import { cardStyles as cs } from './Card.styles';
 import clsx from 'clsx';
 import { CardProvider } from './Card.context';
-
-type Col = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12';
+import { DEFAULT_SIZE } from './constants';
 
 type CardOwnProps = {
     children: React.ReactNode;
     className?: string;
+    rounded?: RadiusWithNone;
     shadow?: Shadow;
     variant?: Variant;
     view?: View;
+    size?: SizeWithNone;
     col?: Col;
     smCol?: Col;
     mdCol?: Col;
@@ -43,14 +52,17 @@ export type CardComponent<T extends React.ElementType = 'div'> = React.FC<CardPr
     Body: React.FC<any>;
     Footer: React.FC<any>;
     Group: React.FC<any>;
+    Image: React.FC<any>;
 };
 
 const Card = <T extends ElementType = 'div'>({
     className,
+    rounded = 'sm',
     children,
     shadow,
     variant = 'primary',
     view = 'solid',
+    size = DEFAULT_SIZE,
     col,
     smCol,
     mdCol,
@@ -60,6 +72,8 @@ const Card = <T extends ElementType = 'div'>({
     const cardClass = useMemo(
         () =>
             clsx(className, cs.base, cs.view[view], cs.variant[variant], {
+                // [cs.size[size as Size]]: size && size !== 'none',
+                [cs.rounded[rounded as Radius]]: rounded && rounded !== 'none',
                 ['col-' + col]: col,
                 ['sm-col-' + smCol]: smCol,
                 ['md-col-' + mdCol]: mdCol,
@@ -70,11 +84,11 @@ const Card = <T extends ElementType = 'div'>({
                 // [bs.textIcon]: textIcon,
                 // [bs.interactive]: isInteractive,
             }),
-        [className, view, variant, col, smCol, mdCol, lgCol, xlCol],
+        [className, view, variant, rounded, col, smCol, mdCol, lgCol, xlCol],
     );
 
     return (
-        <CardProvider value={{ variant, view }}>
+        <CardProvider value={{ variant, view, size }}>
             <div className={cardClass}>{children}</div>
         </CardProvider>
     );

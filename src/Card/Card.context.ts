@@ -1,11 +1,12 @@
 import { createContext, useContext } from 'react';
 import { type Variant } from '../tokens/common';
-import { type Shadow, type View } from '../tokens/card';
+import { type Shadow, type View, type SizeWithNone } from '../tokens/card';
 
 // Define the context type
 export type CardContextProps = {
     variant: Variant;
     view: View;
+    size: SizeWithNone;
 };
 
 // Create the context with undefined as default

@@ -27,28 +27,42 @@
         &#{$p}#{"" + $name} {
             $text-color: text-color-map($name, $mode);
             background-color: $color;
-            color: $text-color;
+            //color: $text-color;
             border-color: $color;
+            //border-color: color.adjust($color, $lightness: -20%);
+            //background-color: color.adjust($color, $lightness: -20%);
 
             &#{$p}outlined {
+                background-color: color.change($color, $alpha: 10%);
+                //border-color: color.change($color, $alpha: 60%);
+                border-color: $color;
+                //@if ($mode == 'dark') {
+                //    color: color.adjust($color, $lightness: 20%);
+                //    @if ($name == light) {
+                //        color: color.adjust($color, $lightness: 60%);
+                //    } @else if index((slate, gray), $name) {
+                //        color: color.adjust($color, $lightness: 30%);
+                //    }
+                //} @else {
+                //    color: color.adjust($color, $lightness: -20%);
+                //    @if ($name == light) {
+                //        color: color.adjust($color, $lightness: -60%);
+                //    } @else if index((slate, gray), $name) {
+                //        color: color.adjust($color, $lightness: -20%);
+                //    }
+                //}
+            }
+
+            #{$p}card-header {
+                //background-color: red;
                 background-color: color.change($color, $alpha: 20%);
-                border-color: color.change($color, $alpha: 30%);
-                //border-color: red;
-                @if ($mode == 'dark') {
-                    color: color.adjust($color, $lightness: 20%);
-                    @if ($name == light) {
-                        color: color.adjust($color, $lightness: 60%);
-                    } @else if index((slate, gray), $name) {
-                        color: color.adjust($color, $lightness: 30%);
-                    }
-                } @else {
-                    color: color.adjust($color, $lightness: -20%);
-                    @if ($name == light) {
-                        color: color.adjust($color, $lightness: -60%);
-                    } @else if index((slate, gray), $name) {
-                        color: color.adjust($color, $lightness: -20%);
-                    }
-                }
+                border-bottom: 1px solid color.change($color, $alpha: 60%);
+            }
+
+            #{$p}card-footer {
+                //background-color: red;
+                background-color: color.change($color, $alpha: 20%);
+                border-top: 1px solid color.change($color, $alpha: 60%);
             }
 
             //&#{$p}accent {
@@ -84,11 +98,18 @@
             //$text-color: text-color-map($name, $mode);
             //background-color: $color;
             //color: $text-color;
-            //border-color: $color;
-            //border-color: color.change($color, $alpha: 30%);
+            border-color: $color;
+            border-width: 1px;
+            border-style: solid;
+            //border-color: color.change($color, $alpha: 40%);
             //border-color: color.change($color, $alpha: 50%);
             //outline: 1px solid color.change($color, $alpha: 30%);
             //outline-offset: -0.5px;
+            //#{$p}card-grid {
+            //    border-width: 1px;
+            //    border-style: solid;
+            //    border-color: color.change($color, $alpha: 30%);
+            //}
 
             #{$p}card {
                 &#{$p}outlined {
@@ -97,8 +118,8 @@
                     //border-left-color: transparent;
                     //border-top-color: transparent;
                     border-color: transparent;
-                    outline: 1px solid color.change($color, $alpha: 30%);
-                    outline-offset: -0.5px;
+                    outline: 1px solid color.change($color, $alpha: 60%);
+                    outline-offset: -.6px;
                 }
             }
 
@@ -127,9 +148,9 @@
 
 
 $radius: (
-    sm: 0.25rem,   // 4px
-    md: 0.5rem,    // 8px
-    lg: 0.75rem,   // 12px
+    sm: 0.25rem, // 4px
+    md: 0.5rem, // 8px
+    lg: 0.75rem, // 12px
 );
 
 $card-gaps: (
@@ -139,37 +160,62 @@ $card-gaps: (
     none: 0,
 );
 
-#{$p}card-group-wrapper {
-    border: 1px solid rgba(255,255,255, .3);
-    border-radius: $border-radius;
-    overflow: hidden;
-}
+$card-sizes: (
+    sm: 8px,
+    md: 12px,
+    lg: 16px,
+);
+
+//#{$p}card-group-wrapper {
+//    border: 1px solid rgba(255, 255, 255, .3);
+//    //border-radius: $border-radius;
+//    overflow: hidden;
+//}
 
 #{$p}card-group {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr); // 👈 important
-    gap: map.get($card-gaps, lg); // default
+    #{$p}card-grid {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr); // 👈 important
+        gap: map.get($card-gaps, lg); // default
 
-    &#{$p}collapse {
-        //border-radius: 1rem;
-        overflow: hidden;
-        margin: -1px;
-        //border: 1px solid transparent;
-        #{$p}card {
-            border-radius: 0;
-        }
-        //@each $name, $value in $radius {
-        //    &#{$p}#{'rounded-' + $name} {
-        //        border-radius: $value;
+        //@each $name, $value in $card-gaps {
+        //    @at-root #{$p}card-group.gap-#{$name} #{$p}card-grid {
+        //        gap: $value;
         //    }
         //}
     }
 
     @each $name, $value in $card-gaps {
-        &.gap-#{$name} {
+        &.gap-#{$name} #{$p}card-grid {
             gap: $value;
         }
     }
+
+    &#{$p}collapse {
+        //border-radius: 1rem;
+        overflow: hidden;
+
+        #{$p}card-grid {
+            margin: -1px;
+        }
+
+        //border: 1px solid transparent;
+        #{$p}card {
+            border-radius: 0;
+        }
+
+        @each $name, $value in $radius {
+            &#{$p}#{'rounded-' + $name} {
+                border-radius: $value;
+            }
+        }
+    }
+
+    //@each $name, $value in $card-gaps {
+    //    &.gap-#{$name} {
+    //        gap: $value;
+    //    }
+    //}
 
     #{$p}card {
         grid-column: span 12 / span 12; // 👈 default full width
@@ -284,13 +330,66 @@ $card-gaps: (
 #{$p}card {
     border-width: 1px;
     border-style: solid;
-    border-radius: $border-radius;
-    padding: 10px;
+    //border-radius: $border-radius;
     //border: 1px solid map.get($palette-colors, gray);
     //background-color: map.get($palette-colors, light);
     //background-color: blue;
     //padding: 1rem;
     transition: box-shadow 0.2s ease, transform 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    @each $name, $value in $radius {
+        &#{$p}#{'rounded-' + $name} {
+            border-radius: $value;
+        }
+    }
+
+    #{$p}card-header, #{$p}card-body, #{$p}card-footer {
+        @each $name, $size in $card-sizes {
+            &#{$p}#{'size-' + $name} {
+                padding: $size;
+            }
+        }
+        //padding: 7px 15px;
+        //background-color: red;
+    }
+
+    #{$p}card-body-wrapper {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        gap: 8px;
+        &#{$p}direction-horizontal {
+            flex-direction: row;
+        }
+        #{$p}card-body {
+            flex: 1;
+            //display: flex;
+            //flex-direction: column;
+            //gap: 8px;
+        }
+        #{$p}card-body-image {
+            //width: 100%;
+            object-fit: cover;
+
+            #{$p}placement-left,
+            #{$p}placement-right {
+                //width: 120px;
+                flex-shrink: 0;
+            }
+
+            #{$p}placement-top {
+                width: 100%;
+            }
+        }
+    }
+
+    #{$p}card-footer {
+        //padding: 5px 10px;
+        //background-color: red;
+    }
 
     //&.shadow-md {
     //    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
