@@ -13,7 +13,7 @@ export const imageRadii = [...groupRadii, 'full'] as const;
 export type ImageRadius = (typeof imageRadii)[number];
 export type ImageRadiusWithNone = ImageRadius | 'none';
 
-export const placements = ['top', 'left', 'right'] as const;
+export const placements = ['top', 'bottom', 'left', 'right'] as const;
 export type Placement = (typeof placements)[number];
 
 export type Col = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12';

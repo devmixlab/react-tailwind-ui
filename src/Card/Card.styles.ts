@@ -19,6 +19,11 @@ import {
     shadows,
 } from '../tokens/card';
 import { classPrefix } from '../utils/classPrefix';
+import { CLASS_PREFIX } from '../constants';
+
+const componentClassPrefix = (name: string = '') => {
+    return classPrefix('card--' + name);
+};
 
 const variantList = mapToClassRecord(variants, { prefix: classPrefix() });
 const viewList = mapToClassRecord(views, { prefix: classPrefix() });
@@ -29,6 +34,9 @@ const sizeList = mapToClassRecord(sizes, { prefix: classPrefix('size-') });
 const paddingSizeList = mapToClassRecord(sizes, { prefix: classPrefix('padding-size-') });
 const imageRadiusList = mapToClassRecord(imageRadii, { prefix: classPrefix('image-rounded-') });
 const imageShadowList = mapToClassRecord(shadows, { prefix: classPrefix('image-shadow-') });
+const bodyAlignmentList = mapToClassRecord(placements, {
+    prefix: componentClassPrefix('body-alignment-'),
+});
 
 export const cardStyles: {
     base: string;
@@ -45,6 +53,7 @@ export const cardStyles: {
     };
     body: {
         base: string;
+        alignment: Record<Placement, string>;
         wrapper: {
             base: string;
             direction: Record<Direction, string>;
@@ -86,6 +95,7 @@ export const cardStyles: {
     },
     body: {
         base: classPrefix('card-body'),
+        alignment: bodyAlignmentList,
         wrapper: {
             base: classPrefix('card-body-wrapper'),
             direction: directionList,

@@ -105,7 +105,7 @@ const Body = ({
 
             <div className={bodyClass}>{children}</div>
 
-            {image && imagePlacement === 'right' && drawImage()}
+            {image && (imagePlacement === 'right' || imagePlacement === 'bottom') && drawImage()}
         </div>
     );
 };

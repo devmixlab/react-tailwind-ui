@@ -392,7 +392,7 @@ $image-shadows: (
         display: flex;
         flex-direction: column;
         flex: 1;
-        gap: 8px;
+        //gap: 10px;
 
         &#{$p}direction-horizontal {
             flex-direction: row;
@@ -424,7 +424,18 @@ $image-shadows: (
 
             @each $name, $value in $image-wrapper-paddings {
                 &#{$p}#{'padding-size-' + $name} {
-                    padding: $value;
+                    &#{$p}placement-bottom{
+                        padding: 0px $value $value;
+                    }
+                    &#{$p}placement-left{
+                        padding: $value 0px $value $value;
+                    }
+                    &#{$p}placement-top{
+                        padding: $value $value 0px;
+                    }
+                    &#{$p}placement-right{
+                        padding: $value $value $value 0px;
+                    }
                 }
             }
 
