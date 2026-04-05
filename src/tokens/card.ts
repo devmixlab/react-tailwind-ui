@@ -1,5 +1,6 @@
 export const shadows = ['sm', 'md', 'lg'] as const;
 export type Shadow = (typeof shadows)[number];
+export type ShadowWithNone = Shadow | 'none';
 
 export const views = ['solid', 'outlined'] as const;
 export type View = (typeof views)[number];
@@ -7,6 +8,10 @@ export type View = (typeof views)[number];
 export const groupRadii = ['sm', 'md', 'lg'] as const;
 export type Radius = (typeof groupRadii)[number];
 export type RadiusWithNone = Radius | 'none';
+
+export const imageRadii = [...groupRadii, 'full'] as const;
+export type ImageRadius = (typeof imageRadii)[number];
+export type ImageRadiusWithNone = ImageRadius | 'none';
 
 export const placements = ['top', 'left', 'right'] as const;
 export type Placement = (typeof placements)[number];

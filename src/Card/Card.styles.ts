@@ -13,6 +13,10 @@ import {
     directions,
     type Size,
     sizes,
+    type ImageRadius,
+    imageRadii,
+    type Shadow,
+    shadows,
 } from '../tokens/card';
 import { classPrefix } from '../utils/classPrefix';
 
@@ -22,15 +26,19 @@ const radiusList = mapToClassRecord(groupRadii, { prefix: classPrefix('rounded-'
 const placementList = mapToClassRecord(placements, { prefix: classPrefix('placement-') });
 const directionList = mapToClassRecord(directions, { prefix: classPrefix('direction-') });
 const sizeList = mapToClassRecord(sizes, { prefix: classPrefix('size-') });
+const paddingSizeList = mapToClassRecord(sizes, { prefix: classPrefix('padding-size-') });
+const imageRadiusList = mapToClassRecord(imageRadii, { prefix: classPrefix('image-rounded-') });
+const imageShadowList = mapToClassRecord(shadows, { prefix: classPrefix('image-shadow-') });
 
 export const cardStyles: {
-    // wrapper: string;
     base: string;
 
     image: {
         base: string;
         wrapper: string;
-        placement: Record<Placement, string>;
+        rounded: Record<ImageRadius, string>;
+        shadow: Record<Shadow, string>;
+        bordered: string;
     };
     header: {
         base: string;
@@ -41,9 +49,9 @@ export const cardStyles: {
             base: string;
             direction: Record<Direction, string>;
         };
-        image: {
+        imageWrapper: {
             base: string;
-            wrapper: string;
+            paddingSize: Record<Size, string>;
             placement: Record<Placement, string>;
         };
     };
@@ -59,45 +67,19 @@ export const cardStyles: {
             variant: Record<Variant, string>;
         };
     };
-    // collapse: {
-    //     base: string;
-    //     rounded: Record<Radius, string>;
-    //     variant: Record<Variant, string>;
-    // };
-    // disabled: string;
-    // active: string;
-    // fixed: string;
-    // fullWidth: string;
-    // pill: string;
-    // iconOnly: string;
-    // textIcon: string;
-    // interactive: string;
-    // group: {
-    //     group: string;
-    //     groupItem: string;
-    //     orientation: Record<'horizontal' | 'vertical', string>;
-    // };
-    // number: {
-    //     base: string;
-    //     big: string;
-    // };
-    // icon: {
-    //     base: string;
-    //     icon: string;
-    // };
-    // size: Record<Size, string>;
-    // dismissible: string;
-    // accent: string;
+
     rounded: Record<Radius, string>;
     size: Record<Size, string>;
     view: Record<View, string>;
     variant: Record<Variant, string>;
 } = {
-    // wrapper: b('wrapper'),
     base: classPrefix('card'),
     image: {
         base: classPrefix('card-image'),
-        placement: placementList,
+        wrapper: classPrefix('card-image-wrapper'),
+        rounded: imageRadiusList,
+        shadow: imageShadowList,
+        bordered: classPrefix('bordered'),
     },
     header: {
         base: classPrefix('card-header'),
@@ -108,8 +90,9 @@ export const cardStyles: {
             base: classPrefix('card-body-wrapper'),
             direction: directionList,
         },
-        image: {
-            base: classPrefix('card-body-image'),
+        imageWrapper: {
+            base: classPrefix('card-body-image-wrapper'),
+            paddingSize: paddingSizeList,
             placement: placementList,
         },
     },
@@ -125,32 +108,6 @@ export const cardStyles: {
             variant: variantList,
         },
     },
-    // collapse: {
-    //     base: b('collapse'),
-    //     rounded: radiusList,
-    //     variant: variantList,
-    // },
-    // disabled: b('disabled'),
-    // active: b('active'),
-    // fixed: b('fixed'),
-    // fullWidth: b('full-width'),
-    // pill: b('pill'),
-    // iconOnly: b('icon-only'),
-    // textIcon: b('text-icon'),
-    // interactive: b('interactive'),
-
-    // size: {
-    //     sm: b('sm'),
-    //     lg: b('lg'),
-    // },
-
-    // dismissible: b('dismissible'),
-    // accent: b('accent'),
-
-    // icon: {
-    //     base: b('with-icon'),
-    //     icon: b('icon'),
-    // },
 
     rounded: radiusList,
     size: sizeList,

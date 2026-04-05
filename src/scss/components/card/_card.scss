@@ -166,6 +166,38 @@ $card-sizes: (
     lg: 16px,
 );
 
+$image-wrapper-paddings: (
+    sm: 8px,
+    md: 12px,
+    lg: 16px,
+);
+
+$image-radius: (
+    sm: 0.25rem, // 4px
+    md: 0.5rem, // 8px
+    lg: 0.75rem, // 12px
+    full: 9999rem,
+);
+
+
+//$image-shadows: (
+//    sm: 0 1px 2px rgba(0, 0, 0, 0.08),
+//    md: 0 4px 8px rgba(0, 0, 0, 0.12),
+//    lg: 0 8px 16px rgba(0, 0, 0, 0.16),
+//);
+$image-shadows: (
+    light: (
+        sm: 0 1px 2px rgba(0, 0, 0, 0.08),
+        md: 0 4px 8px rgba(0, 0, 0, 0.12),
+        lg: 0 8px 16px rgba(0, 0, 0, 0.16),
+    ),
+    dark: (
+        sm: 0 1px 2px rgba(255, 255, 255, 0.08),
+        md: 0 4px 8px rgba(255, 255, 255, 0.12),
+        lg: 0 8px 16px rgba(255, 255, 255, 0.16),
+    )
+);
+
 //#{$p}card-group-wrapper {
 //    border: 1px solid rgba(255, 255, 255, .3);
 //    //border-radius: $border-radius;
@@ -361,18 +393,76 @@ $card-sizes: (
         flex-direction: column;
         flex: 1;
         gap: 8px;
+
         &#{$p}direction-horizontal {
             flex-direction: row;
         }
+
         #{$p}card-body {
             flex: 1;
             //display: flex;
             //flex-direction: column;
             //gap: 8px;
         }
-        #{$p}card-body-image {
+
+        &#{$p}direction-vertical {
+            #{$p}card-image-wrapper {
+                width: 100%;
+            }
+        }
+
+        &#{$p}direction-horizontal {
+            #{$p}card-body-image-wrapper {
+                align-items: start;
+            }
+        }
+
+        #{$p}card-body-image-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            @each $name, $value in $image-wrapper-paddings {
+                &#{$p}#{'padding-size-' + $name} {
+                    padding: $value;
+                }
+            }
+
+            //&#{$p}direction-vertical {
+            //    #{$p}card-image-wrapper {
+            //        width: 100%;
+            //    }
+            //}
+
             //width: 100%;
-            object-fit: cover;
+            //object-fit: cover;
+            #{$p}card-image {
+                width: 100%;
+                object-fit: cover;
+
+                @each $name, $value in $image-radius {
+                    &#{$p}#{'image-rounded-' + $name} {
+                        border-radius: $value;
+                    }
+                }
+
+                $shadows: map.get($image-shadows, light);
+                @include dark {
+                    $shadows: map.get($image-shadows, dark);
+                }
+                @each $name, $value in $shadows {
+                    &#{$p}#{'image-shadow-' + $name} {
+                        box-shadow: $value;
+                    }
+                }
+
+                &#{$p}bordered {
+                    border: 1px solid rgba(0, 0, 0, 0.08);
+                    @include dark {
+                        border: 1px solid rgba(255, 255, 255, 0.08);
+                    }
+                }
+            }
 
             #{$p}placement-left,
             #{$p}placement-right {
@@ -380,9 +470,10 @@ $card-sizes: (
                 flex-shrink: 0;
             }
 
-            #{$p}placement-top {
-                width: 100%;
-            }
+            //&#{$p}placement-top {
+            //    //width: 100%;
+            //    //background-color: red;
+            //}
         }
     }
 
