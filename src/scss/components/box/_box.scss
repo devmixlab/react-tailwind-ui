@@ -2,6 +2,45 @@
 
 $prefix: 'dru--';
 
+// Generate grid column utilities (12-column system)
+//@for $i from 1 through 12 {
+//    // default
+//    .#{$prefix}col-#{$i} {
+//        grid-column: span #{$i};
+//    }
+//
+//    // responsive
+//    @each $breakpoint, $min-width in $breakpoints {
+//        @media (min-width: $min-width) {
+//            .#{$prefix}#{$breakpoint}\:col-#{$i} {
+//                grid-column: span #{$i};
+//            }
+//        }
+//    }
+//}
+
+.#{$prefix}col {
+    grid-column: 1 / -1; // spans all columns
+}
+
+// Generate default column classes
+@for $i from 1 through 12 {
+    .#{$prefix}col-#{$i} {
+        grid-column: span #{$i};
+    }
+}
+
+// Generate responsive column classes in **mobile-first order**
+@each $breakpoint, $min-width in $breakpoints {
+    @media (min-width: $min-width) {
+        @for $i from 1 through 12 {
+            .#{$prefix}#{$breakpoint}\:col-#{$i} {
+                grid-column: span #{$i};
+            }
+        }
+    }
+}
+
 // Generate base spacing utilities
 @each $key, $value in $spacing {
     .#{$prefix}p-#{$key} {

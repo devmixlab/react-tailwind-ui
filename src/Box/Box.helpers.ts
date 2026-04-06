@@ -12,25 +12,54 @@ const spacing: Record<number, number> = {
     3: 12,
     4: 16,
     5: 20,
+    6: 24,
+    7: 28,
+    8: 32,
+    9: 36,
+    10: 40,
+    12: 48,
+    16: 64,
+    20: 80,
 };
 
 const breakpoints = {
+    xs: 480,
     sm: 640,
     md: 768,
     lg: 1024,
+    xl: 1280,
+    '2xl': 1536,
 };
 
-type Responsive<T> =
-    | T
-    | {
-          sm?: T;
-          md?: T;
-          lg?: T;
-      };
+// export type ResponsiveObj<T> = {
+//     base?: T;
+//     xs?: T;
+//     sm?: T;
+//     md?: T;
+//     lg?: T;
+//     xl?: T;
+//     '2xl'?: T;
+// };
+//
+// export type Responsive<T> = T | ResponsiveObj<T>;
 
-type ResponsiveObject<T> = { sm?: T; md?: T; lg?: T };
+// export type Responsive<T> =
+//     | T
+//     | {
+//           base?: T;
+//           xs?: T;
+//           sm?: T;
+//           md?: T;
+//           lg?: T;
+//           xl?: T;
+//           '2xl'?: T;
+//       };
 
-const isResponsiveObject = <T>(value: any): value is ResponsiveObject<T> => {
+export type ResponsiveObject<T> = { base?: T; xs?: T; sm?: T; md?: T; lg?: T; xl?: T; '2xl'?: T };
+
+export type Responsive<T> = T | ResponsiveObject<T>;
+
+export const isResponsiveObject = <T>(value: any): value is ResponsiveObject<T> => {
     return value && typeof value === 'object' && ('sm' in value || 'md' in value || 'lg' in value);
 };
 
@@ -45,9 +74,12 @@ export const getResponsiveClasses = (value?: ResponsiveValue, p: string) => {
     }
 
     return [
+        value.xs !== undefined && classPrefix(`--xs:${p}${value.xs}`),
         value.sm !== undefined && classPrefix(`--sm:${p}${value.sm}`),
         value.md !== undefined && classPrefix(`--md:${p}${value.md}`),
         value.lg !== undefined && classPrefix(`--lg:${p}${value.lg}`),
+        value.xl !== undefined && classPrefix(`--xl:${p}${value.xl}`),
+        value['2xl'] !== undefined && classPrefix(`--2xl:${p}${value['2xl']}`),
     ]
         .filter(Boolean)
         .join(' ');
@@ -67,26 +99,22 @@ export const getResponsiveClasses = (value?: ResponsiveValue, p: string) => {
 //     return undefined;
 // };
 
-const resolveResponsive = <T>(value: Responsive<T> | undefined): T | undefined => {
-    if (!isResponsiveObject<T>(value)) {
-        return value as T;
-    }
-
-    const width = window.innerWidth;
-
-    console.log('width:');
-    console.log(width);
-    console.log('value:');
-    console.log(value);
-    console.log('breakpoints:');
-    console.log(breakpoints);
-
-    if (width >= breakpoints.lg && value.lg !== undefined) return value.lg;
-    if (width >= breakpoints.md && value.md !== undefined) return value.md;
-    if (width >= breakpoints.sm && value.sm !== undefined) return value.sm;
-
-    return undefined;
-};
+// export const resolveResponsive = <T>(value: Responsive<T> | undefined): T | undefined => {
+//     if (!isResponsiveObject<T>(value)) {
+//         return value as T;
+//     }
+//
+//     const width = window.innerWidth;
+//
+//     if (width >= breakpoints['2xl'] && value['2xl'] !== undefined) return value['2xl'];
+//     if (width >= breakpoints.xl && value.xl !== undefined) return value.xl;
+//     if (width >= breakpoints.lg && value.lg !== undefined) return value.lg;
+//     if (width >= breakpoints.md && value.md !== undefined) return value.md;
+//     if (width >= breakpoints.sm && value.sm !== undefined) return value.sm;
+//     if (width >= breakpoints.xs && value.xs !== undefined) return value.xs;
+//
+//     return undefined;
+// };
 
 // export const resolveSpace = (value?: number | string) => {
 //     if (value === undefined) return undefined;
@@ -94,32 +122,32 @@ const resolveResponsive = <T>(value: Responsive<T> | undefined): T | undefined =
 //     return value;
 // };
 
-const resolveSpace = (value?: Responsive<number | string>) => {
-    const v = resolveResponsive(value);
-    if (v === undefined) return undefined;
-
-    if (typeof v === 'number') return spacing[v] ?? v;
-    return v;
-};
+// export const resolveSpace = (value?: Responsive<number | string>) => {
+//     const v = resolveResponsive(value);
+//     if (v === undefined) return undefined;
+//
+//     if (typeof v === 'number') return spacing[v] ?? v;
+//     return v;
+// };
 
 export const toSize = (v: number | string) => (typeof v === 'number' ? `${v}px` : v);
 
-export const applySpacing = (style: CSSProperties, props: any) => {
-    const { p, px, py, pt, pb, pl, pr, m, mx, my, mt, mb, ml, mr } = props;
-
-    if (p !== undefined) style.padding = resolveSpace(p);
-    if (px !== undefined) style.paddingInline = resolveSpace(px);
-    if (py !== undefined) style.paddingBlock = resolveSpace(py);
-    if (pt !== undefined) style.paddingTop = resolveSpace(pt);
-    if (pb !== undefined) style.paddingBottom = resolveSpace(pb);
-    if (pl !== undefined) style.paddingLeft = resolveSpace(pl);
-    if (pr !== undefined) style.paddingRight = resolveSpace(pr);
-
-    if (m !== undefined) style.margin = resolveSpace(m);
-    if (mx !== undefined) style.marginInline = resolveSpace(mx);
-    if (my !== undefined) style.marginBlock = resolveSpace(my);
-    if (mt !== undefined) style.marginTop = resolveSpace(mt);
-    if (mb !== undefined) style.marginBottom = resolveSpace(mb);
-    if (ml !== undefined) style.marginLeft = resolveSpace(ml);
-    if (mr !== undefined) style.marginRight = resolveSpace(mr);
-};
+// export const applySpacing = (style: CSSProperties, props: any) => {
+//     const { p, px, py, pt, pb, pl, pr, m, mx, my, mt, mb, ml, mr } = props;
+//
+//     if (p !== undefined) style.padding = resolveSpace(p);
+//     if (px !== undefined) style.paddingInline = resolveSpace(px);
+//     if (py !== undefined) style.paddingBlock = resolveSpace(py);
+//     if (pt !== undefined) style.paddingTop = resolveSpace(pt);
+//     if (pb !== undefined) style.paddingBottom = resolveSpace(pb);
+//     if (pl !== undefined) style.paddingLeft = resolveSpace(pl);
+//     if (pr !== undefined) style.paddingRight = resolveSpace(pr);
+//
+//     if (m !== undefined) style.margin = resolveSpace(m);
+//     if (mx !== undefined) style.marginInline = resolveSpace(mx);
+//     if (my !== undefined) style.marginBlock = resolveSpace(my);
+//     if (mt !== undefined) style.marginTop = resolveSpace(mt);
+//     if (mb !== undefined) style.marginBottom = resolveSpace(mb);
+//     if (ml !== undefined) style.marginLeft = resolveSpace(ml);
+//     if (mr !== undefined) style.marginRight = resolveSpace(mr);
+// };

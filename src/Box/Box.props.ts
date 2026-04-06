@@ -1,11 +1,14 @@
-import React, { CSSProperties } from 'react';
+import React, { CSSProperties, ElementType } from 'react';
+import { type Responsive } from './Box.helpers';
 
 export type BoxProps = {
+    as?: ElementType;
     children?: React.ReactNode;
     className?: string;
 
     // layout
     display?: CSSProperties['display'];
+    columns?: number;
     width?: number | string;
     height?: number | string;
 
@@ -15,12 +18,18 @@ export type BoxProps = {
     shrink?: boolean;
     basis?: number | string;
     flexDirection?: CSSProperties['flexDirection'];
+    gridAutoFlow?: CSSProperties['gridAutoFlow'];
+    // flexDirection?: 'row' | 'row-reverse' | 'column' | 'column-reverse';
+    // gridAutoFlow?: 'row' | 'column' | 'dense' | 'row dense' | 'column dense';
     align?: CSSProperties['alignItems'];
     justify?: CSSProperties['justifyContent'];
     wrap?: boolean;
+
+    // grid
     gap?: number | string;
     rowGap?: number | string;
     columnGap?: number | string;
+    col?: Responsive<number>;
 
     // spacing
     p?: number | string;
