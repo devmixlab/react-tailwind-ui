@@ -22,25 +22,34 @@ import { classPrefix } from '../utils/classPrefix';
 import { CLASS_PREFIX } from '../constants';
 
 const componentClassPrefix = (name: string = '') => {
-    return classPrefix('card--' + name);
+    return classPrefix('card' + name);
 };
 
-const variantList = mapToClassRecord(variants, { prefix: classPrefix() });
-const viewList = mapToClassRecord(views, { prefix: classPrefix() });
-const radiusList = mapToClassRecord(groupRadii, { prefix: classPrefix('rounded-') });
+const variantList = mapToClassRecord(variants, { prefix: componentClassPrefix('--') });
+const viewList = mapToClassRecord(views, { prefix: componentClassPrefix('--') });
+const radiusList = mapToClassRecord(groupRadii, { prefix: componentClassPrefix('--rounded-') });
 const placementList = mapToClassRecord(placements, { prefix: classPrefix('placement-') });
 const directionList = mapToClassRecord(directions, { prefix: classPrefix('direction-') });
 const sizeList = mapToClassRecord(sizes, { prefix: classPrefix('size-') });
 const paddingSizeList = mapToClassRecord(sizes, { prefix: classPrefix('padding-size-') });
 const imageRadiusList = mapToClassRecord(imageRadii, { prefix: classPrefix('image-rounded-') });
 const imageShadowList = mapToClassRecord(shadows, { prefix: classPrefix('image-shadow-') });
-const bodyAlignmentList = mapToClassRecord(placements, {
-    prefix: componentClassPrefix('body-alignment-'),
+const bodyDirectionList = mapToClassRecord(directions, {
+    prefix: componentClassPrefix('body--direction-'),
 });
+
+type colFunc = (col?: string) => string;
+type colFuncRequired = (col: string) => string;
 
 export const cardStyles: {
     base: string;
-
+    col: {
+        base: colFunc;
+        sm: colFuncRequired;
+        md: colFuncRequired;
+        lg: colFuncRequired;
+        xl: colFuncRequired;
+    };
     image: {
         base: string;
         wrapper: string;
@@ -53,16 +62,19 @@ export const cardStyles: {
     };
     body: {
         base: string;
-        alignment: Record<Placement, string>;
-        wrapper: {
+        direction: Record<Direction, string>;
+        content: {
             base: string;
-            direction: Record<Direction, string>;
         };
-        imageWrapper: {
-            base: string;
-            paddingSize: Record<Size, string>;
-            placement: Record<Placement, string>;
-        };
+        // wrapper: {
+        //     base: string;
+        //     direction: Record<Direction, string>;
+        // };
+        // imageWrapper: {
+        //     base: string;
+        //     paddingSize: Record<Size, string>;
+        //     placement: Record<Placement, string>;
+        // };
     };
     footer: {
         base: string;
@@ -82,7 +94,14 @@ export const cardStyles: {
     view: Record<View, string>;
     variant: Record<Variant, string>;
 } = {
-    base: classPrefix('card'),
+    base: componentClassPrefix(),
+    col: {
+        base: (col) => componentClassPrefix(col ? `--col-${col}` : '--col'),
+        sm: (col) => componentClassPrefix(`--col-sm-${col}`),
+        md: (col) => componentClassPrefix(`--col-md-${col}`),
+        lg: (col) => componentClassPrefix(`--col-lg-${col}`),
+        xl: (col) => componentClassPrefix(`--col-xl-${col}`),
+    },
     image: {
         base: classPrefix('card-image'),
         wrapper: classPrefix('card-image-wrapper'),
@@ -94,17 +113,20 @@ export const cardStyles: {
         base: classPrefix('card-header'),
     },
     body: {
-        base: classPrefix('card-body'),
-        alignment: bodyAlignmentList,
-        wrapper: {
-            base: classPrefix('card-body-wrapper'),
-            direction: directionList,
+        base: componentClassPrefix('body'),
+        direction: bodyDirectionList,
+        content: {
+            base: componentClassPrefix('body-content'),
         },
-        imageWrapper: {
-            base: classPrefix('card-body-image-wrapper'),
-            paddingSize: paddingSizeList,
-            placement: placementList,
-        },
+        // wrapper: {
+        //     base: classPrefix('card-body-wrapper'),
+        //     direction: directionList,
+        // },
+        // imageWrapper: {
+        //     base: classPrefix('card-body-image-wrapper'),
+        //     paddingSize: paddingSizeList,
+        //     placement: placementList,
+        // },
     },
     footer: {
         base: classPrefix('card-footer'),

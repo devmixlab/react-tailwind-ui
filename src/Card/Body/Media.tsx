@@ -1,20 +1,20 @@
 import React, { useMemo } from 'react';
 import clsx from 'clsx';
-import { useCardContext } from './Card.context';
-import { type SizeWithNone } from '../tokens/card';
-import { prefix as classPrefix } from './Card';
+import { useCardContext } from '../Card.context';
+import { type SizeWithNone } from '../../tokens/card';
+import { prefix as classPrefix } from '../Card';
 
-type HeaderProps = {
+type ContentProps = {
     children: React.ReactNode;
-    className?: string;
+    className: string;
     size?: SizeWithNone;
 };
 
 const prefix = (name: string = '') => {
-    return classPrefix(`__header${name}`);
+    return classPrefix(`__content${name}`);
 };
 
-const Header = ({ className, children, size: compSize }: HeaderProps) => {
+const Media = ({ className, children, size: compSize }: ContentProps) => {
     const { size } = useCardContext();
     compSize = compSize || size || 'md';
 
@@ -25,8 +25,9 @@ const Header = ({ className, children, size: compSize }: HeaderProps) => {
             }),
         [className, compSize],
     );
+
     return <div className={cl}>{children}</div>;
 };
-Header.displayName = 'Card.Header';
+Media.displayName = 'Card.Body.Media';
 
-export { Header };
+export { Media };

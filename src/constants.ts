@@ -1,1 +1,1 @@
-export const CLASS_PREFIX = 'dru--';
+export const CLASS_PREFIX = 'dru';

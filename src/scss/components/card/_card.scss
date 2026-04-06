@@ -3,9 +3,12 @@
 @use '../../abstracts/mixins' as *;
 
 @use './variables' as *;
+@use './mixins' as *;
 
 @use 'sass:map';
 @use 'sass:color';
+
+$m: 'dru';
 
 @function text-color-map($name, $mode: 'light', $default: #fff) {
     @if ($mode == 'light') {
@@ -22,75 +25,76 @@
     @return $default;
 }
 
-@mixin perColorPalette($color-palette, $mode: 'light') {
-    @each $name, $color in $color-palette {
-        &#{$p}#{"" + $name} {
-            $text-color: text-color-map($name, $mode);
-            background-color: $color;
-            //color: $text-color;
-            border-color: $color;
-            //border-color: color.adjust($color, $lightness: -20%);
-            //background-color: color.adjust($color, $lightness: -20%);
-
-            &#{$p}outlined {
-                background-color: color.change($color, $alpha: 10%);
-                //border-color: color.change($color, $alpha: 60%);
-                border-color: $color;
-                //@if ($mode == 'dark') {
-                //    color: color.adjust($color, $lightness: 20%);
-                //    @if ($name == light) {
-                //        color: color.adjust($color, $lightness: 60%);
-                //    } @else if index((slate, gray), $name) {
-                //        color: color.adjust($color, $lightness: 30%);
-                //    }
-                //} @else {
-                //    color: color.adjust($color, $lightness: -20%);
-                //    @if ($name == light) {
-                //        color: color.adjust($color, $lightness: -60%);
-                //    } @else if index((slate, gray), $name) {
-                //        color: color.adjust($color, $lightness: -20%);
-                //    }
-                //}
-            }
-
-            #{$p}card-header {
-                //background-color: red;
-                background-color: color.change($color, $alpha: 20%);
-                border-bottom: 1px solid color.change($color, $alpha: 60%);
-            }
-
-            #{$p}card-footer {
-                //background-color: red;
-                background-color: color.change($color, $alpha: 20%);
-                border-top: 1px solid color.change($color, $alpha: 60%);
-            }
-
-            //&#{$p}accent {
-            //    border-left-width: 4px;
-            //    border-left-color: color.adjust($color, $lightness: -20%);
-            //    @if($mode == 'dark') {
-            //        border-left-color: color.adjust($color, $lightness: 40%);
-            //        @if ($name == dark) {
-            //            border-left-color: color.adjust($text-color, $lightness: 50%);
-            //        }
-            //    }
-            //    &#{$p}outlined {
-            //        border-left-color: color.change($color, $alpha: 60%);
-            //        @if($mode == 'dark') {
-            //            //border-left-color: color.adjust($color, $lightness: 40%);
-            //            @if ($name == light) {
-            //                border-left-color: color.adjust($text-color, $lightness: -60%);
-            //            }
-            //        } @else {
-            //            @if ($name == light) {
-            //                border-left-color: color.adjust($text-color, $lightness: 60%);
-            //            }
-            //        }
-            //    }
-            //}
-        }
-    }
-}
+//
+//@mixin perColorPalette($color-palette, $mode: 'light') {
+//    @each $name, $color in $color-palette {
+//        &#{$p}#{"" + $name} {
+//            $text-color: text-color-map($name, $mode);
+//            background-color: $color;
+//            //color: $text-color;
+//            border-color: $color;
+//            //border-color: color.adjust($color, $lightness: -20%);
+//            //background-color: color.adjust($color, $lightness: -20%);
+//
+//            &#{$p}outlined {
+//                background-color: color.change($color, $alpha: 10%);
+//                //border-color: color.change($color, $alpha: 60%);
+//                border-color: $color;
+//                //@if ($mode == 'dark') {
+//                //    color: color.adjust($color, $lightness: 20%);
+//                //    @if ($name == light) {
+//                //        color: color.adjust($color, $lightness: 60%);
+//                //    } @else if index((slate, gray), $name) {
+//                //        color: color.adjust($color, $lightness: 30%);
+//                //    }
+//                //} @else {
+//                //    color: color.adjust($color, $lightness: -20%);
+//                //    @if ($name == light) {
+//                //        color: color.adjust($color, $lightness: -60%);
+//                //    } @else if index((slate, gray), $name) {
+//                //        color: color.adjust($color, $lightness: -20%);
+//                //    }
+//                //}
+//            }
+//
+//            #{$p}card-header {
+//                //background-color: red;
+//                background-color: color.change($color, $alpha: 20%);
+//                border-bottom: 1px solid color.change($color, $alpha: 60%);
+//            }
+//
+//            #{$p}card-footer {
+//                //background-color: red;
+//                background-color: color.change($color, $alpha: 20%);
+//                border-top: 1px solid color.change($color, $alpha: 60%);
+//            }
+//
+//            //&#{$p}accent {
+//            //    border-left-width: 4px;
+//            //    border-left-color: color.adjust($color, $lightness: -20%);
+//            //    @if($mode == 'dark') {
+//            //        border-left-color: color.adjust($color, $lightness: 40%);
+//            //        @if ($name == dark) {
+//            //            border-left-color: color.adjust($text-color, $lightness: 50%);
+//            //        }
+//            //    }
+//            //    &#{$p}outlined {
+//            //        border-left-color: color.change($color, $alpha: 60%);
+//            //        @if($mode == 'dark') {
+//            //            //border-left-color: color.adjust($color, $lightness: 40%);
+//            //            @if ($name == light) {
+//            //                border-left-color: color.adjust($text-color, $lightness: -60%);
+//            //            }
+//            //        } @else {
+//            //            @if ($name == light) {
+//            //                border-left-color: color.adjust($text-color, $lightness: 60%);
+//            //            }
+//            //        }
+//            //    }
+//            //}
+//        }
+//    }
+//}
 
 @mixin groupPerColorPalette($color-palette, $mode: 'light') {
     @each $name, $color in $color-palette {
@@ -359,6 +363,65 @@ $image-shadows: (
     //}
 }
 
+.dru--card {
+    --dux-card-border-color: transparent;
+    --dux-card-background-color: transparent;
+    border: 1px solid var(--dux-card-border-color);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: var(--dux-card-background-color);
+
+    @each $name, $value in $radius {
+        &--#{'rounded-' + $name} {
+            border-radius: $value;
+        }
+    }
+
+    &__body{
+        display: flex;
+        &--row{
+            flex-direction: row;
+        }
+        &--col{
+            flex-direction: column;
+        }
+    }
+
+    &__content {
+        background-color: red;
+        flex: 1;
+    }
+
+    &__header, &__footer, &__body {
+        @each $name, $size in $card-sizes {
+            &--#{'' + $name} {
+                padding: $size;
+            }
+        }
+    }
+
+    &__header {
+        --dux-card-header-background-color: transparent;
+        --dux-card-header-border-color: transparent;
+        background-color: var(--dux-card-header-background-color);
+        border-bottom: 1px solid var(--dux-card-header-border-color);
+    }
+
+    &__footer {
+        --dux-card-footer-background-color: transparent;
+        --dux-card-footer-border-color: transparent;
+        background-color: var(--dux-card-footer-background-color);
+        border-top: 1px solid var(--dux-card-footer-border-color);
+    }
+
+    @include perColorPalette($palette-colors, 'light');
+    @include dark {
+        @include perColorPalette($dark-palette-colors, 'dark');
+    }
+}
+
 #{$p}card {
     border-width: 1px;
     border-style: solid;
@@ -424,16 +487,19 @@ $image-shadows: (
 
             @each $name, $value in $image-wrapper-paddings {
                 &#{$p}#{'padding-size-' + $name} {
-                    &#{$p}placement-bottom{
+                    &#{$p}placement-bottom {
                         padding: 0px $value $value;
                     }
-                    &#{$p}placement-left{
+
+                    &#{$p}placement-left {
                         padding: $value 0px $value $value;
                     }
-                    &#{$p}placement-top{
+
+                    &#{$p}placement-top {
                         padding: $value $value 0px;
                     }
-                    &#{$p}placement-right{
+
+                    &#{$p}placement-right {
                         padding: $value $value $value 0px;
                     }
                 }

@@ -1,28 +1,32 @@
 import React, { useMemo } from 'react';
 import clsx from 'clsx';
-import { cardStyles as cs } from './Card.styles';
 import { useCardContext } from './Card.context';
-import { type SizeWithNone, type Size } from '../tokens/card';
+import { type SizeWithNone } from '../tokens/card';
+import { prefix as classPrefix } from './Card';
 
 type FooterProps = {
     children: React.ReactNode;
-    className: string;
+    className?: string;
     size?: SizeWithNone;
+};
+
+const prefix = (name: string = '') => {
+    return classPrefix(`__footer${name}`);
 };
 
 const Footer = ({ className, children, size: compSize }: FooterProps) => {
     const { size } = useCardContext();
     compSize = compSize || size || 'md';
 
-    const footerClass = useMemo(
+    const cl = useMemo(
         () =>
-            clsx(className, cs.footer.base, {
-                [cs.size[compSize as Size]]: compSize && compSize !== 'none',
+            clsx(className, prefix(), {
+                [prefix(`--${compSize}`)]: compSize && compSize !== 'none',
             }),
         [className, compSize],
     );
-    return <div className={footerClass}>{children}</div>;
+    return <div className={cl}>{children}</div>;
 };
-Footer.displayName = 'Footer';
+Footer.displayName = 'Card.Footer';
 
 export { Footer };

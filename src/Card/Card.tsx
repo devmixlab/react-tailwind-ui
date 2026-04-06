@@ -1,35 +1,37 @@
 // import React from 'react';
 import React, { useMemo, ElementType, ComponentPropsWithoutRef } from 'react';
 import {
-    type Shadow,
+    type ShadowWithNone,
     type View,
-    type Col,
-    type Size,
     type SizeWithNone,
-    type Radius,
     type RadiusWithNone,
 } from '../tokens/card';
 import { type Variant } from '../tokens/common';
-import { cardStyles as cs } from './Card.styles';
 import clsx from 'clsx';
 import { CardProvider } from './Card.context';
 import { DEFAULT_SIZE } from './constants';
+import { CLASS_PREFIX } from '../constants';
+
+export const prefix = (name: string = '') => {
+    return `${CLASS_PREFIX}--card${name}`;
+};
 
 type CardOwnProps = {
     children: React.ReactNode;
     className?: string;
     rounded?: RadiusWithNone;
-    shadow?: Shadow;
+    shadow?: ShadowWithNone;
     variant?: Variant;
     view?: View;
     size?: SizeWithNone;
-    col?: Col;
-    smCol?: Col;
-    mdCol?: Col;
-    lgCol?: Col;
-    xlCol?: Col;
+    interactive?: boolean;
+    accent?: 'left' | 'top';
+    // col?: Col;
+    // smCol?: Col;
+    // mdCol?: Col;
+    // lgCol?: Col;
+    // xlCol?: Col;
     // borderAccent?: 'left' | 'top' | 'none';
-    // padding?: 'sm' | 'md' | 'lg';
     // hoverEffect?: boolean;
     // as?: React.ReactElement; // for polymorphism, like alerts
 };
@@ -37,15 +39,6 @@ type CardOwnProps = {
 type CardProps<T extends ElementType> = CardOwnProps & {
     as?: T;
 } & ComponentPropsWithoutRef<T>;
-
-// export type TableComponent = React.FC<CardProps<'div'>> & {
-//     // Head: React.FC<CardProps>;
-//     // Body: React.FC<CardProps>;
-//     Header: React.FC<any>;
-//     // Cell: React.FC<any>;
-//     // HeaderCell: React.FC<any>;
-//     // SortableHeaderCell: React.FC<any>;
-// };
 
 export type CardComponent<T extends React.ElementType = 'div'> = React.FC<CardProps<T>> & {
     Header: React.FC<any>;
@@ -56,13 +49,15 @@ export type CardComponent<T extends React.ElementType = 'div'> = React.FC<CardPr
 };
 
 const Card = <T extends ElementType = 'div'>({
+    children,
     className,
     rounded = 'sm',
-    children,
-    shadow,
+    shadow = 'sm',
     variant = 'primary',
     view = 'solid',
     size = DEFAULT_SIZE,
+    interactive = true,
+    accent,
     col,
     smCol,
     mdCol,
@@ -71,20 +66,19 @@ const Card = <T extends ElementType = 'div'>({
 }: CardProps<T>) => {
     const cardClass = useMemo(
         () =>
-            clsx(className, cs.base, cs.view[view], cs.variant[variant], {
-                // [cs.size[size as Size]]: size && size !== 'none',
-                [cs.rounded[rounded as Radius]]: rounded && rounded !== 'none',
-                ['col-' + col]: col,
-                ['sm-col-' + smCol]: smCol,
-                ['md-col-' + mdCol]: mdCol,
-                ['lg-col-' + lgCol]: lgCol,
-                ['xl-col-' + xlCol]: xlCol,
-                // [bs.pill]: pill,
-                // [bs.iconOnly]: iconOnly,
-                // [bs.textIcon]: textIcon,
-                // [bs.interactive]: isInteractive,
+            clsx(className, prefix(), prefix(`--${variant}-${view}`), {
+                [prefix(`--${size}`)]: size && size !== 'none',
+                [prefix(`--rounded-${rounded}`)]: rounded && rounded !== 'none',
+                // [cs.col.base(col)]: col,
+                // [cs.col.sm(smCol as string)]: smCol,
+                // [cs.col.md(mdCol as string)]: mdCol,
+                // [cs.col.md(lgCol as string)]: lgCol,
+                // [cs.col.md(xlCol as string)]: xlCol,
+                [prefix(`--accent-${accent}`)]: accent,
+                [prefix('--interactive')]: interactive,
+                [prefix(`--shadow-${shadow}`)]: shadow && shadow !== 'none',
             }),
-        [className, view, variant, rounded, col, smCol, mdCol, lgCol, xlCol],
+        [className, view, variant, rounded, size],
     );
 
     return (

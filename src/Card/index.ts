@@ -3,7 +3,7 @@ import { Header } from './Header';
 import { Body } from './Body';
 import { Footer } from './Footer';
 import { Group } from './Group';
-import { BodyImage } from './BodyImage';
+import { BodyImage } from './Media/BodyImage';
 // import { TableRow } from './TableRow';
 // import { TableCell } from './TableCell';
 // import { TableHeaderCell } from './TableHeaderCell';

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import clsx from 'clsx';
-import { cardStyles as cs } from './Card.styles';
+import { cardStyles as cs } from '../Card.styles';
 import {
     imageRadii,
     type ImageRadiusWithNone,
@@ -8,7 +8,7 @@ import {
     type ShadowWithNone,
     type Shadow,
     type Size,
-} from '../tokens/card';
+} from '../../tokens/card';
 
 type ImageProps = React.ImgHTMLAttributes<HTMLImageElement> & {
     className?: string;
