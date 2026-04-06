@@ -1,0 +1,47 @@
+@use '../../abstracts/variables' as *;
+
+$prefix: 'dru--';
+
+// Generate base spacing utilities
+@each $key, $value in $spacing {
+    .#{$prefix}p-#{$key} {
+        padding: $value;
+    }
+    .#{$prefix}pt-#{$key} { padding-top: $value; }
+    .#{$prefix}pb-#{$key} { padding-bottom: $value; }
+    .#{$prefix}pl-#{$key} { padding-left: $value; }
+    .#{$prefix}pr-#{$key} { padding-right: $value; }
+    .#{$prefix}px-#{$key} { padding-left: $value; padding-right: $value; }
+    .#{$prefix}py-#{$key} { padding-top: $value; padding-bottom: $value; }
+
+    .#{$prefix}m-#{$key} { margin: $value; }
+    .#{$prefix}mt-#{$key} { margin-top: $value; }
+    .#{$prefix}mb-#{$key} { margin-bottom: $value; }
+    .#{$prefix}ml-#{$key} { margin-left: $value; }
+    .#{$prefix}mr-#{$key} { margin-right: $value; }
+    .#{$prefix}mx-#{$key} { margin-left: $value; margin-right: $value; }
+    .#{$prefix}my-#{$key} { margin-top: $value; margin-bottom: $value; }
+}
+
+// Generate responsive spacing utilities
+@each $breakpoint, $min-width in $breakpoints {
+    @media (min-width: $min-width) {
+        @each $key, $value in $spacing {
+            .#{$prefix}#{$breakpoint}\:p-#{$key} { padding: $value; }
+            .#{$prefix}#{$breakpoint}\:pt-#{$key} { padding-top: $value; }
+            .#{$prefix}#{$breakpoint}\:pb-#{$key} { padding-bottom: $value; }
+            .#{$prefix}#{$breakpoint}\:pl-#{$key} { padding-left: $value; }
+            .#{$prefix}#{$breakpoint}\:pr-#{$key} { padding-right: $value; }
+            .#{$prefix}#{$breakpoint}\:px-#{$key} { padding-left: $value; padding-right: $value; }
+            .#{$prefix}#{$breakpoint}\:py-#{$key} { padding-top: $value; padding-bottom: $value; }
+
+            .#{$prefix}#{$breakpoint}\:m-#{$key} { margin: $value; }
+            .#{$prefix}#{$breakpoint}\:mt-#{$key} { margin-top: $value; }
+            .#{$prefix}#{$breakpoint}\:mb-#{$key} { margin-bottom: $value; }
+            .#{$prefix}#{$breakpoint}\:ml-#{$key} { margin-left: $value; }
+            .#{$prefix}#{$breakpoint}\:mr-#{$key} { margin-right: $value; }
+            .#{$prefix}#{$breakpoint}\:mx-#{$key} { margin-left: $value; margin-right: $value; }
+            .#{$prefix}#{$breakpoint}\:my-#{$key} { margin-top: $value; margin-bottom: $value; }
+        }
+    }
+}

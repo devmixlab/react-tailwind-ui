@@ -1,4 +1,9 @@
 import { CSSProperties } from 'react';
+import { classPrefix } from '../utils/classPrefix';
+
+export const prefix = (name: string = '') => {
+    return classPrefix(`--box${name}`);
+};
 
 const spacing: Record<number, number> = {
     0: 0,
@@ -27,6 +32,25 @@ type ResponsiveObject<T> = { sm?: T; md?: T; lg?: T };
 
 const isResponsiveObject = <T>(value: any): value is ResponsiveObject<T> => {
     return value && typeof value === 'object' && ('sm' in value || 'md' in value || 'lg' in value);
+};
+
+type ResponsiveValue = Responsive<number | string>;
+export const getResponsiveClasses = (value?: ResponsiveValue, p: string) => {
+    if (value === undefined) return '';
+
+    // p = prefix(p);
+
+    if (typeof value !== 'object') {
+        return classPrefix(`--${p}${value}`);
+    }
+
+    return [
+        value.sm !== undefined && classPrefix(`--sm:${p}${value.sm}`),
+        value.md !== undefined && classPrefix(`--md:${p}${value.md}`),
+        value.lg !== undefined && classPrefix(`--lg:${p}${value.lg}`),
+    ]
+        .filter(Boolean)
+        .join(' ');
 };
 
 // const resolveResponsive = <T>(value: Responsive<T> | undefined): T | undefined => {

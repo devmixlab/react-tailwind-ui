@@ -1,8 +1,51 @@
 $border-radius: 0.25rem;
 
 $radius: (
-    sm: 0.25rem,   // 4px
-    md: 0.5rem,    // 8px
-    lg: 0.75rem,   // 12px
-    full: 9999rem  // fully rounded
+    sm: 0.25rem, // 4px
+    md: 0.5rem, // 8px
+    lg: 0.75rem, // 12px
+    full: 9999rem // fully rounded
+);
+
+//$breakpoints: (
+//    sm: 640px,
+//    md: 768px,
+//    lg: 1024px
+//);
+
+$breakpoints: (
+    xs: 480px,   // extra small phones
+    sm: 640px,   // small devices
+    md: 768px,   // tablets
+    lg: 1024px,  // desktops
+    xl: 1280px,  // large desktops
+    '2xl': 1536px // very large screens
+);
+
+//$spacing: (
+//    0: 0px,
+//    1: 4px,
+//    2: 8px,
+//    3: 12px,
+//    4: 16px,
+//    5: 20px
+//);
+
+$spacing: (
+    0: 0px,
+    //'0.5': 2px,
+    1: 4px,
+    //'1.5': 6px,
+    2: 8px,
+    3: 12px,
+    4: 16px,
+    5: 20px,
+    6: 24px,
+    7: 28px,
+    8: 32px,
+    9: 36px,
+    10: 40px,
+    12: 48px,
+    16: 64px,
+    20: 80px
 );

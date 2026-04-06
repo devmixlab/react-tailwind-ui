@@ -1,8 +1,13 @@
 import React, { CSSProperties } from 'react';
 import clsx from 'clsx';
 import { BoxProps } from './Box.props';
-import { toSize, applySpacing } from './Box.helpers';
+import { toSize, applySpacing, getResponsiveClasses } from './Box.helpers';
 import { useWindowWidth } from '../hooks/useWindowWidth';
+import { CLASS_PREFIX } from '../constants';
+
+export const prefix = (name: string = '') => {
+    return `${CLASS_PREFIX}--box${name}`;
+};
 
 const Box = ({
     children,
@@ -50,10 +55,29 @@ const Box = ({
     if (columnGap !== undefined) style.columnGap = toSize(columnGap);
 
     // spacing
-    applySpacing(style, spaceProps);
+    // applySpacing(style, spaceProps);
+
+    // const paddingClass = getResponsiveClasses(spaceProps.p, 'p-');
+    const spacingClasses = clsx(
+        getResponsiveClasses(spaceProps.p, 'p-'),
+        getResponsiveClasses(spaceProps.pt, 'pt-'),
+        getResponsiveClasses(spaceProps.pb, 'pb-'),
+        getResponsiveClasses(spaceProps.pl, 'pl-'),
+        getResponsiveClasses(spaceProps.pr, 'pr-'),
+        getResponsiveClasses(spaceProps.px, 'px-'),
+        getResponsiveClasses(spaceProps.py, 'py-'),
+
+        getResponsiveClasses(spaceProps.m, 'm-'),
+        getResponsiveClasses(spaceProps.mt, 'mt-'),
+        getResponsiveClasses(spaceProps.mb, 'mb-'),
+        getResponsiveClasses(spaceProps.ml, 'ml-'),
+        getResponsiveClasses(spaceProps.mr, 'mr-'),
+        getResponsiveClasses(spaceProps.mx, 'mx-'),
+        getResponsiveClasses(spaceProps.my, 'my-'),
+    );
 
     return (
-        <div className={clsx(className)} style={style}>
+        <div className={clsx(className, spacingClasses)} style={style}>
             {children}
         </div>
     );
