@@ -263,7 +263,7 @@ export const resolveResponsive = <T, R = T>(
 //     return v;
 // };
 
-export const toSize = (v: number | string) => (typeof v === 'number' ? `${v}px` : v);
+export const toSize = (v: any) => (typeof v === 'number' ? `${v}px` : v);
 
 // export const applySpacing = (style: CSSProperties, props: any) => {
 //     const { p, px, py, pt, pb, pl, pr, m, mx, my, mt, mb, ml, mr } = props;

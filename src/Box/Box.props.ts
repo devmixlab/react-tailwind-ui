@@ -35,19 +35,19 @@ export interface BoxProps extends React.HTMLAttributes<HTMLElement> {
 
     // flex
     flex?: Responsive<CSSProperties['flex']>;
-    grow?: Responsive<CSSProperties['flexGrow'] | boolean>;
-    shrink?: Responsive<CSSProperties['flexShrink'] | boolean>;
-    basis?: Responsive<CSSProperties['flexBasis']>;
+    flexGrow?: Responsive<CSSProperties['flexGrow'] | boolean>;
+    flexShrink?: Responsive<CSSProperties['flexShrink'] | boolean>;
+    flexBasis?: Responsive<CSSProperties['flexBasis']>;
     flexDirection?: CSSProperties['flexDirection'];
     gridAutoFlow?: CSSProperties['gridAutoFlow'];
     // align?: Responsive<CSSProperties['alignItems']>;
     justifyContent?: Responsive<CSSProperties['justifyContent']>;
-    wrap?: Responsive<CSSProperties['flexWrap'] | boolean>;
+    flexWrap?: Responsive<CSSProperties['flexWrap'] | boolean>;
 
     // grid
-    gap?: number | string;
-    rowGap?: number | string;
-    columnGap?: number | string;
+    gap?: Responsive<CSSProperties['gap']>;
+    rowGap?: Responsive<CSSProperties['rowGap']>;
+    columnGap?: Responsive<CSSProperties['columnGap']>;
     col?: Responsive<number>;
 
     // grid container
@@ -61,7 +61,9 @@ export interface BoxProps extends React.HTMLAttributes<HTMLElement> {
 
     // grid item
     columnSpan?: Responsive<number>;
+    gridColumn?: Responsive<CSSProperties['gridColumn']>;
     rowSpan?: Responsive<number>;
+    gridRow?: Responsive<CSSProperties['gridRow']>;
     justifySelf?: Responsive<CSSProperties['justifySelf']>;
     alignSelf?: Responsive<CSSProperties['alignSelf']>;
 

@@ -54,9 +54,9 @@ const Box = ({
     aspectRatio,
 
     flex,
-    grow,
-    shrink,
-    basis,
+    flexGrow,
+    flexShrink,
+    flexBasis,
     flexDirection,
     gridAutoFlow,
 
@@ -71,13 +71,15 @@ const Box = ({
 
     // grid item
     columnSpan,
+    gridColumn,
     rowSpan,
+    gridRow,
     justifySelf,
     alignSelf,
 
     // align,
     justifyContent,
-    wrap,
+    flexWrap,
     gap,
     rowGap,
     columnGap,
@@ -141,7 +143,11 @@ const Box = ({
         modifier?: (v: T) => CSSProperties[K],
     ) => {
         if (value !== undefined) {
-            style[styleProp] = get(styleProp, value, bp, modifier);
+            const resolved = get<T, CSSProperties[K]>(styleProp, value, bp, modifier);
+            if (resolved !== undefined) {
+                style[styleProp] = resolved;
+            }
+            // style[styleProp] = get<T, CSSProperties[K]>(styleProp, value, bp, modifier);
         }
     };
 
@@ -154,124 +160,96 @@ const Box = ({
         style.gridTemplateColumns = `repeat(${finalColumns}, 1fr)`;
 
         applyStyle('gridAutoFlow', gridAutoFlow);
-
-        if (gridTemplateRows)
-            style.gridTemplateRows = get('gridTemplateRows', gridTemplateRows, bp);
-
-        if (gridTemplateAreas)
-            style.gridTemplateAreas = get('gridTemplateAreas', gridTemplateAreas, bp);
-
-        if (alignContent) style.alignContent = get('alignContent', alignContent, bp);
+        applyStyle('gridTemplateRows', gridTemplateRows);
+        applyStyle('gridTemplateAreas', gridTemplateAreas);
+        applyStyle('alignContent', alignContent);
+        applyStyle('gridArea', gridArea);
 
         if (placeItems) {
-            style.placeItems = get('placeItems', placeItems, bp);
+            applyStyle('placeItems', placeItems);
         } else {
-            if (justifyItems) style.justifyItems = get('justifyItems', justifyItems, bp);
+            applyStyle('justifyItems', justifyItems);
         }
-
-        if (gridArea) style.gridArea = get('gridArea', gridArea, bp);
     } else if (display === 'flex') {
         //flex layout
-        if (flexDirection) style.flexDirection = get('flexDirection', flexDirection, bp);
+        applyStyle('flexDirection', flexDirection);
+        applyStyle('flexWrap', flexWrap, (v) =>
+            typeof v === 'boolean' ? (v ? 'wrap' : undefined) : v,
+        );
         if (flex !== undefined) {
-            style.flex = get('flex', flex, bp);
+            applyStyle('flex', flex);
         } else {
-            if (grow !== undefined)
-                style.flexGrow = get('grow', grow, bp, (v) =>
-                    typeof v === 'boolean' ? (v ? 1 : 0) : v,
-                );
-            if (shrink !== undefined)
-                style.flexShrink = get('shrink', shrink, bp, (v) =>
-                    typeof v === 'boolean' ? (v ? 1 : 0) : v,
-                );
-            if (basis !== undefined) style.flexBasis = get('basis', basis, bp);
+            applyStyle('flexGrow', flexGrow, (v) => (typeof v === 'boolean' ? (v ? 1 : 0) : v));
+            applyStyle('flexShrink', flexShrink, (v) => (typeof v === 'boolean' ? (v ? 1 : 0) : v));
+            applyStyle('flexBasis', flexBasis);
         }
-        if (wrap !== undefined)
-            style.flexWrap = get('wrap', wrap, bp, (v) =>
-                typeof v === 'boolean' ? (v ? 'wrap' : undefined) : v,
-            );
     }
 
     if ((display === 'grid' && !placeItems) || display === 'flex') {
-        if (alignItems) style.alignItems = get('alignItems', alignItems, bp);
+        applyStyle('alignItems', alignItems);
     }
-    if (justifyContent) style.justifyContent = get('justifyContent', justifyContent, bp);
+    applyStyle('justifyContent', justifyContent);
 
-    // grid item
-    if (columnSpan !== undefined) {
-        const span = get('columnSpan', columnSpan, bp);
-        // console.log('Span:');
-        // console.log(span);
-        if (span !== undefined) style.gridColumn = `span ${span}`;
-    }
+    applyStyle('gridColumn', columnSpan !== undefined ? columnSpan : gridColumn, (v) => {
+        return columnSpan !== undefined ? `span ${v}` : v;
+    });
+    applyStyle('gridRow', rowSpan !== undefined ? rowSpan : gridRow, (v) => {
+        return rowSpan !== undefined ? `span ${v}` : v;
+    });
 
-    if (rowSpan !== undefined) {
-        const span = get('rowSpan', rowSpan, bp);
-        if (span !== undefined) style.gridRow = `span ${span}`;
-    }
-
-    if (justifySelf) style.justifySelf = get('justifySelf', justifySelf, bp);
-
-    if (alignSelf) style.alignSelf = get('alignSelf', alignSelf, bp);
+    applyStyle('justifySelf', justifySelf);
+    applyStyle('alignSelf', alignSelf);
 
     // interaction
-    if (cursor) style.cursor = get('cursor', cursor, bp);
-    if (pointerEvents !== undefined) {
-        const resolvedPointerEvents = get('pointerEvents', pointerEvents, bp);
-        style.pointerEvents =
-            typeof resolvedPointerEvents === 'boolean'
-                ? resolvedPointerEvents
-                    ? 'auto'
-                    : 'none'
-                : resolvedPointerEvents;
-    }
+    applyStyle('cursor', cursor);
+    applyStyle('pointerEvents', pointerEvents, (v) => {
+        return typeof v === 'boolean' ? (v ? 'auto' : 'none') : v;
+    });
 
     // overflow
-    if (overflow) style.overflow = get('overflow', overflow, bp);
-    if (overflowX) style.overflowX = get('overflowX', overflowX, bp);
-    if (overflowY) style.overflowY = get('overflowY', overflowY, bp);
-    if (whiteSpace) style.whiteSpace = get('whiteSpace', whiteSpace, bp);
+    applyStyle('overflow', overflow);
+    applyStyle('overflowX', overflowX);
+    applyStyle('overflowY', overflowY);
+    applyStyle('whiteSpace', whiteSpace);
 
     // visual / appearance
-    if (borderRadius) style.borderRadius = get('borderRadius', borderRadius, bp, toSize);
-    if (opacity !== undefined) style.opacity = get('opacity', opacity, bp);
-    if (background) style.background = get('background', background, bp);
-    if (backgroundColor) style.backgroundColor = get('backgroundColor', backgroundColor, bp);
+    applyStyle('borderRadius', borderRadius, toSize);
+    applyStyle('opacity', opacity);
+    applyStyle('background', background);
+    applyStyle('backgroundColor', backgroundColor);
 
     // Border
     const resolvedBorder = get('border', border, bp);
     if (resolvedBorder) {
         style.border = resolvedBorder;
     } else {
-        if (borderColor) style.borderColor = get('borderColor', borderColor, bp);
-        if (borderStyle) style.borderStyle = get('borderStyle', borderStyle, bp);
-        if (borderWidth !== undefined)
-            style.borderWidth = get('borderWidth', borderWidth, bp, toSize);
+        applyStyle('borderColor', borderColor);
+        applyStyle('borderStyle', borderStyle);
+        applyStyle('borderWidth', borderWidth, toSize);
     }
 
-    if (boxShadow) style.boxShadow = get('boxShadow', boxShadow, bp);
-    if (transition) style.transition = get('transition', transition, bp);
+    applyStyle('boxShadow', boxShadow);
+    applyStyle('transition', transition);
 
     // sizing
-    if (width) style.width = get('width', width, bp, toSize);
-    if (height) style.height = get('height', height, bp, toSize);
-    if (minWidth) style.minWidth = get('minWidth', minWidth, bp, toSize);
-    if (maxWidth) style.maxWidth = get('maxWidth', maxWidth, bp, toSize);
-    if (minHeight) style.minHeight = get('minHeight', minHeight, bp, toSize);
-    if (maxHeight) style.maxHeight = get('maxHeight', maxHeight, bp, toSize);
-    if (aspectRatio !== undefined) style.aspectRatio = get('aspectRatio', aspectRatio, bp);
+    applyStyle('width', width, toSize);
+    applyStyle('minWidth', minWidth, toSize);
+    applyStyle('maxWidth', maxWidth, toSize);
+    applyStyle('minHeight', minHeight, toSize);
+    applyStyle('maxHeight', maxHeight, toSize);
+    applyStyle('aspectRatio', aspectRatio);
 
     // positioning
-    if (position) style.position = get('position', position, bp);
-    if (top !== undefined) style.top = get('top', top, bp, toSize);
-    if (left !== undefined) style.left = get('left', left, bp, toSize);
-    if (right !== undefined) style.right = get('right', right, bp, toSize);
-    if (bottom !== undefined) style.bottom = get('bottom', bottom, bp, toSize);
-    if (zIndex !== undefined) style.zIndex = get('zIndex', zIndex, bp);
+    applyStyle('position', position);
+    applyStyle('top', top, toSize);
+    applyStyle('left', left, toSize);
+    applyStyle('right', right, toSize);
+    applyStyle('bottom', bottom, toSize);
+    applyStyle('zIndex', zIndex);
 
-    if (gap !== undefined) style.gap = toSize(gap);
-    if (rowGap !== undefined) style.rowGap = toSize(rowGap);
-    if (columnGap !== undefined) style.columnGap = toSize(columnGap);
+    applyStyle('gap', gap, toSize);
+    applyStyle('rowGap', rowGap, toSize);
+    applyStyle('columnGap', columnGap, toSize);
 
     const spacingClasses = useMemo(
         () =>
@@ -295,18 +273,18 @@ const Box = ({
         [p, pt, pb, pl, pr, px, py, m, mt, mb, ml, mr, mx, my],
     );
 
-    const colClasses = useMemo(
-        () =>
-            clsx(getResponsiveClasses(col, 'col-'), {
-                [classPrefix(`--col-${isResponsiveObject(col) ? col.base : ''}`)]:
-                    col !== undefined && isResponsiveObject(col) && col.base,
-                [classPrefix(`--col`)]: col !== undefined && isResponsiveObject(col) && !col.base,
-            }),
-        [col],
-    );
+    // const colClasses = useMemo(
+    //     () =>
+    //         clsx(getResponsiveClasses(col, 'col-'), {
+    //             [classPrefix(`--col-${isResponsiveObject(col) ? col.base : ''}`)]:
+    //                 col !== undefined && isResponsiveObject(col) && col.base,
+    //             [classPrefix(`--col`)]: col !== undefined && isResponsiveObject(col) && !col.base,
+    //         }),
+    //     [col],
+    // );
 
     return (
-        <Component className={clsx(className, spacingClasses, colClasses)} style={style} {...props}>
+        <Component className={clsx(className, spacingClasses)} style={style} {...props}>
             {children}
         </Component>
     );
