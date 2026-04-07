@@ -1,8 +1,10 @@
 import React, { CSSProperties, useMemo } from 'react';
 import clsx from 'clsx';
 import { BoxProps } from './Box.props';
-import { toSize, getResponsiveClasses, isResponsiveObject } from './Box.helpers';
+import { toSize, getResponsiveClasses, isResponsiveObject, resolveResponsive } from './Box.helpers';
 import { classPrefix } from '../utils/classPrefix';
+import { useWindowWidth } from '../hooks/useWindowWidth';
+import { useWindowWidthContext } from './WindowWidthProvider';
 
 const Box = ({
     as: Component = 'div',
@@ -28,6 +30,9 @@ const Box = ({
     style: userStyle,
     ...spaceProps
 }: BoxProps) => {
+    const widthFromContext = useWindowWidthContext();
+    const windowWidth = widthFromContext || useWindowWidth();
+
     const style: CSSProperties = {
         ...userStyle,
     };
@@ -44,13 +49,18 @@ const Box = ({
     if (display === 'grid' && gridAutoFlow) {
         style.gridAutoFlow = gridAutoFlow; // supports row, column, dense, row dense, column dense
     }
-    if (width) style.width = toSize(width);
-    if (height) style.height = toSize(height);
+    // if (width) style.width = toSize(width);
+    if (width) style.width = resolveResponsive(width, windowWidth, (w) => toSize(w));
+    if (height) style.height = resolveResponsive(height, windowWidth, (w) => toSize(w));
+    // if (height) style.height = toSize(height);
 
     // flex
     if (flex) style.flex = flex;
-    if (grow !== undefined) style.flexGrow = grow ? 1 : 0;
-    if (shrink !== undefined) style.flexShrink = shrink ? 1 : 0;
+    if (grow !== undefined)
+        style.flexGrow = resolveResponsive(grow, windowWidth, (v) => (v ? 1 : 0));
+    if (shrink !== undefined)
+        style.flexShrink = resolveResponsive(shrink, windowWidth, (v) => (v ? 1 : 0));
+    // if (shrink !== undefined) style.flexShrink = shrink ? 1 : 0;
     if (basis !== undefined) style.flexBasis = toSize(basis);
 
     if (align) style.alignItems = align;

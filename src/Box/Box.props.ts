@@ -9,13 +9,14 @@ export type BoxProps = {
     // layout
     display?: CSSProperties['display'];
     columns?: number;
-    width?: number | string;
-    height?: number | string;
+    width?: Responsive<number | string>;
+    height?: Responsive<number | string>;
 
     // flex
     flex?: CSSProperties['flex'];
-    grow?: boolean;
-    shrink?: boolean;
+    grow?: Responsive<boolean>;
+    // shrink?: boolean;
+    shrink?: Responsive<boolean>;
     basis?: number | string;
     flexDirection?: CSSProperties['flexDirection'];
     gridAutoFlow?: CSSProperties['gridAutoFlow'];
