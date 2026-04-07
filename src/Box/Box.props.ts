@@ -14,17 +14,19 @@ export type BoxProps = {
 
     // flex
     flex?: CSSProperties['flex'];
-    grow?: Responsive<boolean>;
+    grow?: Responsive<CSSProperties['flexGrow'] | boolean>;
     // shrink?: boolean;
-    shrink?: Responsive<boolean>;
-    basis?: number | string;
+    shrink?: Responsive<CSSProperties['flexShrink'] | boolean>;
+    basis?: Responsive<CSSProperties['flexBasis']>;
+    // basis?: number | string;
     flexDirection?: CSSProperties['flexDirection'];
     gridAutoFlow?: CSSProperties['gridAutoFlow'];
     // flexDirection?: 'row' | 'row-reverse' | 'column' | 'column-reverse';
     // gridAutoFlow?: 'row' | 'column' | 'dense' | 'row dense' | 'column dense';
-    align?: CSSProperties['alignItems'];
-    justify?: CSSProperties['justifyContent'];
-    wrap?: boolean;
+    align?: Responsive<CSSProperties['alignItems']>;
+    justify?: Responsive<CSSProperties['justifyContent']>;
+    // wrap?: boolean;
+    wrap?: Responsive<CSSProperties['flexWrap'] | boolean>;
 
     // grid
     gap?: number | string;

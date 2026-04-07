@@ -39,33 +39,34 @@ const Box = ({
 
     // layout
     if (display) style.display = display;
-    // if (display?.includes('grid')) style.gridTemplateColumns = `repeat(12, 1fr)`;
-
     if (display === 'grid') style.gridTemplateColumns = `repeat(${columns ?? 12}, 1fr)`;
-
     if (display === 'flex' && flexDirection) {
         style.flexDirection = flexDirection; // supports row, row-reverse, column, column-reverse
     }
     if (display === 'grid' && gridAutoFlow) {
         style.gridAutoFlow = gridAutoFlow; // supports row, column, dense, row dense, column dense
     }
-    // if (width) style.width = toSize(width);
     if (width) style.width = resolveResponsive(width, windowWidth, (w) => toSize(w));
     if (height) style.height = resolveResponsive(height, windowWidth, (w) => toSize(w));
-    // if (height) style.height = toSize(height);
 
     // flex
     if (flex) style.flex = flex;
     if (grow !== undefined)
-        style.flexGrow = resolveResponsive(grow, windowWidth, (v) => (v ? 1 : 0));
+        style.flexGrow = resolveResponsive(grow, windowWidth, (v) =>
+            typeof v === 'boolean' ? (v ? 1 : 0) : v,
+        );
     if (shrink !== undefined)
-        style.flexShrink = resolveResponsive(shrink, windowWidth, (v) => (v ? 1 : 0));
-    // if (shrink !== undefined) style.flexShrink = shrink ? 1 : 0;
-    if (basis !== undefined) style.flexBasis = toSize(basis);
+        style.flexShrink = resolveResponsive(shrink, windowWidth, (v) =>
+            typeof v === 'boolean' ? (v ? 1 : 0) : v,
+        );
+    if (basis !== undefined) style.flexBasis = resolveResponsive(basis, windowWidth);
 
-    if (align) style.alignItems = align;
-    if (justify) style.justifyContent = justify;
-    if (wrap) style.flexWrap = 'wrap';
+    if (align) style.alignItems = resolveResponsive(align, windowWidth);
+    if (justify) style.justifyContent = resolveResponsive(justify, windowWidth);
+    if (wrap !== undefined)
+        style.flexWrap = resolveResponsive(wrap, windowWidth, (v) =>
+            typeof v === 'boolean' ? (v ? 'wrap' : undefined) : v,
+        );
 
     if (gap !== undefined) style.gap = toSize(gap);
     if (rowGap !== undefined) style.rowGap = toSize(rowGap);
