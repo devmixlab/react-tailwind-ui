@@ -22,7 +22,8 @@ const spacing: Record<number, number> = {
     20: 80,
 };
 
-const breakpoints = {
+export const breakpoints = {
+    base: 0,
     xs: 480,
     sm: 640,
     md: 768,
@@ -30,6 +31,52 @@ const breakpoints = {
     xl: 1280,
     '2xl': 1536,
 };
+
+export const getActiveBreakpoint = (width: number) => {
+    if (width >= breakpoints['2xl']) return '2xl';
+    if (width >= breakpoints.xl) return 'xl';
+    if (width >= breakpoints.lg) return 'lg';
+    if (width >= breakpoints.md) return 'md';
+    if (width >= breakpoints.sm) return 'sm';
+    if (width >= breakpoints.xs) return 'xs';
+    return 'base';
+};
+
+// const resolved: Record<string, any> = {};
+//
+// export const get = <T, R = T>(
+//     key: string,
+//     value: T | undefined,
+//     modify?: (v: T) => R,
+// ): R | undefined => {
+//     const cacheKey = `${key}_${bp}`; // unique per prop + breakpoint
+//     if (resolved[cacheKey] !== undefined) return resolved[cacheKey];
+//
+//     const result = resolveResponsive(value, bp, modify);
+//     resolved[cacheKey] = result;
+//     return result;
+// };
+
+// const resolved: Record<string, any> = {};
+//
+// export const get = <T, R = T>(
+//     key: string,
+//     value: Responsive<T | undefined> | undefined,
+//     bp: keyof typeof breakpoints | 'base',
+//     modify?: (v: T) => R,
+// ): R | undefined => {
+//     const cacheKey = `${key}_${bp}`;
+//     if (cacheKey in resolved) return resolved[cacheKey];
+//
+//     if (key === 'columnSpan') {
+//         console.log('columnSpan');
+//         console.log(value);
+//         console.log(bp);
+//     }
+//     const result = resolveResponsive(value, bp, modify);
+//     resolved[cacheKey] = result;
+//     return result;
+// };
 
 // export type ResponsiveObj<T> = {
 //     base?: T;
@@ -60,7 +107,17 @@ export type ResponsiveObject<T> = { base?: T; xs?: T; sm?: T; md?: T; lg?: T; xl
 export type Responsive<T> = T | ResponsiveObject<T>;
 
 export const isResponsiveObject = <T>(value: any): value is ResponsiveObject<T> => {
-    return value && typeof value === 'object' && ('sm' in value || 'md' in value || 'lg' in value);
+    return (
+        value &&
+        typeof value === 'object' &&
+        ('base' in value ||
+            'xs' in value ||
+            'sm' in value ||
+            'md' in value ||
+            'lg' in value ||
+            'xl' in value ||
+            '2xl' in value)
+    );
 };
 
 type ResponsiveValue = Responsive<number | string>;
@@ -140,26 +197,53 @@ export const getResponsiveClasses = (value?: ResponsiveValue, p: string) => {
 //     return result;
 // };
 
+// export const resolveResponsive = <T, R = T>(
+//     value: Responsive<T | undefined> | undefined,
+//     width: number,
+//     modify?: (value: T) => R,
+// ): R | undefined => {
+//     // primitive or single value
+//     if (!isResponsiveObject<T>(value)) {
+//         if (value === undefined) return undefined;
+//         return modify ? modify(value as T) : (value as R);
+//     }
+//
+//     const breakpointsOrder: (keyof typeof value)[] = ['base', 'xs', 'sm', 'md', 'lg', 'xl', '2xl'];
+//
+//     let result: R | undefined = undefined;
+//
+//     for (const bp of breakpointsOrder) {
+//         if (value[bp] !== undefined) {
+//             const minWidth = breakpoints[bp as keyof typeof breakpoints] ?? 0;
+//             if (width >= minWidth) result = (modify?.(value[bp] as T) ?? (value[bp] as T)) as R;
+//         }
+//     }
+//
+//     return result;
+// };
+
 export const resolveResponsive = <T, R = T>(
     value: Responsive<T | undefined> | undefined,
-    width: number,
+    bp: keyof typeof breakpoints | 'base',
     modify?: (value: T) => R,
 ): R | undefined => {
-    // primitive or single value
     if (!isResponsiveObject<T>(value)) {
         if (value === undefined) return undefined;
-        return modify ? modify(value as T) : (value as R);
+        return modify ? modify(value as T) : (value as unknown as R);
     }
 
-    const breakpointsOrder: (keyof typeof value)[] = ['base', 'xs', 'sm', 'md', 'lg', 'xl', '2xl'];
+    const order: (keyof typeof value)[] = ['base', 'xs', 'sm', 'md', 'lg', 'xl', '2xl'];
 
-    let result: R | undefined = undefined;
+    let result: R | undefined;
 
-    for (const bp of breakpointsOrder) {
-        if (value[bp] !== undefined) {
-            const minWidth = breakpoints[bp as keyof typeof breakpoints] ?? 0;
-            if (width >= minWidth) result = (modify?.(value[bp] as T) ?? (value[bp] as T)) as R;
+    for (const key of order) {
+        const v = value[key];
+
+        if (v !== undefined) {
+            result = modify ? modify(v) : (v as unknown as R);
         }
+
+        if (key === bp) break;
     }
 
     return result;

@@ -5,8 +5,10 @@ import {
     toSize,
     getResponsiveClasses,
     isResponsiveObject,
+    breakpoints,
+    getActiveBreakpoint,
+    Responsive,
     resolveResponsive,
-    type Responsive,
 } from './Box.helpers';
 import { classPrefix } from '../utils/classPrefix';
 import { useWindowWidth } from '../hooks/useWindowWidth';
@@ -35,6 +37,8 @@ const Box = ({
     borderColor,
     borderStyle,
     borderWidth,
+    boxShadow,
+    transition,
 
     // visual / interaction
     cursor,
@@ -55,8 +59,24 @@ const Box = ({
     basis,
     flexDirection,
     gridAutoFlow,
-    align,
-    justify,
+
+    // grid container
+    gridTemplateRows,
+    gridTemplateAreas,
+    justifyItems,
+    alignItems,
+    alignContent,
+    placeItems,
+    gridArea,
+
+    // grid item
+    columnSpan,
+    rowSpan,
+    justifySelf,
+    alignSelf,
+
+    // align,
+    justifyContent,
     wrap,
     gap,
     rowGap,
@@ -93,49 +113,111 @@ const Box = ({
 }: BoxProps) => {
     const widthFromContext = useWindowWidthContext();
     const windowWidth = widthFromContext || useWindowWidth();
+    const bp = getActiveBreakpoint(windowWidth);
 
     const style: CSSProperties = {
         ...userStyle,
     };
 
+    const resolved: Record<string, any> = {};
+
+    const get = <T, R = T>(
+        key: string,
+        value: Responsive<T | undefined> | undefined,
+        bp: keyof typeof breakpoints | 'base',
+        modify?: (v: T) => R,
+    ): R | undefined => {
+        const cacheKey = `${key}_${bp}`;
+        if (cacheKey in resolved) return resolved[cacheKey];
+
+        const result = resolveResponsive(value, bp, modify);
+        resolved[cacheKey] = result;
+        return result;
+    };
+
+    const applyStyle = <K extends keyof CSSProperties, T>(
+        styleProp: K,
+        value: Responsive<T> | undefined,
+        modifier?: (v: T) => CSSProperties[K],
+    ) => {
+        if (value !== undefined) {
+            style[styleProp] = get(styleProp, value, bp, modifier);
+        }
+    };
+
     // layout
-    if (display) style.display = resolveResponsive(display, windowWidth);
+    applyStyle('display', display);
 
     if (display === 'grid') {
         //grid layout
         const finalColumns = columns && columns > 0 ? columns : 12;
         style.gridTemplateColumns = `repeat(${finalColumns}, 1fr)`;
-        if (gridAutoFlow) style.gridAutoFlow = resolveResponsive(gridAutoFlow, windowWidth);
-        // maybe future improvement to add next props
-        // justifyItems, alignItems
+
+        applyStyle('gridAutoFlow', gridAutoFlow);
+
+        if (gridTemplateRows)
+            style.gridTemplateRows = get('gridTemplateRows', gridTemplateRows, bp);
+
+        if (gridTemplateAreas)
+            style.gridTemplateAreas = get('gridTemplateAreas', gridTemplateAreas, bp);
+
+        if (alignContent) style.alignContent = get('alignContent', alignContent, bp);
+
+        if (placeItems) {
+            style.placeItems = get('placeItems', placeItems, bp);
+        } else {
+            if (justifyItems) style.justifyItems = get('justifyItems', justifyItems, bp);
+        }
+
+        if (gridArea) style.gridArea = get('gridArea', gridArea, bp);
     } else if (display === 'flex') {
         //flex layout
-        if (flexDirection) style.flexDirection = resolveResponsive(flexDirection, windowWidth);
+        if (flexDirection) style.flexDirection = get('flexDirection', flexDirection, bp);
         if (flex !== undefined) {
-            style.flex = resolveResponsive(flex, windowWidth);
+            style.flex = get('flex', flex, bp);
         } else {
             if (grow !== undefined)
-                style.flexGrow = resolveResponsive(grow, windowWidth, (v) =>
+                style.flexGrow = get('grow', grow, bp, (v) =>
                     typeof v === 'boolean' ? (v ? 1 : 0) : v,
                 );
             if (shrink !== undefined)
-                style.flexShrink = resolveResponsive(shrink, windowWidth, (v) =>
+                style.flexShrink = get('shrink', shrink, bp, (v) =>
                     typeof v === 'boolean' ? (v ? 1 : 0) : v,
                 );
-            if (basis !== undefined) style.flexBasis = resolveResponsive(basis, windowWidth);
+            if (basis !== undefined) style.flexBasis = get('basis', basis, bp);
         }
-        if (align) style.alignItems = resolveResponsive(align, windowWidth);
-        if (justify) style.justifyContent = resolveResponsive(justify, windowWidth);
         if (wrap !== undefined)
-            style.flexWrap = resolveResponsive(wrap, windowWidth, (v) =>
+            style.flexWrap = get('wrap', wrap, bp, (v) =>
                 typeof v === 'boolean' ? (v ? 'wrap' : undefined) : v,
             );
     }
 
+    if ((display === 'grid' && !placeItems) || display === 'flex') {
+        if (alignItems) style.alignItems = get('alignItems', alignItems, bp);
+    }
+    if (justifyContent) style.justifyContent = get('justifyContent', justifyContent, bp);
+
+    // grid item
+    if (columnSpan !== undefined) {
+        const span = get('columnSpan', columnSpan, bp);
+        // console.log('Span:');
+        // console.log(span);
+        if (span !== undefined) style.gridColumn = `span ${span}`;
+    }
+
+    if (rowSpan !== undefined) {
+        const span = get('rowSpan', rowSpan, bp);
+        if (span !== undefined) style.gridRow = `span ${span}`;
+    }
+
+    if (justifySelf) style.justifySelf = get('justifySelf', justifySelf, bp);
+
+    if (alignSelf) style.alignSelf = get('alignSelf', alignSelf, bp);
+
     // interaction
-    if (cursor) style.cursor = resolveResponsive(cursor, windowWidth);
+    if (cursor) style.cursor = get('cursor', cursor, bp);
     if (pointerEvents !== undefined) {
-        const resolvedPointerEvents = resolveResponsive(pointerEvents, windowWidth);
+        const resolvedPointerEvents = get('pointerEvents', pointerEvents, bp);
         style.pointerEvents =
             typeof resolvedPointerEvents === 'boolean'
                 ? resolvedPointerEvents
@@ -145,44 +227,47 @@ const Box = ({
     }
 
     // overflow
-    if (overflow) style.overflow = resolveResponsive(overflow, windowWidth);
-    if (overflowX) style.overflowX = resolveResponsive(overflowX, windowWidth);
-    if (overflowY) style.overflowY = resolveResponsive(overflowY, windowWidth);
-    if (whiteSpace) style.whiteSpace = resolveResponsive(whiteSpace, windowWidth);
+    if (overflow) style.overflow = get('overflow', overflow, bp);
+    if (overflowX) style.overflowX = get('overflowX', overflowX, bp);
+    if (overflowY) style.overflowY = get('overflowY', overflowY, bp);
+    if (whiteSpace) style.whiteSpace = get('whiteSpace', whiteSpace, bp);
 
     // visual / appearance
-    if (borderRadius) style.borderRadius = resolveResponsive(borderRadius, windowWidth, toSize);
-    if (opacity !== undefined) style.opacity = resolveResponsive(opacity, windowWidth);
-    if (background) style.background = resolveResponsive(background, windowWidth);
-    if (backgroundColor) style.backgroundColor = resolveResponsive(backgroundColor, windowWidth);
+    if (borderRadius) style.borderRadius = get('borderRadius', borderRadius, bp, toSize);
+    if (opacity !== undefined) style.opacity = get('opacity', opacity, bp);
+    if (background) style.background = get('background', background, bp);
+    if (backgroundColor) style.backgroundColor = get('backgroundColor', backgroundColor, bp);
 
     // Border
-    const resolvedBorder = resolveResponsive(border, windowWidth);
+    const resolvedBorder = get('border', border, bp);
     if (resolvedBorder) {
         style.border = resolvedBorder;
     } else {
-        if (borderColor) style.borderColor = resolveResponsive(borderColor, windowWidth);
-        if (borderStyle) style.borderStyle = resolveResponsive(borderStyle, windowWidth);
+        if (borderColor) style.borderColor = get('borderColor', borderColor, bp);
+        if (borderStyle) style.borderStyle = get('borderStyle', borderStyle, bp);
         if (borderWidth !== undefined)
-            style.borderWidth = resolveResponsive(borderWidth, windowWidth, toSize);
+            style.borderWidth = get('borderWidth', borderWidth, bp, toSize);
     }
 
+    if (boxShadow) style.boxShadow = get('boxShadow', boxShadow, bp);
+    if (transition) style.transition = get('transition', transition, bp);
+
     // sizing
-    if (width) style.width = resolveResponsive(width, windowWidth, toSize);
-    if (height) style.height = resolveResponsive(height, windowWidth, toSize);
-    if (minWidth) style.minWidth = resolveResponsive(minWidth, windowWidth, toSize);
-    if (maxWidth) style.maxWidth = resolveResponsive(maxWidth, windowWidth, toSize);
-    if (minHeight) style.minHeight = resolveResponsive(minHeight, windowWidth, toSize);
-    if (maxHeight) style.maxHeight = resolveResponsive(maxHeight, windowWidth, toSize);
-    if (aspectRatio !== undefined) style.aspectRatio = resolveResponsive(aspectRatio, windowWidth);
+    if (width) style.width = get('width', width, bp, toSize);
+    if (height) style.height = get('height', height, bp, toSize);
+    if (minWidth) style.minWidth = get('minWidth', minWidth, bp, toSize);
+    if (maxWidth) style.maxWidth = get('maxWidth', maxWidth, bp, toSize);
+    if (minHeight) style.minHeight = get('minHeight', minHeight, bp, toSize);
+    if (maxHeight) style.maxHeight = get('maxHeight', maxHeight, bp, toSize);
+    if (aspectRatio !== undefined) style.aspectRatio = get('aspectRatio', aspectRatio, bp);
 
     // positioning
-    if (position) style.position = resolveResponsive(position, windowWidth);
-    if (top !== undefined) style.top = resolveResponsive(top, windowWidth, toSize);
-    if (left !== undefined) style.left = resolveResponsive(left, windowWidth, toSize);
-    if (right !== undefined) style.right = resolveResponsive(right, windowWidth, toSize);
-    if (bottom !== undefined) style.bottom = resolveResponsive(bottom, windowWidth, toSize);
-    if (zIndex !== undefined) style.zIndex = resolveResponsive(zIndex, windowWidth);
+    if (position) style.position = get('position', position, bp);
+    if (top !== undefined) style.top = get('top', top, bp, toSize);
+    if (left !== undefined) style.left = get('left', left, bp, toSize);
+    if (right !== undefined) style.right = get('right', right, bp, toSize);
+    if (bottom !== undefined) style.bottom = get('bottom', bottom, bp, toSize);
+    if (zIndex !== undefined) style.zIndex = get('zIndex', zIndex, bp);
 
     if (gap !== undefined) style.gap = toSize(gap);
     if (rowGap !== undefined) style.rowGap = toSize(rowGap);
