@@ -1,31 +1,45 @@
 import React, { CSSProperties, ElementType } from 'react';
 import { type Responsive } from './Box.helpers';
 
-export type BoxProps = {
+export interface BoxProps extends React.HTMLAttributes<HTMLElement> {
     as?: ElementType;
+
     children?: React.ReactNode;
     className?: string;
 
     // layout
     display?: CSSProperties['display'];
     columns?: number;
-    width?: Responsive<number | string>;
-    height?: Responsive<number | string>;
+
+    // overflow
+    overflow?: Responsive<CSSProperties['overflow']>;
+    overflowX?: Responsive<CSSProperties['overflowX']>;
+    overflowY?: Responsive<CSSProperties['overflowY']>;
+    whiteSpace?: Responsive<CSSProperties['whiteSpace']>;
+
+    // visual / appearance
+    borderRadius?: Responsive<CSSProperties['borderRadius']>;
+    opacity?: Responsive<CSSProperties['opacity']>;
+    background?: Responsive<CSSProperties['background']>;
+    backgroundColor?: Responsive<CSSProperties['backgroundColor']>;
+    border?: Responsive<CSSProperties['border']>;
+    borderColor?: Responsive<CSSProperties['borderColor']>;
+    borderStyle?: Responsive<CSSProperties['borderStyle']>;
+    borderWidth?: Responsive<CSSProperties['borderWidth']>;
+
+    // visual / interaction
+    cursor?: Responsive<CSSProperties['cursor']>;
+    pointerEvents?: Responsive<CSSProperties['pointerEvents'] | boolean>;
 
     // flex
-    flex?: CSSProperties['flex'];
+    flex?: Responsive<CSSProperties['flex']>;
     grow?: Responsive<CSSProperties['flexGrow'] | boolean>;
-    // shrink?: boolean;
     shrink?: Responsive<CSSProperties['flexShrink'] | boolean>;
     basis?: Responsive<CSSProperties['flexBasis']>;
-    // basis?: number | string;
     flexDirection?: CSSProperties['flexDirection'];
     gridAutoFlow?: CSSProperties['gridAutoFlow'];
-    // flexDirection?: 'row' | 'row-reverse' | 'column' | 'column-reverse';
-    // gridAutoFlow?: 'row' | 'column' | 'dense' | 'row dense' | 'column dense';
     align?: Responsive<CSSProperties['alignItems']>;
     justify?: Responsive<CSSProperties['justifyContent']>;
-    // wrap?: boolean;
     wrap?: Responsive<CSSProperties['flexWrap'] | boolean>;
 
     // grid
@@ -33,6 +47,23 @@ export type BoxProps = {
     rowGap?: number | string;
     columnGap?: number | string;
     col?: Responsive<number>;
+
+    // sizing
+    width?: Responsive<number | string>;
+    height?: Responsive<number | string>;
+    minWidth?: Responsive<number | string>;
+    maxWidth?: Responsive<number | string>;
+    minHeight?: Responsive<number | string>;
+    maxHeight?: Responsive<number | string>;
+    aspectRatio?: Responsive<CSSProperties['aspectRatio']>;
+
+    // positioning
+    position?: Responsive<CSSProperties['position']>;
+    top?: Responsive<number | string>;
+    left?: Responsive<number | string>;
+    right?: Responsive<number | string>;
+    bottom?: Responsive<number | string>;
+    zIndex?: Responsive<number>;
 
     // spacing
     p?: number | string;
@@ -53,4 +84,4 @@ export type BoxProps = {
 
     // style escape hatch
     style?: CSSProperties;
-};
+}
