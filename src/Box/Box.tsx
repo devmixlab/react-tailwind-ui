@@ -4,13 +4,11 @@ import { BoxProps } from './Box.props';
 import {
     toSize,
     getResponsiveClasses,
-    isResponsiveObject,
     breakpoints,
     getActiveBreakpoint,
     Responsive,
     resolveResponsive,
 } from './Box.helpers';
-import { classPrefix } from '../utils/classPrefix';
 import { useWindowWidth } from '../hooks/useWindowWidth';
 import { useWindowWidthContext } from './WindowWidthProvider';
 
@@ -21,6 +19,20 @@ const Box = ({
     className,
     display,
     columns,
+
+    // typography
+    fontSize,
+    fontStyle,
+    fontWeight,
+    lineHeight,
+    color,
+
+    textAlign,
+    textTransform,
+    letterSpacing,
+
+    fontFamily,
+    textDecoration,
 
     // overflow
     overflow,
@@ -70,20 +82,16 @@ const Box = ({
     gridArea,
 
     // grid item
-    columnSpan,
     gridColumn,
-    rowSpan,
     gridRow,
     justifySelf,
     alignSelf,
 
-    // align,
     justifyContent,
     flexWrap,
     gap,
     rowGap,
     columnGap,
-    col,
 
     // positioning
     position,
@@ -147,9 +155,20 @@ const Box = ({
             if (resolved !== undefined) {
                 style[styleProp] = resolved;
             }
-            // style[styleProp] = get<T, CSSProperties[K]>(styleProp, value, bp, modifier);
         }
     };
+
+    // typography
+    applyStyle('fontSize', fontSize, toSize); // careful: numbers → px
+    applyStyle('fontStyle', fontStyle);
+    applyStyle('fontWeight', fontWeight);
+    applyStyle('lineHeight', lineHeight); // ! no toSize
+    applyStyle('color', color);
+    applyStyle('textAlign', textAlign);
+    applyStyle('textTransform', textTransform);
+    applyStyle('letterSpacing', letterSpacing);
+    applyStyle('fontFamily', fontFamily);
+    applyStyle('textDecoration', textDecoration);
 
     // layout
     applyStyle('display', display);
@@ -176,13 +195,14 @@ const Box = ({
         applyStyle('flexWrap', flexWrap, (v) =>
             typeof v === 'boolean' ? (v ? 'wrap' : undefined) : v,
         );
-        if (flex !== undefined) {
-            applyStyle('flex', flex);
-        } else {
-            applyStyle('flexGrow', flexGrow, (v) => (typeof v === 'boolean' ? (v ? 1 : 0) : v));
-            applyStyle('flexShrink', flexShrink, (v) => (typeof v === 'boolean' ? (v ? 1 : 0) : v));
-            applyStyle('flexBasis', flexBasis);
-        }
+    }
+
+    if (flex !== undefined) {
+        applyStyle('flex', flex);
+    } else {
+        applyStyle('flexGrow', flexGrow, (v) => (typeof v === 'boolean' ? (v ? 1 : 0) : v));
+        applyStyle('flexShrink', flexShrink, (v) => (typeof v === 'boolean' ? (v ? 1 : 0) : v));
+        applyStyle('flexBasis', flexBasis);
     }
 
     if ((display === 'grid' && !placeItems) || display === 'flex') {
@@ -190,12 +210,14 @@ const Box = ({
     }
     applyStyle('justifyContent', justifyContent);
 
-    applyStyle('gridColumn', columnSpan !== undefined ? columnSpan : gridColumn, (v) => {
-        return columnSpan !== undefined ? `span ${v}` : v;
-    });
-    applyStyle('gridRow', rowSpan !== undefined ? rowSpan : gridRow, (v) => {
-        return rowSpan !== undefined ? `span ${v}` : v;
-    });
+    applyStyle('gridColumn', gridColumn);
+    // applyStyle('gridColumn', columnSpan !== undefined ? columnSpan : gridColumn, (v) => {
+    //     return columnSpan !== undefined ? `span ${v}` : v;
+    // });
+    applyStyle('gridRow', gridRow);
+    // applyStyle('gridRow', rowSpan !== undefined ? rowSpan : gridRow, (v) => {
+    //     return rowSpan !== undefined ? `span ${v}` : v;
+    // });
 
     applyStyle('justifySelf', justifySelf);
     applyStyle('alignSelf', alignSelf);
@@ -235,6 +257,7 @@ const Box = ({
     applyStyle('width', width, toSize);
     applyStyle('minWidth', minWidth, toSize);
     applyStyle('maxWidth', maxWidth, toSize);
+    applyStyle('height', height, toSize);
     applyStyle('minHeight', minHeight, toSize);
     applyStyle('maxHeight', maxHeight, toSize);
     applyStyle('aspectRatio', aspectRatio);

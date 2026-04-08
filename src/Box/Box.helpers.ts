@@ -131,6 +131,7 @@ export const getResponsiveClasses = (value?: ResponsiveValue, p: string) => {
     }
 
     return [
+        value.base !== undefined && classPrefix(`--base:${p}${value.base}`),
         value.xs !== undefined && classPrefix(`--xs:${p}${value.xs}`),
         value.sm !== undefined && classPrefix(`--sm:${p}${value.sm}`),
         value.md !== undefined && classPrefix(`--md:${p}${value.md}`),

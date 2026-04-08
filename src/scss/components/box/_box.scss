@@ -84,3 +84,58 @@ $prefix: 'dru--';
         }
     }
 }
+
+.dru{
+    // Shadows
+    &--shadow-none { box-shadow: none; }
+
+    &--shadow-xs { box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+    &--shadow-sm { box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    &--shadow-md { box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    &--shadow-lg { box-shadow: 0 10px 15px rgba(0,0,0,0.15); }
+    &--shadow-xl { box-shadow: 0 20px 25px rgba(0,0,0,0.2); }
+
+    // Radii
+    .dru--radius-none { border-radius: 0; }
+
+    &--radius-xs { border-radius: 2px; }
+    &--radius-sm { border-radius: 4px; }
+    &--radius-md { border-radius: 8px; }
+    &--radius-lg { border-radius: 12px; }
+    &--radius-xl { border-radius: 16px; }
+
+    &--radius-full { border-radius: 9999px; }
+
+    /* font size */
+    &--fs-xs { font-size: 12px; }
+    &--fs-sm { font-size: 14px; }
+    &--fs-md { font-size: 16px; }
+    &--fs-lg { font-size: 18px; }
+    &--fs-xl { font-size: 20px; }
+    &--fs-2xl { font-size: 24px; }
+    &--fs-3xl { font-size: 30px; }
+
+    /* font weight */
+    &--fw-light { font-weight: 300; }
+    &--fw-normal { font-weight: 400; }
+    &--fw-medium { font-weight: 500; }
+    &--fw-semibold { font-weight: 600; }
+    &--fw-bold { font-weight: 700; }
+
+    /* line height */
+    &--lh-tight { line-height: 1.2; }
+    &--lh-normal { line-height: 1.5; }
+    &--lh-relaxed { line-height: 1.75; }
+
+    /* letter spacing */
+    &--ls-tight { letter-spacing: -0.01em; }
+    &--ls-normal { letter-spacing: 0; }
+    &--ls-wide { letter-spacing: 0.05em; }
+
+    /* border width */
+    &--bw-none { border-width: 0; }
+
+    &--bw-thin { border-width: 1px; }
+    &--bw-normal { border-width: 2px; }
+    &--bw-thick { border-width: 3px; }
+}

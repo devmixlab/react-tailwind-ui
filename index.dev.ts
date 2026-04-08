@@ -15,3 +15,4 @@ export { Alert } from './src/Alert/Alert';
 export { CompCard as Card } from './src/Card';
 
 export { Box } from './src/Box/Box';
+export { TokenizedBox } from './src/Box/TokenizedBox';

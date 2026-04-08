@@ -1,7 +1,7 @@
 import React, { CSSProperties, ElementType } from 'react';
 import { type Responsive } from './Box.helpers';
 
-export interface BoxProps extends React.HTMLAttributes<HTMLElement> {
+export interface BoxProps extends Omit<React.HTMLAttributes<HTMLElement>, 'color'> {
     as?: ElementType;
 
     children?: React.ReactNode;
@@ -10,6 +10,22 @@ export interface BoxProps extends React.HTMLAttributes<HTMLElement> {
     // layout
     display?: CSSProperties['display'];
     columns?: number;
+
+    // typography
+    fontSize?: Responsive<number | string>;
+    fontStyle?: Responsive<CSSProperties['fontStyle']>;
+    fontWeight?: Responsive<CSSProperties['fontWeight']>;
+    lineHeight?: Responsive<CSSProperties['lineHeight']>;
+    color?: Responsive<CSSProperties['color']>;
+
+    textAlign?: Responsive<CSSProperties['textAlign']>;
+    textTransform?: Responsive<CSSProperties['textTransform']>;
+    letterSpacing?: Responsive<CSSProperties['letterSpacing']>;
+
+    fontFamily?: Responsive<CSSProperties['fontFamily']>;
+    textDecoration?: Responsive<CSSProperties['textDecoration']>;
+
+    // truncate?: boolean;
 
     // overflow
     overflow?: Responsive<CSSProperties['overflow']>;
@@ -40,7 +56,6 @@ export interface BoxProps extends React.HTMLAttributes<HTMLElement> {
     flexBasis?: Responsive<CSSProperties['flexBasis']>;
     flexDirection?: CSSProperties['flexDirection'];
     gridAutoFlow?: CSSProperties['gridAutoFlow'];
-    // align?: Responsive<CSSProperties['alignItems']>;
     justifyContent?: Responsive<CSSProperties['justifyContent']>;
     flexWrap?: Responsive<CSSProperties['flexWrap'] | boolean>;
 
@@ -48,7 +63,6 @@ export interface BoxProps extends React.HTMLAttributes<HTMLElement> {
     gap?: Responsive<CSSProperties['gap']>;
     rowGap?: Responsive<CSSProperties['rowGap']>;
     columnGap?: Responsive<CSSProperties['columnGap']>;
-    col?: Responsive<number>;
 
     // grid container
     gridTemplateRows?: Responsive<CSSProperties['gridTemplateRows']>;
@@ -60,9 +74,7 @@ export interface BoxProps extends React.HTMLAttributes<HTMLElement> {
     gridArea?: Responsive<CSSProperties['gridArea']>;
 
     // grid item
-    columnSpan?: Responsive<number>;
     gridColumn?: Responsive<CSSProperties['gridColumn']>;
-    rowSpan?: Responsive<number>;
     gridRow?: Responsive<CSSProperties['gridRow']>;
     justifySelf?: Responsive<CSSProperties['justifySelf']>;
     alignSelf?: Responsive<CSSProperties['alignSelf']>;
@@ -85,21 +97,21 @@ export interface BoxProps extends React.HTMLAttributes<HTMLElement> {
     zIndex?: Responsive<number>;
 
     // spacing
-    p?: number | string;
-    px?: number | string;
-    py?: number | string;
-    pt?: number | string;
-    pb?: number | string;
-    pl?: number | string;
-    pr?: number | string;
+    p?: Responsive<number | string>;
+    px?: Responsive<number | string>;
+    py?: Responsive<number | string>;
+    pt?: Responsive<number | string>;
+    pb?: Responsive<number | string>;
+    pl?: Responsive<number | string>;
+    pr?: Responsive<number | string>;
 
-    m?: number | string;
-    mx?: number | string;
-    my?: number | string;
-    mt?: number | string;
-    mb?: number | string;
-    ml?: number | string;
-    mr?: number | string;
+    m?: Responsive<number | string>;
+    mx?: Responsive<number | string>;
+    my?: Responsive<number | string>;
+    mt?: Responsive<number | string>;
+    mb?: Responsive<number | string>;
+    ml?: Responsive<number | string>;
+    mr?: Responsive<number | string>;
 
     // style escape hatch
     style?: CSSProperties;
