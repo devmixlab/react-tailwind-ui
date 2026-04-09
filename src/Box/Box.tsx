@@ -51,6 +51,7 @@ const Box = ({
     borderWidth,
     boxShadow,
     transition,
+    transform,
 
     // visual / interaction
     cursor,
@@ -252,6 +253,7 @@ const Box = ({
 
     applyStyle('boxShadow', boxShadow);
     applyStyle('transition', transition);
+    applyStyle('transform', transform);
 
     // sizing
     applyStyle('width', width, toSize);

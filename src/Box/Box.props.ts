@@ -44,6 +44,7 @@ export interface BoxProps extends Omit<React.HTMLAttributes<HTMLElement>, 'color
     borderWidth?: Responsive<CSSProperties['borderWidth']>;
     boxShadow?: Responsive<CSSProperties['boxShadow']>;
     transition?: Responsive<CSSProperties['transition']>;
+    transform?: Responsive<CSSProperties['transform']>;
 
     // visual / interaction
     cursor?: Responsive<CSSProperties['cursor']>;

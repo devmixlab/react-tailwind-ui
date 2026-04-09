@@ -4,6 +4,8 @@ import { BoxProps } from './Box.props';
 import type { Responsive } from './Box.helpers';
 
 export interface UIBoxProps extends BoxProps {
+    d?: BoxProps['display'];
+    pos?: BoxProps['position'];
     /** Visual / appearance aliases */
     z?: BoxProps['zIndex'];
     bg?: BoxProps['backgroundColor'];
@@ -47,9 +49,21 @@ export interface UIBoxProps extends BoxProps {
     ls?: BoxProps['letterSpacing'];
     ff?: BoxProps['fontFamily'];
     td?: BoxProps['textDecoration'];
+
+    // transform
+    tx?: Responsive<string>; // translateX
+    ty?: Responsive<string>; // translateY
+    scale?: Responsive<string>;
+    rotate?: Responsive<string>;
+
+    // transition
+    transD?: BoxProps['transition']; // duration
+    transE?: BoxProps['transition']; // easing
 }
 
 export const UIBox: React.FC<UIBoxProps> = ({
+    d,
+    pos,
     z,
     bg,
     radius,
@@ -87,6 +101,16 @@ export const UIBox: React.FC<UIBoxProps> = ({
     ff,
     td,
 
+    // transform
+    tx,
+    ty,
+    scale,
+    rotate,
+
+    // transition
+    transD, // duration
+    transE, // easing
+
     ...rest
 }) => {
     const applyAliases = <T extends Record<string, any>>(aliases: T): Partial<T> =>
@@ -98,6 +122,8 @@ export const UIBox: React.FC<UIBoxProps> = ({
         <Box
             {...rest}
             {...applyAliases({
+                display: d,
+                position: pos,
                 zIndex: z,
                 backgroundColor: bg,
                 borderRadius: radius,
