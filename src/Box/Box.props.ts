@@ -9,7 +9,8 @@ export interface BoxProps extends Omit<React.HTMLAttributes<HTMLElement>, 'color
 
     // layout
     display?: CSSProperties['display'];
-    columns?: number;
+    // columns?: number;
+    gridTemplateColumns?: CSSProperties['gridTemplateColumns'];
 
     // typography
     fontSize?: Responsive<number | string>;

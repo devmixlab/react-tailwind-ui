@@ -18,7 +18,8 @@ const Box = ({
     children,
     className,
     display,
-    columns,
+    // columns,
+    gridTemplateColumns,
 
     // typography
     fontSize,
@@ -174,41 +175,35 @@ const Box = ({
     // layout
     applyStyle('display', display);
 
-    if (display === 'grid') {
-        //grid layout
-        const finalColumns = columns && columns > 0 ? columns : 12;
-        style.gridTemplateColumns = `repeat(${finalColumns}, 1fr)`;
+    applyStyle('gridTemplateColumns', gridTemplateColumns);
 
-        applyStyle('gridAutoFlow', gridAutoFlow);
-        applyStyle('gridTemplateRows', gridTemplateRows);
-        applyStyle('gridTemplateAreas', gridTemplateAreas);
-        applyStyle('alignContent', alignContent);
-        applyStyle('gridArea', gridArea);
+    //grid layout
+    // if (columns !== undefined) {
+    //     const finalColumns = columns && columns > 0 ? columns : 12;
+    //     style.gridTemplateColumns = `repeat(${finalColumns}, 1fr)`;
+    // }
 
-        if (placeItems) {
-            applyStyle('placeItems', placeItems);
-        } else {
-            applyStyle('justifyItems', justifyItems);
-        }
-    } else if (display === 'flex') {
-        //flex layout
-        applyStyle('flexDirection', flexDirection);
-        applyStyle('flexWrap', flexWrap, (v) =>
-            typeof v === 'boolean' ? (v ? 'wrap' : undefined) : v,
-        );
-    }
+    applyStyle('gridAutoFlow', gridAutoFlow);
+    applyStyle('gridTemplateRows', gridTemplateRows);
+    applyStyle('gridTemplateAreas', gridTemplateAreas);
+    applyStyle('alignContent', alignContent);
+    applyStyle('gridArea', gridArea);
 
-    if (flex !== undefined) {
-        applyStyle('flex', flex);
-    } else {
-        applyStyle('flexGrow', flexGrow, (v) => (typeof v === 'boolean' ? (v ? 1 : 0) : v));
-        applyStyle('flexShrink', flexShrink, (v) => (typeof v === 'boolean' ? (v ? 1 : 0) : v));
-        applyStyle('flexBasis', flexBasis);
-    }
+    applyStyle('placeItems', placeItems);
+    applyStyle('justifyItems', justifyItems);
 
-    if ((display === 'grid' && !placeItems) || display === 'flex') {
-        applyStyle('alignItems', alignItems);
-    }
+    //flex layout
+    applyStyle('flexDirection', flexDirection);
+    applyStyle('flexWrap', flexWrap, (v) =>
+        typeof v === 'boolean' ? (v ? 'wrap' : undefined) : v,
+    );
+
+    applyStyle('flex', flex);
+    applyStyle('flexGrow', flexGrow, (v) => (typeof v === 'boolean' ? (v ? 1 : 0) : v));
+    applyStyle('flexShrink', flexShrink, (v) => (typeof v === 'boolean' ? (v ? 1 : 0) : v));
+    applyStyle('flexBasis', flexBasis);
+
+    applyStyle('alignItems', alignItems);
     applyStyle('justifyContent', justifyContent);
 
     applyStyle('gridColumn', gridColumn);
@@ -242,15 +237,12 @@ const Box = ({
     applyStyle('backgroundColor', backgroundColor);
 
     // Border
-    const resolvedBorder = get('border', border, bp);
-    if (resolvedBorder) {
-        style.border = resolvedBorder;
-    } else {
-        applyStyle('borderColor', borderColor);
-        applyStyle('borderStyle', borderStyle);
-        applyStyle('borderWidth', borderWidth, toSize);
-    }
+    applyStyle('border', border);
+    applyStyle('borderColor', borderColor);
+    applyStyle('borderStyle', borderStyle);
+    applyStyle('borderWidth', borderWidth, toSize);
 
+    // shadow, transition, transform
     applyStyle('boxShadow', boxShadow);
     applyStyle('transition', transition);
     applyStyle('transform', transform);
