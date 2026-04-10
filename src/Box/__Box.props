@@ -26,21 +26,6 @@ export interface BoxProps extends Omit<React.HTMLAttributes<HTMLElement>, 'color
     fontFamily?: Responsive<CSSProperties['fontFamily']>;
     textDecoration?: Responsive<CSSProperties['textDecoration']>;
 
-    backgroundImage?: Responsive<CSSProperties['backgroundImage']>;
-    backgroundSize?: Responsive<CSSProperties['backgroundSize']>;
-    backgroundPosition?: Responsive<CSSProperties['backgroundPosition']>;
-    backgroundRepeat?: Responsive<CSSProperties['backgroundRepeat']>;
-
-    borderTop?: Responsive<CSSProperties['borderTop']>;
-    borderBottom?: Responsive<CSSProperties['borderBottom']>;
-    borderLeft?: Responsive<CSSProperties['borderLeft']>;
-    borderRight?: Responsive<CSSProperties['borderRight']>;
-
-    borderTopColor?: Responsive<CSSProperties['borderTopColor']>;
-    borderBottomColor?: Responsive<CSSProperties['borderBottomColor']>;
-    borderLeftColor?: Responsive<CSSProperties['borderLeftColor']>;
-    borderRightColor?: Responsive<CSSProperties['borderRightColor']>;
-
     // truncate?: boolean;
 
     // overflow
@@ -62,18 +47,9 @@ export interface BoxProps extends Omit<React.HTMLAttributes<HTMLElement>, 'color
     transition?: Responsive<CSSProperties['transition']>;
     transform?: Responsive<CSSProperties['transform']>;
 
-    scrollBehavior?: Responsive<CSSProperties['scrollBehavior']>;
-    scrollSnapType?: Responsive<CSSProperties['scrollSnapType']>;
-    scrollMargin?: Responsive<CSSProperties['scrollMargin']>;
-    scrollPadding?: Responsive<CSSProperties['scrollPadding']>;
-
-    filter?: Responsive<CSSProperties['filter']>;
-    backdropFilter?: Responsive<CSSProperties['backdropFilter']>;
-
     // visual / interaction
     cursor?: Responsive<CSSProperties['cursor']>;
     pointerEvents?: Responsive<CSSProperties['pointerEvents'] | boolean>;
-    visibility?: Responsive<CSSProperties['visibility']>;
 
     // flex
     flex?: Responsive<CSSProperties['flex']>;
@@ -89,8 +65,6 @@ export interface BoxProps extends Omit<React.HTMLAttributes<HTMLElement>, 'color
     gap?: Responsive<CSSProperties['gap']>;
     rowGap?: Responsive<CSSProperties['rowGap']>;
     columnGap?: Responsive<CSSProperties['columnGap']>;
-    gridAutoRows?: Responsive<CSSProperties['gridAutoRows']>;
-    gridAutoColumns?: Responsive<CSSProperties['gridAutoColumns']>;
 
     // grid container
     gridTemplateRows?: Responsive<CSSProperties['gridTemplateRows']>;
@@ -134,6 +108,22 @@ export interface BoxProps extends Omit<React.HTMLAttributes<HTMLElement>, 'color
     marginBottom?: Responsive<CSSProperties['marginBottom']>;
     marginLeft?: Responsive<CSSProperties['marginLeft']>;
     marginRight?: Responsive<CSSProperties['marginRight']>;
+
+    // p?: Responsive<number | string>;
+    // px?: Responsive<number | string>;
+    // py?: Responsive<number | string>;
+    // pt?: Responsive<number | string>;
+    // pb?: Responsive<number | string>;
+    // pl?: Responsive<number | string>;
+    // pr?: Responsive<number | string>;
+    //
+    // m?: Responsive<number | string>;
+    // mx?: Responsive<number | string>;
+    // my?: Responsive<number | string>;
+    // mt?: Responsive<number | string>;
+    // mb?: Responsive<number | string>;
+    // ml?: Responsive<number | string>;
+    // mr?: Responsive<number | string>;
 
     // style escape hatch
     style?: CSSProperties;

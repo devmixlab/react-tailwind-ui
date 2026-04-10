@@ -1,166 +1,26 @@
-import React, { CSSProperties } from 'react';
-import { Box } from './Box';
-import { BoxProps } from './Box.props';
-import type { Responsive } from './Box.helpers';
+import React from 'react';
+import { styleAliasMap } from '../tokens/styleAliasMap';
+import { Box, BoxProps } from './Box';
 
-export interface UIBoxProps extends BoxProps {
-    d?: BoxProps['display'];
-    pos?: BoxProps['position'];
-    /** Visual / appearance aliases */
-    z?: BoxProps['zIndex'];
-    bg?: BoxProps['backgroundColor'];
-    radius?: BoxProps['borderRadius'];
-    shadow?: BoxProps['boxShadow'];
-    bc?: BoxProps['borderColor'];
-    bst?: BoxProps['borderStyle'];
-    bw?: BoxProps['borderWidth'];
-    aspect?: BoxProps['aspectRatio'];
+type AliasMap = typeof styleAliasMap;
 
-    // visual / interaction
-    ptr?: BoxProps['pointerEvents'];
+type AliasProps = {
+    [K in keyof AliasMap]?: BoxProps[AliasMap[K]];
+};
 
-    /** Sizing aliases */
-    w?: BoxProps['width'];
-    h?: BoxProps['height'];
-    minW?: BoxProps['minWidth'];
-    maxW?: BoxProps['maxWidth'];
-    minH?: BoxProps['minHeight'];
-    maxH?: BoxProps['maxHeight'];
+export type UIBoxProps = BoxProps & AliasProps;
 
-    /** Flex / layout shortcuts */
-    grow?: BoxProps['flexGrow'];
-    shrink?: BoxProps['flexShrink'];
-    basis?: BoxProps['flexBasis'];
-    dir?: BoxProps['flexDirection'];
-    justify?: BoxProps['justifyContent'];
-    align?: BoxProps['alignItems'];
-    wrap?: BoxProps['flexWrap'];
-    colGap?: BoxProps['columnGap'];
-    gridCol?: BoxProps['gridColumn'];
+export const UIBox: React.FC<UIBoxProps> = (props) => {
+    const mapped: Record<string, any> = {};
 
-    // typography
-    fs?: BoxProps['fontSize'];
-    fst?: BoxProps['fontStyle'];
-    fw?: BoxProps['fontWeight'];
-    lh?: BoxProps['lineHeight'];
-    c?: BoxProps['color'];
-    ta?: BoxProps['textAlign'];
-    tt?: BoxProps['textTransform'];
-    ls?: BoxProps['letterSpacing'];
-    ff?: BoxProps['fontFamily'];
-    td?: BoxProps['textDecoration'];
+    for (const key in props) {
+        const value = (props as any)[key];
+        if (value === undefined) continue;
 
-    // transform
-    tx?: Responsive<string>; // translateX
-    ty?: Responsive<string>; // translateY
-    scale?: Responsive<string>;
-    rotate?: Responsive<string>;
+        const mappedKey = (styleAliasMap as Record<string, string>)[key] ?? key;
 
-    // transition
-    transD?: BoxProps['transition']; // duration
-    transE?: BoxProps['transition']; // easing
-}
+        mapped[mappedKey] = value;
+    }
 
-export const UIBox: React.FC<UIBoxProps> = ({
-    d,
-    pos,
-    z,
-    bg,
-    radius,
-    shadow,
-    bc,
-    bst,
-    bw,
-    aspect,
-    ptr,
-    w,
-    h,
-    minW,
-    maxW,
-    minH,
-    maxH,
-    grow,
-    shrink,
-    basis,
-    dir,
-    justify,
-    align,
-    wrap,
-    colGap,
-    gridCol,
-
-    // typography
-    fs,
-    fst,
-    fw,
-    lh,
-    c,
-    ta,
-    tt,
-    ls,
-    ff,
-    td,
-
-    // transform
-    tx,
-    ty,
-    scale,
-    rotate,
-
-    // transition
-    transD, // duration
-    transE, // easing
-
-    ...rest
-}) => {
-    const applyAliases = <T extends Record<string, any>>(aliases: T): Partial<T> =>
-        Object.fromEntries(
-            Object.entries(aliases).filter(([_, v]) => v !== undefined),
-        ) as Partial<T>;
-
-    return (
-        <Box
-            {...rest}
-            {...applyAliases({
-                display: d,
-                position: pos,
-                zIndex: z,
-                backgroundColor: bg,
-                borderRadius: radius,
-                boxShadow: shadow,
-                borderColor: bc,
-                borderStyle: bst,
-                borderWidth: bw,
-                aspectRatio: aspect,
-                pointerEvents: ptr,
-                width: w,
-                height: h,
-                minWidth: minW,
-                maxWidth: maxW,
-                minHeight: minH,
-                maxHeight: maxH,
-                flexGrow: grow,
-                flexShrink: shrink,
-                flexBasis: basis,
-                flexDirection: dir,
-                justifyContent: justify,
-                alignItems: align,
-                flexWrap: wrap,
-                columnGap: colGap,
-                gridColumn: gridCol,
-
-                // typography
-                fontSize: fs,
-                fontStyle: fst,
-                fontWeight: fw,
-                lineHeight: lh,
-                color: c,
-                textAlign: ta,
-                textTransform: tt,
-                letterSpacing: ls,
-                fontFamily: ff,
-                textDecoration: td,
-            })}
-        />
-    );
+    return <Box {...mapped} />;
 };
