@@ -1,79 +1,17 @@
 import React, { useMemo } from 'react';
 import { UIBox, UIBoxProps } from './UIBox';
-import { StyleAliasKey, stylePropToAliasMap } from '../tokens/styleAliasMap';
-import { type StyleProp } from '../tokens/styleProps';
 import clsx from 'clsx';
 import { getActiveBreakpoint, type Responsive, resolveResponsive } from './Box.helpers';
 import { classPrefix } from '../utils/classPrefix';
 import {
-    colors as colorsTokens,
-    shadows as shadowsTokens,
-    radii as radiiTokens,
-    fontSizes as fontSizesTokens,
-    fontWeights as fontWeightsTokens,
-    lineHeights as lineHeightsTokens,
-    letterSpacings as letterSpacingsTokens,
-    borderWidths as borderWidthsTokens,
-    spacing as spacingTokens,
-
-    // Flex
-    flexDirections as flexDirectionsTokens,
-    justifyContents as justifyContentsTokens,
-    alignItems as alignItemsTokens,
-    flexWraps as flexWrapsTokens,
-
-    // Size
-    sizes as sizesTokens,
-    aspects as aspectsTokens,
-
-    // Cursor/Pointer Events
-    cursors as cursorsTokens,
-    pointerEvents as pointerEventsTokens,
-
-    // Position
-    positions as positionsTokens,
-    insets as insetsTokens,
-
     // Transform
     translates as translatesTokens,
     scales as scalesTokens,
     rotates as rotatesTokens,
-
-    // Transition
-    transitionDurations as transitionDurationsTokens,
-    transitionEasings as transitionEasingsTokens,
-
-    // Others
-    zIndexes as zIndexesTokens,
-    displays as displaysTokens,
-    overflows as overflowsTokens,
-    gaps as gapsTokens,
 } from './Box.tokens';
 import { useWindowWidthContext } from './WindowWidthProvider';
 import { useWindowWidth } from '../hooks/useWindowWidth';
-
-export const spacingProps = [
-    'padding',
-    'paddingTop',
-    'paddingBottom',
-    'paddingLeft',
-    'paddingRight',
-    'paddingInline',
-    'paddingBlock',
-
-    'margin',
-    'marginTop',
-    'marginBottom',
-    'marginLeft',
-    'marginRight',
-    'marginInline',
-    'marginBlock',
-].map((key) => ({
-    key,
-    alias: stylePropToAliasMap[key as keyof typeof stylePropToAliasMap],
-}));
-
-const spacingLookup = new Set<string>(spacingProps.flatMap(({ key, alias }) => [key, alias]));
+import { configLookup } from './tokenizedBox.config';
 
 export type TokenizedProps = {
     // transform
@@ -88,124 +26,6 @@ export type TokenizedProps = {
 };
 
 export type TokenizedBoxProps = TokenizedProps & UIBoxProps;
-
-// type TokenizedStyleProp = TokenizedProps & StyleProp;
-type TokenizedStyleProp = StyleProp | keyof TokenizedProps;
-
-type Prop<K extends TokenizedStyleProp = TokenizedStyleProp> = {
-    key: K;
-    prefix?: string;
-    tokens: readonly string[];
-    alias?: StyleAliasKey;
-};
-
-const props: Prop[] = [
-    { key: 'boxShadow', prefix: 'shadow', tokens: shadowsTokens },
-    { key: 'borderRadius', prefix: 'rounded', tokens: radiiTokens },
-
-    // Typography
-    { key: 'fontSize', prefix: 'fs', tokens: fontSizesTokens },
-    { key: 'fontWeight', prefix: 'fw', tokens: fontWeightsTokens },
-    { key: 'lineHeight', prefix: 'lh', tokens: lineHeightsTokens },
-    { key: 'letterSpacing', prefix: 'ls', tokens: letterSpacingsTokens },
-
-    { key: 'borderWidth', prefix: 'bw', tokens: borderWidthsTokens },
-
-    // Flex
-    { key: 'flexDirection', prefix: 'dir', tokens: flexDirectionsTokens },
-    { key: 'justifyContent', prefix: 'justify', tokens: justifyContentsTokens },
-    { key: 'alignItems', prefix: 'align', tokens: alignItemsTokens },
-    { key: 'flexWrap', prefix: 'wrap', tokens: flexWrapsTokens },
-
-    { key: 'aspectRatio', prefix: 'aspect', tokens: aspectsTokens },
-
-    // Cursor & Pointer Events
-    { key: 'cursor', prefix: 'cursor', tokens: cursorsTokens },
-    { key: 'pointerEvents', prefix: 'ptr', tokens: pointerEventsTokens },
-
-    // transition
-    { key: 'transD', prefix: 'trans-d', tokens: transitionDurationsTokens },
-    { key: 'transE', prefix: 'trans-e', tokens: transitionEasingsTokens },
-
-    // others
-    { key: 'zIndex', prefix: 'z', tokens: zIndexesTokens },
-    { key: 'display', prefix: 'd', tokens: displaysTokens },
-
-    ...[['gap'], ['rowGap', 'row-gap'], ['columnGap', 'col-gap']].map(([key, prefix]) => ({
-        key: key as TokenizedStyleProp,
-        prefix: prefix ?? key,
-        tokens: gapsTokens,
-    })),
-
-    ...[
-        ['backgroundColor', 'bg'],
-        ['borderColor', 'bc'],
-        ['color', 'c'],
-    ].map(([key, prefix]) => ({
-        key: key as TokenizedStyleProp,
-        prefix,
-        tokens: colorsTokens,
-    })),
-
-    // Positioning
-    { key: 'position', prefix: 'pos', tokens: positionsTokens },
-    ...[
-        ['top', 't'],
-        ['left', 'l'],
-        ['right', 'r'],
-        ['bottom', 'b'],
-    ].map(([key, prefix]) => ({
-        key: key as TokenizedStyleProp,
-        prefix,
-        tokens: insetsTokens,
-    })),
-
-    // Overflow
-    ...[
-        ['overflow', 'ov'],
-        ['overflowX', 'ov-x'],
-        ['overflowY', 'ov-y'],
-    ].map(([key, prefix]) => ({
-        key: key as TokenizedStyleProp,
-        prefix,
-        tokens: overflowsTokens,
-    })),
-
-    // Spacing
-    ...spacingProps.map(({ key, alias }) => ({
-        key: key as TokenizedStyleProp,
-        prefix: alias,
-        tokens: spacingTokens,
-    })),
-
-    // Sizing
-    ...[
-        ['width', 'w'],
-        ['height', 'h'],
-        ['minWidth', 'min-w'],
-        ['maxWidth', 'max-w'],
-        ['minHeight', 'min-h'],
-        ['maxHeight', 'max-h'],
-    ].map(([key, prefix]) => ({
-        key: key as TokenizedStyleProp,
-        prefix,
-        tokens: sizesTokens,
-    })),
-];
-
-const propsLookup = Object.fromEntries(
-    props.flatMap((prop) => {
-        const aliasKey = stylePropToAliasMap[prop.key as keyof typeof stylePropToAliasMap];
-        const assignProp = aliasKey ? { ...prop, ...{ alias: aliasKey } } : prop;
-        const entries: [string, typeof assignProp][] = [[prop.key, assignProp]];
-
-        if (aliasKey !== undefined) {
-            entries.push([aliasKey, assignProp]);
-        }
-
-        return entries;
-    }),
-);
 
 const mapTranslate = (v: string) => {
     switch (v) {
@@ -239,47 +59,43 @@ export const TokenizedBox: React.FC<TokenizedBoxProps> = ({
     const isToken = (
         value: number | string | undefined,
         tokens: readonly string[],
-    ): value is TokenizedStyleProp => {
+    ): value is string => {
         return typeof value === 'string' && tokens.includes(value);
     };
 
     const restEntries = Object.entries(rest);
 
-    const tokenized = useMemo(() => {
+    const tokenizationResult = useMemo(() => {
         const classes: string[] = [];
-        const consumed = new Set<string>();
-        const skip = new Set<string>();
+        const tokenized = new Set<string>();
+        const locked = new Set<string>();
 
         restEntries.forEach(([key, value]) => {
-            if (value == null || consumed.has(key) || skip.has(key)) return;
+            if (value == null || locked.has(key)) return;
 
-            const prop = propsLookup[key];
-            if (!prop) return;
+            const config = configLookup[key];
+            if (!config) return;
 
-            const prefix = prop.prefix;
-            const tokens = prop.tokens;
+            locked.add(config.key);
+            if (config.alias) locked.add(config.alias);
+
             const resolved = resolveResponsive(value, bp);
+            const isSpacing = typeof resolved === 'number' && config.type === 'spacing';
 
-            const isSpacing = typeof resolved === 'number' && spacingLookup.has(prop.key as string);
-
-            if (isSpacing || isToken(resolved, tokens)) {
+            if (isSpacing || isToken(resolved, config.tokens)) {
                 const safeResolved =
                     typeof resolved === 'string' ? resolved.replace('/', '-') : resolved;
-                classes.push(classPrefix(`--${prefix}-${safeResolved}`));
-                consumed.add(prop.key as string);
-                if (prop.alias) consumed.add(prop.alias);
-            } else {
-                skip.add(prop.key as string);
-                if (prop.alias) skip.add(prop.alias);
+                classes.push(classPrefix(`--${config.prefix}-${safeResolved}`));
+                tokenized.add(config.key);
+                if (config.alias) tokenized.add(config.alias);
             }
         });
 
-        return { classes: classes.join(' '), consumed };
+        return { classes: classes.join(' '), tokenized };
     }, [bp, rest]);
 
     const transforms = useMemo(() => {
         const transforms: string[] = [];
-        // const consumed: string[] = [];
         const consumed = new Set<string>();
 
         const txVal = resolveResponsive(tx, bp);
@@ -309,7 +125,7 @@ export const TokenizedBox: React.FC<TokenizedBoxProps> = ({
         return { transform: transforms.length > 0 ? transforms.join(' ') : null, consumed };
     }, [tx, ty, scale, rotate]);
 
-    const consumedKeys = new Set([...tokenized.consumed, ...transforms.consumed]);
+    const consumedKeys = new Set([...tokenizationResult.tokenized, ...transforms.consumed]);
 
     const cleanProps = Object.fromEntries(
         restEntries.filter(([key]) => !consumedKeys.has(key)),
@@ -317,5 +133,5 @@ export const TokenizedBox: React.FC<TokenizedBoxProps> = ({
 
     if (transforms.transform) cleanProps.transform = transforms.transform;
 
-    return <UIBox {...cleanProps} className={clsx(tokenized.classes, className)} />;
+    return <UIBox {...cleanProps} className={clsx(tokenizationResult.classes, className)} />;
 };
