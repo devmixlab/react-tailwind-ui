@@ -1,11 +1,6 @@
 import React, { useMemo } from 'react';
 import { UIBox, UIBoxProps } from './UIBox';
-import {
-    StyleAliasKey,
-    styleAliasMap,
-    StyleAliasValue,
-    stylePropToAliasMap,
-} from '../tokens/styleAliasMap';
+import { StyleAliasKey, stylePropToAliasMap } from '../tokens/styleAliasMap';
 import { type StyleProp } from '../tokens/styleProps';
 import clsx from 'clsx';
 import { getActiveBreakpoint, type Responsive, resolveResponsive } from './Box.helpers';
@@ -212,6 +207,21 @@ const propsLookup = Object.fromEntries(
     }),
 );
 
+const mapTranslate = (v: string) => {
+    switch (v) {
+        case '1/2':
+            return '50%';
+        case '-1/2':
+            return '-50%';
+        case 'full':
+            return '100%';
+        case '-full':
+            return '-100%';
+        default:
+            return v;
+    }
+};
+
 export const TokenizedBox: React.FC<TokenizedBoxProps> = ({
     className,
     tx,
@@ -233,46 +243,35 @@ export const TokenizedBox: React.FC<TokenizedBoxProps> = ({
         return typeof value === 'string' && tokens.includes(value);
     };
 
-    const consumedProps = new Set();
-    const passedProps = Object.entries(rest)
-        .map(([key, value]) => {
-            if (consumedProps.has(key)) return undefined;
-            const prop = propsLookup[key];
-            if (prop) {
-                consumedProps.add(prop.key);
-                if (prop.alias) consumedProps.add(prop.alias);
-                return prop;
-            }
-            return undefined;
-        })
-        .filter((itm) => itm !== undefined);
-
-    console.log(passedProps);
-
     const tokenized = useMemo(() => {
         const classes: string[] = [];
-        const consumed: string[] = [];
+        // const consumed: string[] = [];
+        const consumed = new Set<string>();
 
-        passedProps.forEach((prop) => {
-            const alias = prop.alias;
-            const originPropValue = rest[prop.key as keyof typeof rest];
-            const aliasPropValue = alias === undefined ? null : rest[alias];
-            const value = aliasPropValue ?? originPropValue;
-            if (value !== undefined) {
-                const prefix = prop.prefix ?? prop.key;
-                const tokens = prop.tokens;
-                const resolved = resolveResponsive(value, bp);
+        Object.entries(rest).forEach(([key, value]) => {
+            if (consumed.has(key)) return;
 
-                const isSpacing =
-                    typeof resolved === 'number' &&
-                    (spacingLookup.has(prop.key as string) || (alias && spacingLookup.has(alias)));
+            const prop = propsLookup[key];
+            if (prop !== undefined) {
+                const alias = prop.alias;
+                const originPropValue = value;
+                const aliasPropValue = alias === undefined ? null : rest[alias];
+                const finalValue = aliasPropValue ?? originPropValue;
+                if (finalValue !== undefined) {
+                    const prefix = prop.prefix ?? prop.key;
+                    const tokens = prop.tokens;
+                    const resolved = resolveResponsive(finalValue, bp);
 
-                if (isSpacing || isToken(resolved, tokens)) {
-                    const safeResolved =
-                        typeof resolved === 'string' ? resolved.replace('/', '-') : resolved;
-                    classes.push(classPrefix(`--${prefix}-${safeResolved}`));
-                    consumed.push(prop.key as string);
-                    if (alias !== undefined) consumed.push(alias);
+                    const isSpacing =
+                        typeof resolved === 'number' && spacingLookup.has(prop.key as string);
+
+                    if (isSpacing || isToken(resolved, tokens)) {
+                        const safeResolved =
+                            typeof resolved === 'string' ? resolved.replace('/', '-') : resolved;
+                        classes.push(classPrefix(`--${prefix}-${safeResolved}`));
+                        consumed.add(prop.key as string);
+                        if (alias !== undefined) consumed.add(alias);
+                    }
                 }
             }
         });
@@ -280,47 +279,33 @@ export const TokenizedBox: React.FC<TokenizedBoxProps> = ({
         return { classes: classes.join(' '), consumed };
     }, [bp, rest]);
 
-    const mapTranslate = (v: string) => {
-        switch (v) {
-            case '1/2':
-                return '50%';
-            case '-1/2':
-                return '-50%';
-            case 'full':
-                return '100%';
-            case '-full':
-                return '-100%';
-            default:
-                return v;
-        }
-    };
-
     const transforms = useMemo(() => {
         const transforms: string[] = [];
-        const consumed: string[] = [];
+        // const consumed: string[] = [];
+        const consumed = new Set<string>();
 
         const txVal = resolveResponsive(tx, bp);
         if (isToken(txVal, translatesTokens)) {
             transforms.push(`translateX(${mapTranslate(txVal)})`);
-            consumed.push('tx');
+            consumed.add('tx');
         }
 
         const tyVal = resolveResponsive(ty, bp);
         if (isToken(tyVal, translatesTokens)) {
             transforms.push(`translateY(${mapTranslate(tyVal)})`);
-            consumed.push('ty');
+            consumed.add('ty');
         }
 
         const scaleVal = resolveResponsive(scale, bp);
         if (isToken(scaleVal, scalesTokens)) {
             transforms.push(`scale(${Number(scaleVal) / 100})`);
-            consumed.push('scale');
+            consumed.add('scale');
         }
 
         const rotateVal = resolveResponsive(rotate, bp);
         if (isToken(rotateVal, rotatesTokens)) {
             transforms.push(`rotate(${rotateVal}deg)`);
-            consumed.push('rotate');
+            consumed.add('rotate');
         }
 
         return { transform: transforms.length > 0 ? transforms.join(' ') : null, consumed };
