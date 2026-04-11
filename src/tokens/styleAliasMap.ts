@@ -43,6 +43,20 @@ export const styleAliasMap = {
     ff: 'fontFamily',
     td: 'textDecoration',
 
+    ov: 'overflow',
+    ovX: 'overflowX',
+    ovY: 'overflowY',
+
+    t: 'top',
+    r: 'right',
+    b: 'bottom',
+    l: 'left',
+
+    bgImg: 'backgroundImage',
+    bgSize: 'backgroundSize',
+    bgPos: 'backgroundPosition',
+    bgRepeat: 'backgroundRepeat',
+
     p: 'padding',
     pt: 'paddingTop',
     pb: 'paddingBottom',
@@ -58,18 +72,14 @@ export const styleAliasMap = {
     mr: 'marginRight',
     mx: 'marginInline',
     my: 'marginBlock',
-
-    ov: 'overflow',
-    ovX: 'overflowX',
-    ovY: 'overflowY',
-
-    t: 'top',
-    r: 'right',
-    b: 'bottom',
-    l: 'left',
-
-    bgImg: 'backgroundImage',
-    bgSize: 'backgroundSize',
-    bgPos: 'backgroundPosition',
-    bgRepeat: 'backgroundRepeat',
 } satisfies Record<string, StyleProp>;
+
+export const stylePropToAliasMap = Object.fromEntries(
+    Object.entries(styleAliasMap).map(([alias, prop]) => [prop, alias]),
+) as {
+    [K in (typeof styleAliasMap)[keyof typeof styleAliasMap]]: keyof typeof styleAliasMap;
+};
+
+export type StyleAliasKey = keyof typeof styleAliasMap;
+
+export type StyleAliasValue = (typeof styleAliasMap)[StyleAliasKey];

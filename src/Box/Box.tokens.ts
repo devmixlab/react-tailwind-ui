@@ -61,16 +61,19 @@ export type LetterSpacing = (typeof letterSpacings)[number];
 export const borderWidths = ['none', 'thin', 'normal', 'thick'] as const;
 export type BorderWidth = (typeof borderWidths)[number];
 
+// export const spacingNumeric = ['0', 'xs', 'sm', 'md', 'lg', 'xl', '2xl'] as const;
+// export type SpaceNumeric = (typeof spacingNumeric)[number];
+
 export const spacing = ['0', 'xs', 'sm', 'md', 'lg', 'xl', '2xl'] as const;
 export type Space = (typeof spacing)[number];
 
 export const flexDirections = ['row', 'row-reverse', 'column', 'column-reverse'] as const;
 export const justifyContents = ['start', 'center', 'end', 'between', 'around', 'evenly'] as const;
-export const alignItemsTokens = ['start', 'center', 'end', 'stretch', 'baseline'] as const;
+export const alignItems = ['start', 'center', 'end', 'stretch', 'baseline'] as const;
 export const flexWraps = ['nowrap', 'wrap', 'wrap-reverse'] as const;
 
 // Box.tokens.ts
-export const sizeTokens = [
+export const sizes = [
     'full',
     'screen',
     '1/2',
@@ -85,9 +88,9 @@ export const sizeTokens = [
     '4/5',
 ] as const;
 
-export const aspectTokens = ['1', '1/1', '16/9', '4/3', '3/2', '21/9'] as const;
+export const aspects = ['1', '1/1', '16/9', '4/3', '3/2', '21/9'] as const;
 
-export type AspectToken = keyof typeof aspectTokens;
+export type AspectToken = keyof typeof aspects;
 
 export const cursors = [
     'default',
@@ -103,7 +106,7 @@ export const pointerEvents = ['auto', 'none'] as const;
 
 export const positions = ['static', 'relative', 'absolute', 'fixed', 'sticky'] as const;
 
-export const insetTokens = ['0', 'auto', '1/2', 'full'] as const;
+export const insets = ['0', 'auto', '1/2', 'full'] as const;
 
 export const translates = ['0', '1/2', 'full', '-1/2', '-full'] as const;
 export const scales = ['0', '50', '75', '90', '95', '100', '105', '110', '125', '150'] as const;
@@ -118,6 +121,6 @@ export const zIndexes = ['base', 'dropdown', 'sticky', 'overlay', 'modal', 'tool
 export const displays = ['block', 'inline', 'inline-block', 'flex', 'grid', 'none'] as const;
 
 // Box.tokens.ts
-export const overflowTokens = ['auto', 'hidden', 'scroll', 'visible'] as const;
+export const overflows = ['auto', 'hidden', 'scroll', 'visible'] as const;
 
-export const gapTokens = spacing; // reuse existing spacing tokens
+export const gaps = spacing; // reuse existing spacing tokens
