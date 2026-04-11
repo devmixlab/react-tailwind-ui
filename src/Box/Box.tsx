@@ -23,6 +23,9 @@ export type Props = {
     // transition
     transD?: Responsive<string>; // duration
     transE?: Responsive<string>; // easing
+
+    // grid
+    // col?: Responsive<number>;
 };
 
 export type BoxProps = Props & AliasBoxProps;
@@ -120,9 +123,21 @@ export const Box: React.FC<BoxProps> = ({ className, tx, ty, scale, rotate, ...r
 
     const consumedKeys = new Set([...tokenizationResult.tokenized, ...transforms.consumed]);
 
-    const cleanProps = Object.fromEntries(
+    // const addProp: [string, any][] = [];
+    // const derivedProps: Array<[keyof AliasBoxProps, any]> = [];
+    // if (col !== undefined) {
+    //     consumedKeys.add('col');
+    //     if (rest.gridCol === undefined && rest.gridColumn === undefined) {
+    //         const colVal = resolveResponsive(col, bp);
+    //         if (colVal !== undefined) derivedProps.push(['gridCol', `span ${colVal}`]);
+    //     }
+    // }
+
+    const cleanProps: Record<string, any> = Object.fromEntries(
         restEntries.filter(([key]) => !consumedKeys.has(key)),
     ) as AliasBoxProps;
+
+    // derivedProps.forEach(([key, value]) => (cleanProps[key] = value));
 
     if (transforms.transform) cleanProps.transform = transforms.transform;
 
