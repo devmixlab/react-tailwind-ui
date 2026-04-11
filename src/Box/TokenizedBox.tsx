@@ -197,7 +197,7 @@ const propsLookup = Object.fromEntries(
     props.flatMap((prop) => {
         const aliasKey = stylePropToAliasMap[prop.key as keyof typeof stylePropToAliasMap];
         const assignProp = aliasKey ? { ...prop, ...{ alias: aliasKey } } : prop;
-        const entries: [string, typeof prop][] = [[prop.key, assignProp]];
+        const entries: [string, typeof assignProp][] = [[prop.key, assignProp]];
 
         if (aliasKey !== undefined) {
             entries.push([aliasKey, assignProp]);
@@ -243,36 +243,34 @@ export const TokenizedBox: React.FC<TokenizedBoxProps> = ({
         return typeof value === 'string' && tokens.includes(value);
     };
 
+    const restEntries = Object.entries(rest);
+
     const tokenized = useMemo(() => {
         const classes: string[] = [];
-        // const consumed: string[] = [];
         const consumed = new Set<string>();
+        const skip = new Set<string>();
 
-        Object.entries(rest).forEach(([key, value]) => {
-            if (consumed.has(key)) return;
+        restEntries.forEach(([key, value]) => {
+            if (value == null || consumed.has(key) || skip.has(key)) return;
 
             const prop = propsLookup[key];
-            if (prop !== undefined) {
-                const alias = prop.alias;
-                const originPropValue = value;
-                const aliasPropValue = alias === undefined ? null : rest[alias];
-                const finalValue = aliasPropValue ?? originPropValue;
-                if (finalValue !== undefined) {
-                    const prefix = prop.prefix ?? prop.key;
-                    const tokens = prop.tokens;
-                    const resolved = resolveResponsive(finalValue, bp);
+            if (!prop) return;
 
-                    const isSpacing =
-                        typeof resolved === 'number' && spacingLookup.has(prop.key as string);
+            const prefix = prop.prefix;
+            const tokens = prop.tokens;
+            const resolved = resolveResponsive(value, bp);
 
-                    if (isSpacing || isToken(resolved, tokens)) {
-                        const safeResolved =
-                            typeof resolved === 'string' ? resolved.replace('/', '-') : resolved;
-                        classes.push(classPrefix(`--${prefix}-${safeResolved}`));
-                        consumed.add(prop.key as string);
-                        if (alias !== undefined) consumed.add(alias);
-                    }
-                }
+            const isSpacing = typeof resolved === 'number' && spacingLookup.has(prop.key as string);
+
+            if (isSpacing || isToken(resolved, tokens)) {
+                const safeResolved =
+                    typeof resolved === 'string' ? resolved.replace('/', '-') : resolved;
+                classes.push(classPrefix(`--${prefix}-${safeResolved}`));
+                consumed.add(prop.key as string);
+                if (prop.alias) consumed.add(prop.alias);
+            } else {
+                skip.add(prop.key as string);
+                if (prop.alias) skip.add(prop.alias);
             }
         });
 
@@ -314,7 +312,7 @@ export const TokenizedBox: React.FC<TokenizedBoxProps> = ({
     const consumedKeys = new Set([...tokenized.consumed, ...transforms.consumed]);
 
     const cleanProps = Object.fromEntries(
-        Object.entries(rest).filter(([key]) => !consumedKeys.has(key)),
+        restEntries.filter(([key]) => !consumedKeys.has(key)),
     ) as UIBoxProps;
 
     if (transforms.transform) cleanProps.transform = transforms.transform;
