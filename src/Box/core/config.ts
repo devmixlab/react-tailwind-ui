@@ -24,10 +24,10 @@ import {
     transitionDurations as transitionDurationsTokens,
     transitionEasings as transitionEasingsTokens,
     zIndexes as zIndexesTokens,
-} from './Box.tokens';
-import { Props } from './Box';
-import { StyleAliasKey, stylePropToAliasMap } from '../tokens/styleAliasMap';
-import type { StyleProp } from '../tokens/styleProps';
+} from './tokens';
+import { Props } from '../Box';
+import { StyleAliasKey, stylePropToAliasMap } from '../../tokens/styleAliasMap';
+import type { StyleProp } from '../../tokens/styleProps';
 
 export type OriginProp = (StyleProp | keyof Props) & string;
 

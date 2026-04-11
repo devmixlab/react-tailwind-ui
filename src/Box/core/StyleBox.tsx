@@ -1,8 +1,8 @@
 import React, { CSSProperties, ElementType } from 'react';
-import { getActiveBreakpoint, Responsive, resolveResponsive } from './Box.helpers';
-import { useWindowWidth } from '../hooks/useWindowWidth';
-import { useWindowWidthContext } from './WindowWidthProvider';
-import { styleProps, type StyleProp as StylePropKey } from '../tokens/styleProps';
+import { getActiveBreakpoint, Responsive, resolveResponsive } from './helpers';
+import { useWindowWidth } from '../../hooks/useWindowWidth';
+import { useWindowWidthContext } from '../WindowWidthProvider';
+import { styleProps, type StyleProp as StylePropKey } from '../../tokens/styleProps';
 
 const stylePropSet = new Set(styleProps);
 const isStyleProp = (key: string): key is StylePropKey => stylePropSet.has(key as StylePropKey);

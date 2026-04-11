@@ -1,5 +1,5 @@
 import { CSSProperties } from 'react';
-import { classPrefix } from '../utils/classPrefix';
+import { classPrefix } from '../../utils/classPrefix';
 
 export const prefix = (name: string = '') => {
     return classPrefix(`--box${name}`);

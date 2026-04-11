@@ -1,5 +1,5 @@
 import React from 'react';
-import { styleAliasMap } from '../tokens/styleAliasMap';
+import { styleAliasMap } from '../../tokens/styleAliasMap';
 import { StyleBox, StyleBoxProps } from './StyleBox';
 
 type AliasMap = typeof styleAliasMap;

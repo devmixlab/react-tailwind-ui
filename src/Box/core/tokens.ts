@@ -72,7 +72,7 @@ export const justifyContents = ['start', 'center', 'end', 'between', 'around', '
 export const alignItems = ['start', 'center', 'end', 'stretch', 'baseline'] as const;
 export const flexWraps = ['nowrap', 'wrap', 'wrap-reverse'] as const;
 
-// Box.tokens.ts
+// tokens.ts
 export const sizes = [
     'full',
     'screen',
@@ -120,7 +120,7 @@ export const zIndexes = ['base', 'dropdown', 'sticky', 'overlay', 'modal', 'tool
 
 export const displays = ['block', 'inline', 'inline-block', 'flex', 'grid', 'none'] as const;
 
-// Box.tokens.ts
+// tokens.ts
 export const overflows = ['auto', 'hidden', 'scroll', 'visible'] as const;
 
 export const gaps = spacing; // reuse existing spacing tokens

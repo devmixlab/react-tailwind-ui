@@ -1,17 +1,17 @@
 import React, { useMemo } from 'react';
-import { AliasBox, AliasBoxProps } from './AliasBox';
+import { AliasBox, AliasBoxProps } from './core/AliasBox';
 import clsx from 'clsx';
-import { getActiveBreakpoint, type Responsive, resolveResponsive } from './Box.helpers';
+import { getActiveBreakpoint, type Responsive, resolveResponsive } from './core/helpers';
 import { classPrefix } from '../utils/classPrefix';
 import {
     // Transform
     translates as translatesTokens,
     scales as scalesTokens,
     rotates as rotatesTokens,
-} from './Box.tokens';
+} from './core/tokens';
 import { useWindowWidthContext } from './WindowWidthProvider';
 import { useWindowWidth } from '../hooks/useWindowWidth';
-import { configLookup } from './tokenizedBox.config';
+import { configLookup } from './core/config';
 
 export type Props = {
     // transform

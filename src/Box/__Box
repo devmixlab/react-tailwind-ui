@@ -1,6 +1,6 @@
 import React, { CSSProperties, useMemo } from 'react';
 import clsx from 'clsx';
-import { BoxProps } from './Box.props';
+import { ____BoxProps } from './Box.props';
 import {
     toSize,
     getResponsiveClasses,
@@ -123,7 +123,7 @@ const Box = ({
     my,
 
     ...props
-}: BoxProps) => {
+}: ____BoxProps) => {
     const widthFromContext = useWindowWidthContext();
     const windowWidth = widthFromContext || useWindowWidth();
     const bp = getActiveBreakpoint(windowWidth);
