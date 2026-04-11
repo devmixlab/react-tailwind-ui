@@ -1,16 +1,16 @@
 import React from 'react';
 import { styleAliasMap } from '../tokens/styleAliasMap';
-import { Box, BoxProps } from './Box';
+import { StyleBox, StyleBoxProps } from './StyleBox';
 
 type AliasMap = typeof styleAliasMap;
 
 type AliasProps = {
-    [K in keyof AliasMap]?: BoxProps[AliasMap[K]];
+    [K in keyof AliasMap]?: StyleBoxProps[AliasMap[K]];
 };
 
-export type UIBoxProps = BoxProps & AliasProps;
+export type AliasBoxProps = StyleBoxProps & AliasProps;
 
-export const UIBox: React.FC<UIBoxProps> = (props) => {
+export const AliasBox: React.FC<AliasBoxProps> = (props) => {
     const mapped: Record<string, any> = {};
 
     for (const key in props) {
@@ -22,5 +22,5 @@ export const UIBox: React.FC<UIBoxProps> = (props) => {
         mapped[mappedKey] = value;
     }
 
-    return <Box {...mapped} />;
+    return <StyleBox {...mapped} />;
 };

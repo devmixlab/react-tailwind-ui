@@ -14,5 +14,6 @@ export { Badge } from './src/Badge/Badge';
 export { Alert } from './src/Alert/Alert';
 export { CompCard as Card } from './src/Card';
 
+export { StyleBox } from './src/Box/StyleBox';
+export { AliasBox } from './src/Box/AliasBox';
 export { Box } from './src/Box/Box';
-export { TokenizedBox } from './src/Box/TokenizedBox';

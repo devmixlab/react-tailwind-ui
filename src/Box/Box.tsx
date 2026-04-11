@@ -1,54 +1,130 @@
-import React, { CSSProperties, ElementType } from 'react';
-import { getActiveBreakpoint, Responsive, resolveResponsive } from './Box.helpers';
-import { useWindowWidth } from '../hooks/useWindowWidth';
+import React, { useMemo } from 'react';
+import { AliasBox, AliasBoxProps } from './AliasBox';
+import clsx from 'clsx';
+import { getActiveBreakpoint, type Responsive, resolveResponsive } from './Box.helpers';
+import { classPrefix } from '../utils/classPrefix';
+import {
+    // Transform
+    translates as translatesTokens,
+    scales as scalesTokens,
+    rotates as rotatesTokens,
+} from './Box.tokens';
 import { useWindowWidthContext } from './WindowWidthProvider';
-import { styleProps, type StyleProp as StylePropKey } from '../tokens/styleProps';
+import { useWindowWidth } from '../hooks/useWindowWidth';
+import { configLookup } from './tokenizedBox.config';
 
-const stylePropSet = new Set(styleProps);
-const isStyleProp = (key: string): key is StylePropKey => stylePropSet.has(key as StylePropKey);
+export type Props = {
+    // transform
+    tx?: Responsive<string>; // translateX
+    ty?: Responsive<string>; // translateY
+    scale?: Responsive<string>;
+    rotate?: Responsive<string>;
 
-type StyleProps = {
-    [K in StylePropKey]?: Responsive<React.CSSProperties[K]>;
+    // transition
+    transD?: Responsive<string>; // duration
+    transE?: Responsive<string>; // easing
 };
 
-export type BoxProps<C extends ElementType = 'div'> = {
-    as?: C;
-} & StyleProps &
-    Omit<React.ComponentPropsWithoutRef<C>, keyof StyleProps>;
+export type BoxProps = Props & AliasBoxProps;
 
-const Box = <C extends ElementType = 'div'>({
-    as,
-    children,
-    className,
-    style: userStyle,
-    ...rest
-}: BoxProps<C>) => {
+const mapTranslate = (v: string) => {
+    switch (v) {
+        case '1/2':
+            return '50%';
+        case '-1/2':
+            return '-50%';
+        case 'full':
+            return '100%';
+        case '-full':
+            return '-100%';
+        default:
+            return v;
+    }
+};
+
+export const Box: React.FC<BoxProps> = ({ className, tx, ty, scale, rotate, ...rest }) => {
     const widthFromContext = useWindowWidthContext();
-    const windowWidth = widthFromContext ?? useWindowWidth();
+    const windowWidth = widthFromContext || useWindowWidth();
     const bp = getActiveBreakpoint(windowWidth);
 
-    const Component = as || 'div';
+    // const tokenizedBoxProps = { ...rest };
 
-    const style: CSSProperties = { ...userStyle };
-    const props: Record<string, unknown> = {};
+    const isToken = (
+        value: number | string | undefined,
+        tokens: readonly string[],
+    ): value is string => {
+        return typeof value === 'string' && tokens.includes(value);
+    };
 
-    for (const key in rest) {
-        if (isStyleProp(key)) {
-            const value = rest[key];
-            if (value !== undefined) {
-                const resolved = resolveResponsive(value, bp);
-                if (resolved !== undefined) style[key] = resolved as any;
+    const restEntries = Object.entries(rest);
+
+    const tokenizationResult = useMemo(() => {
+        const classes: string[] = [];
+        const tokenized = new Set<string>();
+        const locked = new Set<string>();
+
+        restEntries.forEach(([key, value]) => {
+            if (value == null || locked.has(key)) return;
+
+            const config = configLookup[key];
+            if (!config) return;
+
+            locked.add(config.key);
+            if (config.alias) locked.add(config.alias);
+
+            const resolved = resolveResponsive(value, bp);
+            const isSpacing = typeof resolved === 'number' && config.type === 'spacing';
+
+            if (isSpacing || isToken(resolved, config.tokens)) {
+                const safeResolved =
+                    typeof resolved === 'string' ? resolved.replace('/', '-') : resolved;
+                classes.push(classPrefix(`--${config.prefix}-${safeResolved}`));
+                tokenized.add(config.key);
+                if (config.alias) tokenized.add(config.alias);
             }
-        } else {
-            props[key] = (rest as any)[key];
+        });
+
+        return { classes: classes.join(' '), tokenized };
+    }, [bp, rest]);
+
+    const transforms = useMemo(() => {
+        const transforms: string[] = [];
+        const consumed = new Set<string>();
+
+        const txVal = resolveResponsive(tx, bp);
+        if (isToken(txVal, translatesTokens)) {
+            transforms.push(`translateX(${mapTranslate(txVal)})`);
+            consumed.add('tx');
         }
-    }
 
-    return (
-        <Component className={className} style={style} {...props}>
-            {children}
-        </Component>
-    );
+        const tyVal = resolveResponsive(ty, bp);
+        if (isToken(tyVal, translatesTokens)) {
+            transforms.push(`translateY(${mapTranslate(tyVal)})`);
+            consumed.add('ty');
+        }
+
+        const scaleVal = resolveResponsive(scale, bp);
+        if (isToken(scaleVal, scalesTokens)) {
+            transforms.push(`scale(${Number(scaleVal) / 100})`);
+            consumed.add('scale');
+        }
+
+        const rotateVal = resolveResponsive(rotate, bp);
+        if (isToken(rotateVal, rotatesTokens)) {
+            transforms.push(`rotate(${rotateVal}deg)`);
+            consumed.add('rotate');
+        }
+
+        return { transform: transforms.length > 0 ? transforms.join(' ') : null, consumed };
+    }, [tx, ty, scale, rotate]);
+
+    const consumedKeys = new Set([...tokenizationResult.tokenized, ...transforms.consumed]);
+
+    const cleanProps = Object.fromEntries(
+        restEntries.filter(([key]) => !consumedKeys.has(key)),
+    ) as AliasBoxProps;
+
+    if (transforms.transform) cleanProps.transform = transforms.transform;
+
+    return <AliasBox {...cleanProps} className={clsx(tokenizationResult.classes, className)} />;
 };
-
-export { Box };
