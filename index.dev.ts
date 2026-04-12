@@ -16,6 +16,8 @@ export { CompCard as Card } from './src/Card';
 
 export { StyleBox } from './src/Box/core/StyleBox';
 export { AliasBox } from './src/Box/core/AliasBox';
-export { Box } from './src/Box/Box';
+export { DerivedBox } from './src/Box/core/DerivedBox';
+export { TokenizedBox } from './src/Box/core/TokenizedBox';
 export { Grid } from './src/Box/Grid';
 export { Col } from './src/Box/Col';
+export { Box } from './src/Box/Box';

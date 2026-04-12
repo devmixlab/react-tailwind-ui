@@ -12,29 +12,23 @@ import { CardProvider } from './Card.context';
 import { DEFAULT_SIZE } from './constants';
 import { CLASS_PREFIX } from '../constants';
 
+import { TokenizedBoxProps } from '../Box/core/TokenizedBox';
+import { Color } from '../Box/core/tokens';
+import { Kind } from './tokens';
+
 export const prefix = (name: string = '') => {
     return `${CLASS_PREFIX}--card${name}`;
 };
 
 type CardOwnProps = {
-    children: React.ReactNode;
-    className?: string;
-    rounded?: RadiusWithNone;
-    shadow?: ShadowWithNone;
-    variant?: Variant;
-    view?: View;
+    rounded?: TokenizedBoxProps['rounded'];
+    shadow?: TokenizedBoxProps['rounded'];
+    tone?: Color;
+    kind?: Kind;
     size?: SizeWithNone;
     interactive?: boolean;
     accent?: 'left' | 'top';
-    // col?: Col;
-    // smCol?: Col;
-    // mdCol?: Col;
-    // lgCol?: Col;
-    // xlCol?: Col;
-    // borderAccent?: 'left' | 'top' | 'none';
-    // hoverEffect?: boolean;
-    // as?: React.ReactElement; // for polymorphism, like alerts
-};
+} & TokenizedBoxProps;
 
 type CardProps<T extends ElementType> = CardOwnProps & {
     as?: T;
@@ -58,11 +52,6 @@ const Card = <T extends ElementType = 'div'>({
     size = DEFAULT_SIZE,
     interactive = true,
     accent,
-    col,
-    smCol,
-    mdCol,
-    lgCol,
-    xlCol,
 }: CardProps<T>) => {
     const cardClass = useMemo(
         () =>

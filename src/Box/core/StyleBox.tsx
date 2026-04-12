@@ -1,14 +1,12 @@
 import React, { CSSProperties, ElementType } from 'react';
-import { getActiveBreakpoint, Responsive, resolveResponsive } from './helpers';
-import { useWindowWidth } from '../../hooks/useWindowWidth';
-import { useWindowWidthContext } from '../WindowWidthProvider';
 import { styleProps, type StyleProp as StylePropKey } from '../../tokens/styleProps';
 
 const stylePropSet = new Set(styleProps);
 const isStyleProp = (key: string): key is StylePropKey => stylePropSet.has(key as StylePropKey);
 
 type StyleProps = {
-    [K in StylePropKey]?: Responsive<React.CSSProperties[K]>;
+    // [K in StylePropKey]?: Responsive<React.CSSProperties[K]>;
+    [K in StylePropKey]?: React.CSSProperties[K];
 };
 
 export type StyleBoxProps<C extends ElementType = 'div'> = {
@@ -23,10 +21,6 @@ const StyleBox = <C extends ElementType = 'div'>({
     style: userStyle,
     ...rest
 }: StyleBoxProps<C>) => {
-    const widthFromContext = useWindowWidthContext();
-    const windowWidth = widthFromContext ?? useWindowWidth();
-    const bp = getActiveBreakpoint(windowWidth);
-
     const Component = as || 'div';
 
     const style: CSSProperties = { ...userStyle };
@@ -35,10 +29,7 @@ const StyleBox = <C extends ElementType = 'div'>({
     for (const key in rest) {
         if (isStyleProp(key)) {
             const value = rest[key];
-            if (value !== undefined) {
-                const resolved = resolveResponsive(value, bp);
-                if (resolved !== undefined) style[key] = resolved as any;
-            }
+            if (value !== undefined) style[key] = value;
         } else {
             props[key] = (rest as any)[key];
         }

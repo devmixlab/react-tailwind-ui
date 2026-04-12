@@ -1,11 +1,11 @@
 import React from 'react';
-import { Box, type BoxProps } from './Box';
+import { TokenizedBox, type TokenizedBoxProps } from './core/TokenizedBox';
 
-type RowProps = Omit<BoxProps, 'dir' | 'd'> & {
-    gap?: BoxProps['gap'];
-    align?: BoxProps['align'];
+type RowProps = Omit<TokenizedBoxProps, 'dir' | 'd'> & {
+    gap?: TokenizedBoxProps['gap'];
+    align?: TokenizedBoxProps['align'];
 };
 
 export const Row: React.FC<RowProps> = ({ gap = 'md', align = 'center', ...props }) => {
-    return <Box {...props} d="flex" dir="row" align={align} gap={gap} />;
+    return <TokenizedBox {...props} d="flex" dir="row" align={align} gap={gap} />;
 };

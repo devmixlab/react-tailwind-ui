@@ -1,11 +1,11 @@
 import React from 'react';
-import { Box, type BoxProps } from './Box';
+import { TokenizedBox, type TokenizedBoxProps } from './core/TokenizedBox';
 import type { Responsive } from './core/helpers';
 
-type ColProps = BoxProps & {
+type ColProps = TokenizedBoxProps & {
     span?: Responsive<number>;
 };
 
 export const Col: React.FC<ColProps> = ({ span, ...props }) => {
-    return <Box gridCol={`span ${span}`} {...props} />;
+    return <TokenizedBox gridCol={`span ${span}`} {...props} />;
 };

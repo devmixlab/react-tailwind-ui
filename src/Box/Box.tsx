@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { AliasBox, AliasBoxProps } from './core/AliasBox';
+import { DerivedBoxProps, DerivedBox } from './core/DerivedBox';
 import clsx from 'clsx';
 import { getActiveBreakpoint, type Responsive, resolveResponsive } from './core/helpers';
 import { classPrefix } from '../utils/classPrefix';
@@ -11,41 +11,23 @@ import {
 } from './core/tokens';
 import { useWindowWidthContext } from './WindowWidthProvider';
 import { useWindowWidth } from '../hooks/useWindowWidth';
-import { configLookup } from './core/config';
+import {
+    configLookup,
+    transformLookup,
+    resolveTransformScale,
+    resolveTransformTranslate,
+    resolveTransformRotate,
+} from './core/config';
 
-export type Props = {
-    // transform
-    tx?: Responsive<string>; // translateX
-    ty?: Responsive<string>; // translateY
-    scale?: Responsive<string>;
-    rotate?: Responsive<string>;
-
-    // transition
-    transD?: Responsive<string>; // duration
-    transE?: Responsive<string>; // easing
-
-    // grid
-    // col?: Responsive<number>;
+type Responsiveify<T> = {
+    [K in keyof T]?: Responsive<T[K]>;
 };
 
-export type BoxProps = Props & AliasBoxProps;
+export type Props = {};
 
-const mapTranslate = (v: string) => {
-    switch (v) {
-        case '1/2':
-            return '50%';
-        case '-1/2':
-            return '-50%';
-        case 'full':
-            return '100%';
-        case '-full':
-            return '-100%';
-        default:
-            return v;
-    }
-};
+export type BoxProps = Props & Responsiveify<DerivedBoxProps>;
 
-export const Box: React.FC<BoxProps> = ({ className, tx, ty, scale, rotate, ...rest }) => {
+export const Box: React.FC<BoxProps> = ({ className, ...rest }) => {
     const widthFromContext = useWindowWidthContext();
     const windowWidth = widthFromContext || useWindowWidth();
     const bp = getActiveBreakpoint(windowWidth);
@@ -63,83 +45,95 @@ export const Box: React.FC<BoxProps> = ({ className, tx, ty, scale, rotate, ...r
 
     const tokenizationResult = useMemo(() => {
         const classes: string[] = [];
-        const tokenized = new Set<string>();
         const locked = new Set<string>();
+        const resolvedProps: Partial<Record<keyof BoxProps, any>> = {};
 
         restEntries.forEach(([key, value]) => {
-            if (value == null || locked.has(key)) return;
+            const resolved = resolveResponsive(value, bp);
+
+            if (resolved == null || locked.has(key)) return;
 
             const config = configLookup[key];
-            if (!config) return;
+            if (!config) {
+                resolvedProps[key as keyof BoxProps] = resolved;
+                return;
+            }
 
             locked.add(config.key);
             if (config.alias) locked.add(config.alias);
 
-            const resolved = resolveResponsive(value, bp);
             const isSpacing = typeof resolved === 'number' && config.type === 'spacing';
 
-            if (isSpacing || isToken(resolved, config.tokens)) {
+            if (config.type === 'transform') {
+                if (config.key === 'tx' || config.key === 'ty') {
+                    resolvedProps[key as keyof BoxProps] = resolveTransformTranslate(resolved);
+                } else if (
+                    config.key === 'scale' ||
+                    config.key === 'scaleX' ||
+                    config.key === 'scaleY'
+                ) {
+                    resolvedProps[key as keyof BoxProps] = resolveTransformScale(resolved);
+                } else if (config.key === 'rotate') {
+                    resolvedProps[key as keyof BoxProps] = resolveTransformRotate(resolved);
+                }
+            } else if (
+                isSpacing ||
+                (config.tokens !== undefined && isToken(resolved, config.tokens))
+            ) {
                 const safeResolved =
                     typeof resolved === 'string' ? resolved.replace('/', '-') : resolved;
                 classes.push(classPrefix(`--${config.prefix}-${safeResolved}`));
-                tokenized.add(config.key);
-                if (config.alias) tokenized.add(config.alias);
+            } else {
+                resolvedProps[key as keyof BoxProps] = resolved;
             }
         });
 
-        return { classes: classes.join(' '), tokenized };
+        return { classes: classes.join(' '), resolved: resolvedProps };
     }, [bp, rest]);
 
-    const transforms = useMemo(() => {
-        const transforms: string[] = [];
-        const consumed = new Set<string>();
-
-        const txVal = resolveResponsive(tx, bp);
-        if (isToken(txVal, translatesTokens)) {
-            transforms.push(`translateX(${mapTranslate(txVal)})`);
-            consumed.add('tx');
-        }
-
-        const tyVal = resolveResponsive(ty, bp);
-        if (isToken(tyVal, translatesTokens)) {
-            transforms.push(`translateY(${mapTranslate(tyVal)})`);
-            consumed.add('ty');
-        }
-
-        const scaleVal = resolveResponsive(scale, bp);
-        if (isToken(scaleVal, scalesTokens)) {
-            transforms.push(`scale(${Number(scaleVal) / 100})`);
-            consumed.add('scale');
-        }
-
-        const rotateVal = resolveResponsive(rotate, bp);
-        if (isToken(rotateVal, rotatesTokens)) {
-            transforms.push(`rotate(${rotateVal}deg)`);
-            consumed.add('rotate');
-        }
-
-        return { transform: transforms.length > 0 ? transforms.join(' ') : null, consumed };
-    }, [tx, ty, scale, rotate]);
-
-    const consumedKeys = new Set([...tokenizationResult.tokenized, ...transforms.consumed]);
-
-    // const addProp: [string, any][] = [];
-    // const derivedProps: Array<[keyof AliasBoxProps, any]> = [];
-    // if (col !== undefined) {
-    //     consumedKeys.add('col');
-    //     if (rest.gridCol === undefined && rest.gridColumn === undefined) {
-    //         const colVal = resolveResponsive(col, bp);
-    //         if (colVal !== undefined) derivedProps.push(['gridCol', `span ${colVal}`]);
+    // const transforms = useMemo(() => {
+    //     const transforms: string[] = [];
+    //     const consumed = new Set<string>();
+    //
+    //     const txVal = resolveResponsive(tx, bp);
+    //     if (isToken(txVal, translatesTokens)) {
+    //         transforms.push(`translateX(${mapTranslate(txVal)})`);
+    //         consumed.add('tx');
     //     }
-    // }
+    //
+    //     const tyVal = resolveResponsive(ty, bp);
+    //     if (isToken(tyVal, translatesTokens)) {
+    //         transforms.push(`translateY(${mapTranslate(tyVal)})`);
+    //         consumed.add('ty');
+    //     }
+    //
+    //     const scaleVal = resolveResponsive(scale, bp);
+    //     if (isToken(scaleVal, scalesTokens)) {
+    //         transforms.push(`scale(${Number(scaleVal) / 100})`);
+    //         consumed.add('scale');
+    //     }
+    //
+    //     const rotateVal = resolveResponsive(rotate, bp);
+    //     if (isToken(rotateVal, rotatesTokens)) {
+    //         transforms.push(`rotate(${rotateVal}deg)`);
+    //         consumed.add('rotate');
+    //     }
+    //
+    //     return { transform: transforms.length > 0 ? transforms.join(' ') : null, consumed };
+    // }, [tx, ty, scale, rotate]);
 
-    const cleanProps: Record<string, any> = Object.fromEntries(
-        restEntries.filter(([key]) => !consumedKeys.has(key)),
-    ) as AliasBoxProps;
+    // const consumedKeys = new Set([...tokenizationResult.tokenized, ...transforms.consumed]);
 
-    // derivedProps.forEach(([key, value]) => (cleanProps[key] = value));
+    // const cleanProps: Record<string, any> = Object.fromEntries(
+    //     restEntries.filter(([key]) => !consumedKeys.has(key)),
+    // ) as DerivedBoxProps;
 
-    if (transforms.transform) cleanProps.transform = transforms.transform;
+    // if (transforms.transform) cleanProps.transform = transforms.transform;
 
-    return <AliasBox {...cleanProps} className={clsx(tokenizationResult.classes, className)} />;
+    return (
+        <DerivedBox
+            {...tokenizationResult.resolved}
+            className={clsx(tokenizationResult.classes, className)}
+        />
+    );
 };
