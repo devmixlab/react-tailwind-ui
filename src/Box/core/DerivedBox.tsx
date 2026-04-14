@@ -19,7 +19,7 @@ export type Props = {
     transP?: string; // property
 
     // grid
-    col?: number;
+    col?: number | string;
     size?: number | string;
 
     origin?: string;

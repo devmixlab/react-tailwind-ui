@@ -23,44 +23,82 @@ import {
     spacing as spacingTokens,
     transitionDurations as transitionDurationsTokens,
     transitionEasings as transitionEasingsTokens,
+    transitionEasingsMap,
     zIndexes as zIndexesTokens,
     translates as translatesTokens,
     scales as scalesTokens,
     rotates as rotatesTokens,
 } from './tokens';
-import { BoxProps } from '../Box';
-import { StyleAliasKey, stylePropToAliasMap } from '../../tokens/styleAliasMap';
+import { BoxProps, ResponsiveBoxProps } from '../Box';
+import { StyleAliasKey, StyleAliasValue, stylePropToAliasMap } from '../../tokens/styleAliasMap';
 import type { StyleProp } from '../../tokens/styleProps';
 
 export type OriginProp = (StyleProp | keyof BoxProps) & string;
 
-export type OriginPropConfig = {
-    key: OriginProp;
-    prefix?: string;
-    tokens?: readonly string[];
-    alias?: StyleAliasKey;
-    type?: 'spacing' | 'transform';
+type Key = keyof BoxProps;
+
+// type Check = { isToken?: boolean; props: ResponsiveBoxProps; propKey: Key; value: string | number };
+// type ResolveInStyleProps = { value: string | number };
+
+export type PropValue = boolean | number | string | undefined;
+
+type ResolveInStyleProps = { value: PropValue };
+
+export type Check = {
+    props: ResponsiveBoxProps;
+    key: Key;
+    value: PropValue;
 };
 
-export const spacingProps = [
-    'padding',
-    'paddingTop',
-    'paddingBottom',
-    'paddingLeft',
-    'paddingRight',
-    'paddingInline',
-    'paddingBlock',
+export type OriginPropConfig = {
+    key: Key;
+    prefix?: string;
+    map?: Record<string, string | number>;
+    tokens?: readonly string[];
+    // alias?: StyleAliasKey;
+    check?: (props: Check) => boolean;
+    // check?: ({ props: ResponsiveBoxProps, key: Key, value: PropValue }) => boolean;
+    resolveInStyle?: (props: ResolveInStyleProps) => string | number;
+    isToken?: (isT: () => boolean, value: PropValue) => value is string;
+};
 
-    'margin',
-    'marginTop',
-    'marginBottom',
-    'marginLeft',
-    'marginRight',
-    'marginInline',
-    'marginBlock',
-].map((key) => ({
+// export type OriginPropConfig = {
+//     key: OriginProp;
+//     prefix?: string;
+//     tokens?: readonly T[];
+//     map?: Record<T, string | number>;
+//     alias?: StyleAliasKey;
+//     type?: 'spacing' | 'transform' | 'transition';
+// };
+
+type SpacingProp = {
+    key: Key;
+    alias: StyleAliasKey;
+};
+
+export const spacingProps: SpacingProp[] = (
+    [
+        'padding',
+        'paddingTop',
+        'paddingBottom',
+        'paddingLeft',
+        'paddingRight',
+        'paddingInline',
+        'paddingBlock',
+
+        'margin',
+        'marginTop',
+        'marginBottom',
+        'marginLeft',
+        'marginRight',
+        'marginInline',
+        'marginBlock',
+    ] as const
+).map((key) => ({
     key,
-    alias: stylePropToAliasMap[key as keyof typeof stylePropToAliasMap],
+    alias: stylePropToAliasMap[key],
+    // alias: stylePropToAliasMap[key as keyof typeof stylePropToAliasMap],
+    // alias: hasKey(stylePropToAliasMap, key) ? stylePropToAliasMap[key] : undefined,
 }));
 
 export const spacingLookup = new Set<string>(
@@ -162,33 +200,33 @@ export const resolveTransformTranslate = (v: string) => {
     }
 };
 
-export const durationMap = {
-    fast: '150ms',
-    normal: '250ms',
-    slow: '400ms',
-} as const;
+// export const durationMap = {
+//     fast: '150ms',
+//     normal: '250ms',
+//     slow: '400ms',
+// } as const;
+//
+// export const easingMap = {
+//     easeIn: 'cubic-bezier(0.4, 0, 1, 1)',
+//     easeOut: 'cubic-bezier(0, 0, 0.2, 1)',
+//     easeInOut: 'cubic-bezier(0.4, 0, 0.2, 1)',
+// } as const;
 
-export const easingMap = {
-    easeIn: 'cubic-bezier(0.4, 0, 1, 1)',
-    easeOut: 'cubic-bezier(0, 0, 0.2, 1)',
-    easeInOut: 'cubic-bezier(0.4, 0, 0.2, 1)',
-} as const;
-
-export const resolveTransitionDuration = (value: unknown): string => {
-    if (typeof value === 'string' && value in durationMap) {
-        return durationMap[value as keyof typeof durationMap];
-    }
-
-    return String(value);
-};
-
-export const resolveTransitionEasing = (value: unknown): string => {
-    if (typeof value === 'string' && value in easingMap) {
-        return easingMap[value as keyof typeof easingMap];
-    }
-
-    return String(value);
-};
+// export const resolveTransitionDuration = (value: unknown): string => {
+//     if (typeof value === 'string' && value in durationMap) {
+//         return durationMap[value as keyof typeof durationMap];
+//     }
+//
+//     return String(value);
+// };
+//
+// export const resolveTransitionEasing = (value: unknown): string => {
+//     if (typeof value === 'string' && value in easingMap) {
+//         return easingMap[value as keyof typeof easingMap];
+//     }
+//
+//     return String(value);
+// };
 
 export const config: OriginPropConfig[] = [
     { key: 'boxShadow', prefix: 'shadow', tokens: shadowsTokens },
@@ -214,100 +252,195 @@ export const config: OriginPropConfig[] = [
     { key: 'cursor', prefix: 'cursor', tokens: cursorsTokens },
     { key: 'pointerEvents', prefix: 'ptr', tokens: pointerEventsTokens },
 
-    // transition
-    { key: 'transD', prefix: 'trans-d', tokens: transitionDurationsTokens },
-    { key: 'transE', prefix: 'trans-e', tokens: transitionEasingsTokens },
+    // Transition
+    {
+        key: 'transD',
+        prefix: 'trans-d',
+        tokens: transitionDurationsTokens,
+        check: ({ props }) => {
+            return !props || props['transition'] === undefined;
+        },
+    },
+    {
+        key: 'transE',
+        prefix: 'trans-e',
+        tokens: transitionEasingsTokens,
+        map: transitionEasingsMap,
+        check: ({ props }) => {
+            return !props || props['transition'] === undefined;
+        },
+    },
 
-    // others
+    // Others
     { key: 'zIndex', prefix: 'z', tokens: zIndexesTokens },
     { key: 'display', prefix: 'd', tokens: displaysTokens },
 
-    // transform
-    { key: 'tx', type: 'transform' },
-    { key: 'ty', type: 'transform' },
-    { key: 'scale', type: 'transform' },
-    { key: 'scaleX', type: 'transform' },
-    { key: 'scaleY', type: 'transform' },
-    { key: 'rotate', type: 'transform' },
+    // Transform
+    ...(
+        [
+            ...(['tx', 'ty'] as const).map((k) => ({
+                key: k,
+                resolveInStyle: ({ value }: ResolveInStyleProps) => {
+                    return isNonEmptyString(value)
+                        ? resolveTransformTranslate(value)
+                        : String(value);
+                },
+            })),
+            ...(['scale', 'scaleX', 'scaleY'] as const).map((k) => ({
+                key: k,
+                resolveInStyle: ({ value }: ResolveInStyleProps) => {
+                    return isNonEmptyString(value) ? resolveTransformScale(value) : String(value);
+                },
+            })),
+            {
+                key: 'rotate',
+                resolveInStyle: ({ value }: ResolveInStyleProps) => resolveTransformRotate(value),
+            },
+            ...(['flip', 'flipX', 'flipY'] as const).map((key) => {
+                const utility = key.replace('flip', 'scale');
+                return {
+                    key,
+                    resolveInStyle: () => `${utility}(-1)`,
+                    check: ({ value }: Check) => !!value,
+                };
+            }),
+        ] as const
+    ).map((c: OriginPropConfig) => {
+        const newConfig = { ...c };
+        newConfig.check = (check: Check) => {
+            const configCheck = c.check ? c.check(check) : true;
+            return check.props?.transform === undefined && configCheck;
+        };
+        return newConfig;
+    }),
+    // {
+    //     key: 'flip',
+    //     resolveInStyle: ({ value }: ResolveInStyleProps) => 'scale(-1)',
+    //     check: ({ value }) => !!value,
+    // },
+    // {
+    //     key: 'flipX',
+    //     resolveInStyle: ({ value }: ResolveInStyleProps) => 'scaleX(-1)',
+    //     check: ({ value }) => !!value,
+    // },
+    // {
+    //     key: 'flipY',
+    //     resolveInStyle: ({ value }: ResolveInStyleProps) => 'scaleY(-1)',
+    //     check: ({ value }) => !!value,
+    // },
 
-    // { key: 'transD', prefix: 'trans-d', tokens: transitionDurationsTokens },
-    // { key: 'transE', prefix: 'trans-e', tokens: transitionEasingsTokens },
+    // Gaps
+    ...([['gap'], ['rowGap', 'row-gap'], ['columnGap', 'col-gap']] as const).map(
+        ([key, prefix]) => ({
+            key: key,
+            prefix: prefix ?? key,
+            tokens: gapsTokens,
+        }),
+    ),
 
-    ...[['gap'], ['rowGap', 'row-gap'], ['columnGap', 'col-gap']].map(([key, prefix]) => ({
-        key: key as OriginProp,
-        prefix: prefix ?? key,
-        tokens: gapsTokens,
-    })),
-
-    ...[
-        ['backgroundColor', 'bg'],
-        ['borderColor', 'bc'],
-        ['color', 'c'],
-    ].map(([key, prefix]) => ({
-        key: key as OriginProp,
+    // Colors
+    ...(
+        [
+            ['backgroundColor', 'bg'],
+            ['borderColor', 'bc'],
+            ['color', 'c'],
+        ] as const
+    ).map(([key, prefix]) => ({
+        key: key,
         prefix,
         tokens: colorsTokens,
     })),
 
     // Positioning
     { key: 'position', prefix: 'pos', tokens: positionsTokens },
-    ...[
-        ['top', 't'],
-        ['left', 'l'],
-        ['right', 'r'],
-        ['bottom', 'b'],
-    ].map(([key, prefix]) => ({
-        key: key as OriginProp,
+    ...(
+        [
+            ['top', 't'],
+            ['left', 'l'],
+            ['right', 'r'],
+            ['bottom', 'b'],
+        ] as const
+    ).map(([key, prefix]) => ({
+        key: key,
         prefix,
         tokens: insetsTokens,
     })),
 
     // Overflow
-    ...[
-        ['overflow', 'ov'],
-        ['overflowX', 'ov-x'],
-        ['overflowY', 'ov-y'],
-    ].map(([key, prefix]) => ({
-        key: key as OriginProp,
+    ...(
+        [
+            ['overflow', 'ov'],
+            ['overflowX', 'ov-x'],
+            ['overflowY', 'ov-y'],
+        ] as const
+    ).map(([key, prefix]) => ({
+        key: key,
         prefix,
         tokens: overflowsTokens,
     })),
 
     // Spacing
     ...spacingProps.map(({ key, alias }) => ({
-        key: key as OriginProp,
+        key: key,
         prefix: alias,
         tokens: spacingTokens,
+        isToken: (isT: () => boolean, value: PropValue): value is string => {
+            return typeof value === 'number' || isT();
+        },
     })),
 
     // Sizing
-    ...[
-        ['width', 'w'],
-        ['height', 'h'],
-        ['minWidth', 'min-w'],
-        ['maxWidth', 'max-w'],
-        ['minHeight', 'min-h'],
-        ['maxHeight', 'max-h'],
-    ].map(([key, prefix]) => ({
-        key: key as OriginProp,
+    ...(
+        [
+            ['width', 'w'],
+            ['height', 'h'],
+            ['minWidth', 'min-w'],
+            ['maxWidth', 'max-w'],
+            ['minHeight', 'min-h'],
+            ['maxHeight', 'max-h'],
+        ] as const
+    ).map(([key, prefix]) => ({
+        key: key,
         prefix,
         tokens: sizesTokens,
     })),
 ];
 
-export const configLookup = Object.fromEntries(
-    config.flatMap((c) => {
-        const aliasKey = stylePropToAliasMap[c.key as keyof typeof stylePropToAliasMap];
-        const assignProp = c;
-        if (spacingLookup.has(c.key as string)) assignProp.type = 'spacing';
-        if (aliasKey) assignProp.alias = aliasKey;
+const isNonEmptyString = (v: unknown): v is string => typeof v === 'string' && v.trim().length > 0;
 
-        const entries: [string, typeof assignProp][] = [[c.key, assignProp]];
+// type isTokenValue = number | string | undefined;
+const isToken = (value: PropValue, tokens?: readonly string[]): value is string => {
+    if (tokens == undefined) return false;
+    return typeof value === 'string' && tokens.includes(value);
+};
 
-        if (aliasKey !== undefined) {
-            entries.push([aliasKey, assignProp]);
-        }
+export type MapedPropConfig = Omit<OriginPropConfig, 'prefix' | 'tokens' | 'isToken'> & {
+    prefix: string;
+    alias?: StyleAliasKey;
+    isToken: (value: PropValue) => value is string;
+};
 
-        return entries;
-    }),
+export type LookupKey = Key | StyleAliasKey;
+
+export const configLookup: Record<LookupKey, MapedPropConfig> = Object.fromEntries(
+    config.flatMap(
+        ({ key, prefix, map, tokens, check, resolveInStyle, isToken: configIsToken }) => {
+            const alias = stylePropToAliasMap[key as keyof typeof stylePropToAliasMap];
+            // const alias = hasKey(stylePropToAliasMap, key) ? stylePropToAliasMap[key] : undefined;
+            const mappedProp: MapedPropConfig = Object.freeze({
+                key,
+                prefix: prefix ?? key,
+                map,
+                check,
+                resolveInStyle,
+                isToken: (value: PropValue): value is string => {
+                    const isT = () => isToken(value, tokens);
+                    return configIsToken ? configIsToken(isT, value) : isT();
+                },
+                ...(alias !== undefined && { alias }),
+            });
+
+            return [[key, mappedProp], ...(alias !== undefined ? [[alias, mappedProp]] : [])];
+        },
+    ),
 );

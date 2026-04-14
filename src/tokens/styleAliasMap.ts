@@ -74,11 +74,21 @@ export const styleAliasMap = {
     my: 'marginBlock',
 } satisfies Record<string, StyleProp>;
 
-export const stylePropToAliasMap = Object.fromEntries(
-    Object.entries(styleAliasMap).map(([alias, prop]) => [prop, alias]),
-) as {
-    [K in (typeof styleAliasMap)[keyof typeof styleAliasMap]]: keyof typeof styleAliasMap;
-};
+function reverseMap<T extends Record<string, string>>(obj: T) {
+    return Object.fromEntries(Object.entries(obj).map(([k, v]) => [v, k])) as {
+        [K in T[keyof T]]: {
+            [P in keyof T]: T[P] extends K ? P : never;
+        }[keyof T];
+    };
+}
+
+export const stylePropToAliasMap = reverseMap(styleAliasMap);
+
+// export const stylePropToAliasMap = Object.fromEntries(
+//     Object.entries(styleAliasMap).map(([alias, prop]) => [prop, alias]),
+// ) as {
+//     [K in (typeof styleAliasMap)[keyof typeof styleAliasMap]]: keyof typeof styleAliasMap;
+// };
 
 export type StyleAliasKey = keyof typeof styleAliasMap;
 

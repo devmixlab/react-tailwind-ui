@@ -115,6 +115,15 @@ export const rotates = ['0', '45', '90', '180', '-45', '-90'] as const;
 export const transitionDurations = ['fast', 'normal', 'slow'] as const;
 
 export const transitionEasings = ['linear', 'ease', 'ease-in', 'ease-out', 'ease-in-out'] as const;
+// export type TransitionEasing = (typeof transitionEasings)[number];
+export const transitionEasingsMap: Record<string, (typeof transitionEasings)[number]> = {
+    easeIn: 'ease-in',
+    easeOut: 'ease-out',
+    easeInOut: 'ease-in-out',
+    'ease-in': 'ease-in',
+    'ease-out': 'ease-out',
+    'ease-in-out': 'ease-in-out',
+};
 
 export const zIndexes = ['base', 'dropdown', 'sticky', 'overlay', 'modal', 'tooltip'] as const;
 
