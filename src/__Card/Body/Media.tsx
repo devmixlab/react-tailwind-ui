@@ -28,6 +28,6 @@ const Media = ({ className, children, size: compSize }: ContentProps) => {
 
     return <div className={cl}>{children}</div>;
 };
-Media.displayName = 'Card.Body.Media';
+Media.displayName = '__Card.Body.Media';
 
 export { Media };

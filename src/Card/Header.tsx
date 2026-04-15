@@ -1,32 +1,14 @@
-import React, { useMemo } from 'react';
-import clsx from 'clsx';
-import { useCardContext } from './Card.context';
-import { type SizeWithNone } from '../tokens/card';
-import { prefix as classPrefix } from './Card';
+import React from 'react';
+import { Section, type SectionProps } from './Section';
 
-type HeaderProps = {
-    children: React.ReactNode;
-    className?: string;
-    size?: SizeWithNone;
-};
+type HeaderProps = Omit<SectionProps, 'type'>;
 
-const prefix = (name: string = '') => {
-    return classPrefix(`__header${name}`);
-};
+// export const Header = (props: HeaderProps) => {
+//     return <Section {...props} type="header" />;
+// };
 
-const Header = ({ className, children, size: compSize }: HeaderProps) => {
-    const { size } = useCardContext();
-    compSize = compSize || size || 'md';
+export const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
+    return <Section ref={ref} {...props} type="header" />;
+});
 
-    const cl = useMemo(
-        () =>
-            clsx(className, prefix(), {
-                [prefix(`--${compSize}`)]: compSize && compSize !== 'none',
-            }),
-        [className, compSize],
-    );
-    return <div className={cl}>{children}</div>;
-};
 Header.displayName = 'Card.Header';
-
-export { Header };

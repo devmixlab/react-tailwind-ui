@@ -52,6 +52,6 @@ const Content = ({ className, children, width, grow, shrink, basis }: ContentPro
         </div>
     );
 };
-Content.displayName = 'Card.Body.Content';
+Content.displayName = '__Card.Body.Content';
 
 export { Content };

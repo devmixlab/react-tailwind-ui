@@ -148,6 +148,6 @@ const Body = ({
         </div>
     );
 };
-Body.displayName = 'Card.Body';
+Body.displayName = '__Card.Body';
 
 export { Body, BodyComponent };

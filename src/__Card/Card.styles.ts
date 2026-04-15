@@ -22,7 +22,7 @@ import { classPrefix } from '../utils/classPrefix';
 import { CLASS_PREFIX } from '../constants';
 
 const componentClassPrefix = (name: string = '') => {
-    return classPrefix('card' + name);
+    return classPrefix('__card' + name);
 };
 
 const variantList = mapToClassRecord(variants, { prefix: componentClassPrefix('--') });
@@ -103,14 +103,14 @@ export const cardStyles: {
         xl: (col) => componentClassPrefix(`--col-xl-${col}`),
     },
     image: {
-        base: classPrefix('card-image'),
-        wrapper: classPrefix('card-image-wrapper'),
+        base: classPrefix('__card-image'),
+        wrapper: classPrefix('__card-image-wrapper'),
         rounded: imageRadiusList,
         shadow: imageShadowList,
         bordered: classPrefix('bordered'),
     },
     header: {
-        base: classPrefix('card-header'),
+        base: classPrefix('__card-header'),
     },
     body: {
         base: componentClassPrefix('body'),
@@ -119,21 +119,21 @@ export const cardStyles: {
             base: componentClassPrefix('body-content'),
         },
         // wrapper: {
-        //     base: classPrefix('card-body-wrapper'),
+        //     base: classPrefix('__card-body-wrapper'),
         //     direction: directionList,
         // },
         // imageWrapper: {
-        //     base: classPrefix('card-body-image-wrapper'),
+        //     base: classPrefix('__card-body-image-wrapper'),
         //     paddingSize: paddingSizeList,
         //     placement: placementList,
         // },
     },
     footer: {
-        base: classPrefix('card-footer'),
+        base: classPrefix('__card-footer'),
     },
     group: {
-        base: classPrefix('card-group'),
-        grid: classPrefix('card-grid'),
+        base: classPrefix('__card-group'),
+        grid: classPrefix('__card-grid'),
         collapse: {
             base: classPrefix('collapse'),
             rounded: radiusList,

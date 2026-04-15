@@ -1,8 +1,21 @@
+@use '../../abstracts/config' as *;
 @use '../../abstracts/variables' as *;
 
 @use "sass:map";
 
 $prefix: 'dru--';
+
+@mixin dark {
+    @if $dark-mode == 'class' {
+        .#{$dark-selector} & {
+            @content;
+        }
+    } @else if $dark-mode == 'media' {
+        @media (prefers-color-scheme: dark) {
+            @content;
+        }
+    }
+}
 
 // Generate grid column utilities (12-column system)
 //@for $i from 1 through 12 {
@@ -223,7 +236,6 @@ $z-indexes: (
 );
 
 
-
 //$spacing-tokens: p, pt, pb, pl, pr, px, py, m, mt,
 //mb,
 //ml,
@@ -246,9 +258,15 @@ $z-indexes: (
 .dru {
     // gap
     @each $size, $value in $spacing {
-        &--gap-#{$size} { gap: $value; }
-        &--row-gap-#{$size} { row-gap: $value; }
-        &--col-gap-#{$size} { column-gap: $value; }
+        &--gap-#{$size} {
+            gap: $value;
+        }
+        &--row-gap-#{$size} {
+            row-gap: $value;
+        }
+        &--col-gap-#{$size} {
+            column-gap: $value;
+        }
     }
 
     // overflow
@@ -273,16 +291,22 @@ $z-indexes: (
 
     // Z-index
     @each $name, $value in $z-indexes {
-        &--z-#{$name} { z-index: $value; }
+        &--z-#{$name} {
+            z-index: $value;
+        }
     }
 
     // Transition
     @each $name, $value in $transition-durations {
-        &--trans-d-#{$name} { transition-duration: $value; }
+        &--trans-d-#{$name} {
+            transition-duration: $value;
+        }
     }
 
     @each $name, $value in $transition-easings {
-        &--trans-e-#{$name} { transition-timing-function: $value; }
+        &--trans-e-#{$name} {
+            transition-timing-function: $value;
+        }
     }
 
     // optional base
@@ -292,30 +316,64 @@ $z-indexes: (
 
     // Position
     // position
-    &--pos-static { position: static; }
-    &--pos-relative { position: relative; }
-    &--pos-absolute { position: absolute; }
-    &--pos-fixed { position: fixed; }
-    &--pos-sticky { position: sticky; }
+    &--pos-static {
+        position: static;
+    }
+
+    &--pos-relative {
+        position: relative;
+    }
+
+    &--pos-absolute {
+        position: absolute;
+    }
+
+    &--pos-fixed {
+        position: fixed;
+    }
+
+    &--pos-sticky {
+        position: sticky;
+    }
 
     @each $name, $value in $inset-values {
         $safe: str-replace($name, '/', '-');
 
-        &--top-#{$safe} { top: $value; }
-        &--left-#{$safe} { left: $value; }
-        &--right-#{$safe} { right: $value; }
-        &--bottom-#{$safe} { bottom: $value; }
+        &--top-#{$safe} {
+            top: $value;
+        }
+        &--left-#{$safe} {
+            left: $value;
+        }
+        &--right-#{$safe} {
+            right: $value;
+        }
+        &--bottom-#{$safe} {
+            bottom: $value;
+        }
     }
 
     // Sizes
     @each $name, $value in $size-tokens {
         $safe-name: str-replace($name, '/', '-');
-        &--w-#{$safe-name} { width: $value; }
-        &--h-#{$safe-name} { height: $value; }
-        &--min-w-#{$safe-name} { min-width: $value; }
-        &--max-w-#{$safe-name} { max-width: $value; }
-        &--min-h-#{$safe-name} { min-height: $value; }
-        &--max-h-#{$safe-name} { max-height: $value; }
+        &--w-#{$safe-name} {
+            width: $value;
+        }
+        &--h-#{$safe-name} {
+            height: $value;
+        }
+        &--min-w-#{$safe-name} {
+            min-width: $value;
+        }
+        &--max-w-#{$safe-name} {
+            max-width: $value;
+        }
+        &--min-h-#{$safe-name} {
+            min-height: $value;
+        }
+        &--max-h-#{$safe-name} {
+            max-height: $value;
+        }
     }
 
     @each $name, $ratio in $aspect-tokens {
@@ -326,39 +384,114 @@ $z-indexes: (
     }
 
     // Cursor & Pointer Events
-    &--cursor-default { cursor: default; }
-    &--cursor-pointer { cursor: pointer; }
-    &--cursor-move { cursor: move; }
-    &--cursor-text { cursor: text; }
-    &--cursor-not-allowed { cursor: not-allowed; }
-    &--cursor-grab { cursor: grab; }
-    &--cursor-grabbing { cursor: grabbing; }
+    &--cursor-default {
+        cursor: default;
+    }
 
-    &--ptr-auto { pointer-events: auto; }
-    &--ptr-none { pointer-events: none; }
+    &--cursor-pointer {
+        cursor: pointer;
+    }
+
+    &--cursor-move {
+        cursor: move;
+    }
+
+    &--cursor-text {
+        cursor: text;
+    }
+
+    &--cursor-not-allowed {
+        cursor: not-allowed;
+    }
+
+    &--cursor-grab {
+        cursor: grab;
+    }
+
+    &--cursor-grabbing {
+        cursor: grabbing;
+    }
+
+    &--ptr-auto {
+        pointer-events: auto;
+    }
+
+    &--ptr-none {
+        pointer-events: none;
+    }
 
     // Flex
-    &--dir-row { flex-direction: row; }
-    &--dir-row-reverse { flex-direction: row-reverse; }
-    &--dir-column { flex-direction: column; }
-    &--dir-column-reverse { flex-direction: column-reverse; }
+    &--dir-row {
+        flex-direction: row;
+    }
 
-    &--justify-start { justify-content: flex-start; }
-    &--justify-center { justify-content: center; }
-    &--justify-end { justify-content: flex-end; }
-    &--justify-between { justify-content: space-between; }
-    &--justify-around { justify-content: space-around; }
-    &--justify-evenly { justify-content: space-evenly; }
+    &--dir-row-reverse {
+        flex-direction: row-reverse;
+    }
 
-    &--align-start { align-items: flex-start; }
-    &--align-center { align-items: center; }
-    &--align-end { align-items: flex-end; }
-    &--align-stretch { align-items: stretch; }
-    &--align-baseline { align-items: baseline; }
+    &--dir-column {
+        flex-direction: column;
+    }
 
-    &--wrap-nowrap { flex-wrap: nowrap; }
-    &--wrap-wrap { flex-wrap: wrap; }
-    &--wrap-wrap-reverse { flex-wrap: wrap-reverse; }
+    &--dir-column-reverse {
+        flex-direction: column-reverse;
+    }
+
+    &--justify-start {
+        justify-content: flex-start;
+    }
+
+    &--justify-center {
+        justify-content: center;
+    }
+
+    &--justify-end {
+        justify-content: flex-end;
+    }
+
+    &--justify-between {
+        justify-content: space-between;
+    }
+
+    &--justify-around {
+        justify-content: space-around;
+    }
+
+    &--justify-evenly {
+        justify-content: space-evenly;
+    }
+
+    &--align-start {
+        align-items: flex-start;
+    }
+
+    &--align-center {
+        align-items: center;
+    }
+
+    &--align-end {
+        align-items: flex-end;
+    }
+
+    &--align-stretch {
+        align-items: stretch;
+    }
+
+    &--align-baseline {
+        align-items: baseline;
+    }
+
+    &--wrap-nowrap {
+        flex-wrap: nowrap;
+    }
+
+    &--wrap-wrap {
+        flex-wrap: wrap;
+    }
+
+    &--wrap-wrap-reverse {
+        flex-wrap: wrap-reverse;
+    }
 
     // Spacing
     @each $size, $value in $spacing {
@@ -378,10 +511,12 @@ $z-indexes: (
             padding-right: $value;
         }
         &--px-#{$size} {
-            padding-left: $value; padding-right: $value;
+            padding-left: $value;
+            padding-right: $value;
         }
         &--py-#{$size} {
-            padding-top: $value; padding-bottom: $value;
+            padding-top: $value;
+            padding-bottom: $value;
         }
         &--m-#{$size} {
             margin: $value;
@@ -399,10 +534,12 @@ $z-indexes: (
             margin-right: $value;
         }
         &--mx-#{$size} {
-            margin-left: $value; margin-right: $value;
+            margin-left: $value;
+            margin-right: $value;
         }
         &--my-#{$size} {
-            margin-top: $value; margin-bottom: $value;
+            margin-top: $value;
+            margin-bottom: $value;
         }
     }
 
@@ -423,58 +560,146 @@ $z-indexes: (
     //&--p-xl { padding: map.get($spacing, xl); }
     //&--p-2xl { padding: map.get($spacing, 2xl); }
 
+    //$shadows: (
+    //    none: none,
+    //    xs: 0 1px 2px rgba(0, 0, 0, 0.05),
+    //    sm: 0 1px 3px rgba(0, 0, 0, 0.1),
+    //    md: 0 4px 6px rgba(0, 0, 0, 0.1),
+    //    lg: 0 10px 15px rgba(0, 0, 0, 0.15),
+    //    xl: 0 20px 25px rgba(0, 0, 0, 0.2),
+    //);
+
+    $shadows: (
+        none: none,
+        xs: 0 1px 2px rgba(0, 0, 0, 0.05),
+        sm:
+            (0 1px 3px rgba(0, 0, 0, 0.08),
+            0 1px 2px rgba(0, 0, 0, 0.04)),
+        md:
+            (0 4px 6px rgba(0, 0, 0, 0.12),
+            0 2px 4px rgba(0, 0, 0, 0.06)),
+        lg:
+            (0 10px 15px rgba(0, 0, 0, 0.16),
+            0 4px 6px rgba(0, 0, 0, 0.08)),
+        xl:
+            (0 20px 25px rgba(0, 0, 0, 0.2),
+            0 8px 10px rgba(0, 0, 0, 0.1)),
+    );
+
+    $shadows-dark: (
+        none: none,
+
+        xs: (
+            0 1px 2px rgba(0, 0, 0, 0.3)
+        ),
+
+        sm: (
+            0 1px 3px rgba(0, 0, 0, 0.35),
+            0 1px 2px rgba(0, 0, 0, 0.2),
+            0 0 0 1px rgba(255, 255, 255, 0.03)
+        ),
+
+        md: (
+            0 4px 6px rgba(0, 0, 0, 0.4),
+            0 2px 4px rgba(0, 0, 0, 0.25),
+            0 0 0 1px rgba(255, 255, 255, 0.04)
+        ),
+
+        lg: (
+            0 10px 15px rgba(0, 0, 0, 0.45),
+            0 4px 6px rgba(0, 0, 0, 0.3),
+            0 0 0 1px rgba(255, 255, 255, 0.05)
+        ),
+
+        xl: (
+            0 20px 25px rgba(0, 0, 0, 0.5),
+            0 8px 10px rgba(0, 0, 0, 0.35),
+            0 0 0 1px rgba(255, 255, 255, 0.06)
+        ),
+    );
+
+    //$shadows-dark: (
+    //    none: none,
+    //
+    //    xs: (
+    //        0 1px 2px rgba(0, 0, 0, 0.5),
+    //        0 0 0 1px rgba(255, 255, 255, 0.04)
+    //    ),
+    //
+    //    sm: (
+    //        0 2px 4px rgba(0, 0, 0, 0.6),
+    //        0 1px 2px rgba(0, 0, 0, 0.4),
+    //        0 0 0 1px rgba(255, 255, 255, 0.06)
+    //    ),
+    //
+    //    md: (
+    //        0 6px 10px rgba(0, 0, 0, 0.65),
+    //        0 2px 4px rgba(0, 0, 0, 0.45),
+    //        0 0 0 1px rgba(255, 255, 255, 0.08)
+    //    ),
+    //
+    //    lg: (
+    //        0 12px 20px rgba(0, 0, 0, 0.7),
+    //        0 4px 8px rgba(0, 0, 0, 0.5),
+    //        0 0 0 1px rgba(255, 255, 255, 0.1)
+    //    ),
+    //
+    //    xl: (
+    //        0 24px 40px rgba(0, 0, 0, 0.75),
+    //        0 8px 16px rgba(0, 0, 0, 0.55),
+    //        0 0 0 1px rgba(255, 255, 255, 0.12)
+    //    ),
+    //);
+
+    @each $name, $value in $shadows {
+        &--shadow-#{$name} {
+            box-shadow: #{$value};
+            @include dark {
+                box-shadow: #{map-get($shadows-dark, $name)};
+                //background-color: red!important;
+            }
+        }
+    }
+
     // Shadows
-    &--shadow-none {
-        box-shadow: none;
-    }
+    //&--shadow-none {
+    //    box-shadow: none;
+    //}
+    //
+    //&--shadow-xs {
+    //    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    //}
+    //
+    //&--shadow-sm {
+    //    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    //}
+    //
+    //&--shadow-md {
+    //    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    //}
+    //
+    //&--shadow-lg {
+    //    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
+    //}
+    //
+    //&--shadow-xl {
+    //    box-shadow: 0 20px 25px rgba(0, 0, 0, 0.2);
+    //}
 
-    &--shadow-xs {
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    }
+    $radii: (
+        none: 0px,
+        xs: 2px,
+        sm: 4px,
+        md: 8px,
+        lg: 12px,
+        xl: 16px,
+        full: 9999px,
+    );
 
-    &--shadow-sm {
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
-
-    &--shadow-md {
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    &--shadow-lg {
-        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
-    }
-
-    &--shadow-xl {
-        box-shadow: 0 20px 25px rgba(0, 0, 0, 0.2);
-    }
-
-    // Radii
-    .dru--radius-none {
-        border-radius: 0;
-    }
-
-    &--radius-xs {
-        border-radius: 2px;
-    }
-
-    &--radius-sm {
-        border-radius: 4px;
-    }
-
-    &--radius-md {
-        border-radius: 8px;
-    }
-
-    &--radius-lg {
-        border-radius: 12px;
-    }
-
-    &--radius-xl {
-        border-radius: 16px;
-    }
-
-    &--radius-full {
-        border-radius: 9999px;
+    @each $name, $value in $radii {
+        &--rounded-#{$name} {
+            border-radius: $value;
+        }
     }
 
     /* font size */

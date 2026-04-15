@@ -17,10 +17,10 @@ const CardContext = createContext<CardContextProps | undefined>(undefined);
 export const useCardContext = (): CardContextProps => {
     const context = useContext(CardContext);
     if (!context) {
-        throw new Error('CardContext must be used within a <Card.Provider>');
+        throw new Error('CardContext must be used within a <__Card.Provider>');
     }
     return context;
 };
 
-// Export the Provider for wrapping Card component
+// Export the Provider for wrapping __Card component
 export const CardProvider = CardContext.Provider;

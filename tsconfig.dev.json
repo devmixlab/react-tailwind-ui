@@ -6,5 +6,6 @@
         "declarationMap": false,
         "declarationDir": null
     },
-    "include": ["src", "index.dev.ts"]
+    "include": ["src", "index.dev.ts"],
+    "exclude": ["**/__*"]
 }
