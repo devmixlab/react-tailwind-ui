@@ -29,13 +29,13 @@ import {
     scales as scalesTokens,
     rotates as rotatesTokens,
 } from './tokens';
-import { BoxProps, ResponsiveBoxProps } from '../Box';
+import { Props, BoxProps } from '../Box';
 import { StyleAliasKey, StyleAliasValue, stylePropToAliasMap } from '../../tokens/styleAliasMap';
 import type { StyleProp } from '../../tokens/styleProps';
 
-export type OriginProp = (StyleProp | keyof BoxProps) & string;
+export type OriginProp = (StyleProp | keyof Props) & string;
 
-type Key = keyof BoxProps;
+type Key = keyof Props;
 
 // type Check = { isToken?: boolean; props: ResponsiveBoxProps; propKey: Key; value: string | number };
 // type ResolveInStyleProps = { value: string | number };
@@ -45,7 +45,7 @@ export type PropValue = boolean | number | string | undefined;
 type ResolveInStyleProps = { value: PropValue };
 
 export type Check = {
-    props: ResponsiveBoxProps;
+    props: Props;
     key: Key;
     value: PropValue;
 };

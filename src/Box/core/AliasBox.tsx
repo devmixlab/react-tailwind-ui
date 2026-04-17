@@ -1,26 +1,33 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { styleAliasMap } from '../../tokens/styleAliasMap';
-import { StyleBox, StyleBoxProps } from './StyleBox';
+import { StyleBox, StyleProps } from './StyleBox';
+import { type PolymorphicComponent } from '../../types/polymorphic';
+import { hasKey, typedEntries } from '../../utils/ts';
 
 type AliasMap = typeof styleAliasMap;
 
-type AliasProps = {
-    [K in keyof AliasMap]?: StyleBoxProps[AliasMap[K]];
-};
+export type AliasProps = {
+    [K in keyof AliasMap]?: StyleProps[AliasMap[K]];
+} & StyleProps;
 
-export type AliasBoxProps = StyleBoxProps & AliasProps;
+type AliasBoxProps = AliasProps;
 
-export const AliasBox: React.FC<AliasBoxProps> = (props) => {
-    const mapped: Record<string, any> = {};
+type ImplProps = Record<string, unknown>;
 
-    for (const key in props) {
-        const value = (props as any)[key];
+const AliasBoxImpl = (props: ImplProps, ref: React.Ref<any>) => {
+    const mapped: Record<string, unknown> = {};
+
+    for (const [key, value] of typedEntries(props)) {
         if (value === undefined) continue;
 
-        const mappedKey = (styleAliasMap as Record<string, string>)[key] ?? key;
+        const finalKey = hasKey(styleAliasMap, key) ? styleAliasMap[key] : key;
 
-        mapped[mappedKey] = value;
+        mapped[finalKey] = value;
     }
 
-    return <StyleBox {...mapped} />;
+    return <StyleBox ref={ref} {...mapped} />;
 };
+
+export const AliasBox = forwardRef(AliasBoxImpl) as PolymorphicComponent<AliasBoxProps, 'div'>;
+
+AliasBox.displayName = 'AliasBox';

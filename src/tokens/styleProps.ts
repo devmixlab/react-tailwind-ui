@@ -66,7 +66,6 @@ export const styleProps = defineStyleProps([
     'height',
     'minHeight',
     'maxHeight',
-    'aspectRatio',
 
     // 6. Typography
     'fontFamily',
@@ -145,6 +144,12 @@ export const styleProps = defineStyleProps([
     'cursor',
     'pointerEvents',
     'visibility',
+
+    // 12. Media
+    'objectFit',
+    'objectPosition',
+    'aspectRatio',
+    'imageRendering',
 ] as const);
 
 export type StyleProp = (typeof styleProps)[number];

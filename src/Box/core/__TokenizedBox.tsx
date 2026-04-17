@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { AliasBox, AliasBoxProps } from './AliasBox';
+import { AliasBox, AliasProps } from './AliasBox';
 import clsx from 'clsx';
 import { getActiveBreakpoint, type Responsive, resolveResponsive } from './helpers';
 import { classPrefix } from '../../utils/classPrefix';
@@ -12,8 +12,9 @@ import {
 import { useWindowWidthContext } from '../WindowWidthProvider';
 import { useWindowWidth } from '../../hooks/useWindowWidth';
 import { configLookup } from './config';
+import { createPolymorphic } from '../../types/polymorphic';
 
-export type Props = {
+export type TokenizedProps = {
     // transform
     tx?: Responsive<string>; // translateX
     ty?: Responsive<string>; // translateY
@@ -23,12 +24,9 @@ export type Props = {
     // transition
     transD?: Responsive<string>; // duration
     transE?: Responsive<string>; // easing
+} & AliasProps;
 
-    // grid
-    // col?: Responsive<number>;
-};
-
-export type TokenizedBoxProps = Props & AliasBoxProps;
+export type TokenizedBoxProps = Props & AliasProps;
 
 const mapTranslate = (v: string) => {
     switch (v) {
@@ -45,7 +43,7 @@ const mapTranslate = (v: string) => {
     }
 };
 
-export const TokenizedBox: React.FC<TokenizedBoxProps> = ({
+export const __TokenizedBox: React.FC<TokenizedBoxProps> = ({
     className,
     tx,
     ty,
@@ -130,21 +128,9 @@ export const TokenizedBox: React.FC<TokenizedBoxProps> = ({
 
     const consumedKeys = new Set([...tokenizationResult.tokenized, ...transforms.consumed]);
 
-    // const addProp: [string, any][] = [];
-    // const derivedProps: Array<[keyof AliasBoxProps, any]> = [];
-    // if (col !== undefined) {
-    //     consumedKeys.add('col');
-    //     if (rest.gridCol === undefined && rest.gridColumn === undefined) {
-    //         const colVal = resolveResponsive(col, bp);
-    //         if (colVal !== undefined) derivedProps.push(['gridCol', `span ${colVal}`]);
-    //     }
-    // }
-
     const cleanProps: Record<string, any> = Object.fromEntries(
         restEntries.filter(([key]) => !consumedKeys.has(key)),
     ) as AliasBoxProps;
-
-    // derivedProps.forEach(([key, value]) => (cleanProps[key] = value));
 
     if (transforms.transform) cleanProps.transform = transforms.transform;
 

@@ -1,14 +1,17 @@
-import React from 'react';
-import { AliasBox, AliasBoxProps } from './AliasBox';
+import React, { CSSProperties, forwardRef } from 'react';
+import { AliasBox, AliasProps } from './AliasBox';
+import { createPolymorphic } from '../../types/polymorphic';
 
-export type Props = {
+type Size = number | string;
+
+export type DerivedProps = {
     // transform
     tx?: string; // translateX
     ty?: string; // translateY
     scale?: string;
     scaleX?: string;
     scaleY?: string;
-    rotate?: string | number;
+    rotate?: Size;
     flip?: boolean;
     flipX?: boolean;
     flipY?: boolean;
@@ -19,11 +22,11 @@ export type Props = {
     transP?: string; // property
 
     // grid
-    col?: number | string;
-    size?: number | string;
+    col?: Size;
+    size?: Size;
 
     origin?: string;
-    inset?: number | string;
+    inset?: Size;
 
     center?: boolean;
     centerX?: boolean;
@@ -32,74 +35,84 @@ export type Props = {
     scrollY?: boolean;
     scrollX?: boolean;
     clickable?: boolean;
-};
+} & AliasProps;
 
-export type DerivedBoxProps = Props & AliasBoxProps;
+type DerivedBoxProps = DerivedProps;
 
-export const DerivedBox: React.FC<DerivedBoxProps> = ({
-    className,
-    tx,
-    ty,
-    scale,
-    scaleX,
-    scaleY,
-    rotate,
-    flip,
-    flipX,
-    flipY,
-    transD,
-    transE,
-    transP,
-    col,
-    size,
-    origin,
-    inset,
-    center,
-    centerX,
-    centerY,
-    fill,
-    scrollY,
-    scrollX,
-    clickable,
-    ...rest
-}) => {
-    const derivedProps: Array<[keyof AliasBoxProps, any]> = [];
+type ImplProps = {
+    children?: React.ReactNode;
+    className?: string;
+} & Record<string, unknown>;
 
-    if (col !== undefined && rest.gridCol === undefined && rest.gridColumn === undefined) {
+type DerivedEntry = [keyof AliasProps, AliasProps[keyof AliasProps]];
+
+const DerivedBoxImpl = (
+    {
+        className,
+        tx,
+        ty,
+        scale,
+        scaleX,
+        scaleY,
+        rotate,
+        flip,
+        flipX,
+        flipY,
+        transD,
+        transE,
+        transP,
+        col,
+        size,
+        origin,
+        inset,
+        center,
+        centerX,
+        centerY,
+        fill,
+        scrollY,
+        scrollX,
+        clickable,
+        ...rest
+    }: ImplProps,
+    ref: React.Ref<any>,
+) => {
+    // const derivedProps: Array<[keyof AliasProps, any]> = [];
+    const derivedProps: DerivedEntry[] = [];
+
+    if (col != null && rest.gridCol == null && rest.gridColumn == null) {
         derivedProps.push(['gridCol', `span ${col}`]);
     }
 
-    if (size !== undefined && rest.width === undefined && rest.height === undefined) {
-        derivedProps.push(['width', size], ['height', size]);
+    if (size != null && rest.width == null && rest.height == null) {
+        derivedProps.push(['width', size as Size], ['height', size as Size]);
     }
 
-    if (rest.transform === undefined) {
+    if (rest.transform == null) {
         const transforms: string[] = [];
 
-        if (tx !== undefined) transforms.push(`translateX(${tx})`);
-        if (ty !== undefined) transforms.push(`translateY(${ty})`);
+        if (tx != null) transforms.push(`translateX(${tx})`);
+        if (ty != null) transforms.push(`translateY(${ty})`);
 
-        if (scale !== undefined) transforms.push(`scale(${scale})`);
+        if (scale != null) transforms.push(`scale(${scale})`);
+
+        const finalFlipX = flipX ?? flip;
+        const finalFlipY = flipY ?? flip;
 
         // scaleX / flipX / flip
-        if (scaleX !== undefined) {
+        if (scaleX != null) {
             transforms.push(`scaleX(${scaleX})`);
-        } else if (flipX) {
-            transforms.push(`scaleX(-1)`);
-        } else if (flip) {
+        } else if (finalFlipX) {
             transforms.push(`scaleX(-1)`);
         }
 
         // scaleY / flipY / flip
-        if (scaleY !== undefined) {
+        if (scaleY != null) {
             transforms.push(`scaleY(${scaleY})`);
-        } else if (flipY) {
-            transforms.push(`scaleY(-1)`);
-        } else if (flip) {
+        } else if (finalFlipY) {
             transforms.push(`scaleY(-1)`);
         }
 
-        if (rotate !== undefined) {
+        if (rotate != null) {
             const value =
                 typeof rotate === 'string' && /[a-z%]+$/i.test(rotate) ? rotate : `${rotate}deg`;
 
@@ -111,11 +124,11 @@ export const DerivedBox: React.FC<DerivedBoxProps> = ({
         }
     }
 
-    if (rest.transition === undefined) {
+    if (rest.transition == null) {
         const transitionParts: string[] = [];
 
-        if (transD !== undefined) transitionParts.push(transD);
-        if (transE !== undefined) transitionParts.push(transE);
+        if (transD != null) transitionParts.push(transD as string);
+        if (transE != null) transitionParts.push(transE as string);
 
         if (transitionParts.length > 0) {
             const property = transP ?? 'all';
@@ -123,23 +136,21 @@ export const DerivedBox: React.FC<DerivedBoxProps> = ({
         }
     }
 
-    if (origin !== undefined && rest.transformOrigin === undefined) {
-        derivedProps.push(['transformOrigin', origin]);
+    if (origin != null && rest.transformOrigin == null) {
+        derivedProps.push(['transformOrigin', origin as string]);
     }
 
-    if (fill && rest.position === undefined && rest.pos === undefined) {
+    if (fill && rest.position == null && rest.pos == null) {
         derivedProps.push(['position', 'absolute']);
     }
 
     const finalInset = inset ?? (fill ? 0 : undefined);
-    if (finalInset !== undefined) {
-        if (rest.top === undefined && rest.t === undefined) derivedProps.push(['top', finalInset]);
-        if (rest.right === undefined && rest.r === undefined)
-            derivedProps.push(['right', finalInset]);
-        if (rest.bottom === undefined && rest.b === undefined)
-            derivedProps.push(['bottom', finalInset]);
-        if (rest.left === undefined && rest.l === undefined)
-            derivedProps.push(['left', finalInset]);
+    if (finalInset != null) {
+        const castInset = finalInset as Size;
+        if (rest.top == null && rest.t == null) derivedProps.push(['top', castInset]);
+        if (rest.right == null && rest.r == null) derivedProps.push(['right', castInset]);
+        if (rest.bottom == null && rest.b == null) derivedProps.push(['bottom', castInset]);
+        if (rest.left == null && rest.l == null) derivedProps.push(['left', castInset]);
     }
 
     const finalCenterX = center || centerX;
@@ -147,18 +158,18 @@ export const DerivedBox: React.FC<DerivedBoxProps> = ({
 
     if (finalCenterX || finalCenterY) {
         // ensure flex only if not already set
-        if (rest.display === undefined && rest.d === undefined) {
+        if (rest.display == null && rest.d == null) {
             derivedProps.push(['display', 'flex']);
         }
 
         if (finalCenterX) {
-            if (rest.justifyContent === undefined && rest.justify === undefined) {
+            if (rest.justifyContent == null && rest.justify == null) {
                 derivedProps.push(['justifyContent', 'center']);
             }
         }
 
         if (finalCenterY) {
-            if (rest.alignItems === undefined && rest.align === undefined) {
+            if (rest.alignItems == null && rest.align == null) {
                 derivedProps.push(['alignItems', 'center']);
             }
         }
@@ -166,10 +177,10 @@ export const DerivedBox: React.FC<DerivedBoxProps> = ({
 
     if (scrollY) {
         if (
-            rest.overflow === undefined &&
-            rest.ov === undefined &&
-            rest.overflowY === undefined &&
-            rest.ovY === undefined
+            rest.overflow == null &&
+            rest.ov == null &&
+            rest.overflowY == null &&
+            rest.ovY == null
         ) {
             derivedProps.push(['overflowY', 'auto']);
         }
@@ -177,23 +188,30 @@ export const DerivedBox: React.FC<DerivedBoxProps> = ({
 
     if (scrollX) {
         if (
-            rest.overflow === undefined &&
-            rest.ov === undefined &&
-            rest.overflowX === undefined &&
-            rest.ovX === undefined
+            rest.overflow == null &&
+            rest.ov == null &&
+            rest.overflowX == null &&
+            rest.ovX == null
         ) {
             derivedProps.push(['overflowX', 'auto']);
         }
     }
 
     if (clickable) {
-        if (rest.cursor === undefined) {
+        if (rest.cursor == null) {
             derivedProps.push(['cursor', 'pointer']);
         }
     }
 
-    const restProps = { ...rest } as AliasBoxProps;
-    derivedProps.forEach(([key, value]) => (restProps[key] = value));
+    const restProps = {
+        ...rest,
+        ...Object.fromEntries(derivedProps),
+    } as AliasProps;
 
-    return <AliasBox {...restProps} className={className} />;
+    return <AliasBox ref={ref} {...restProps} className={className} />;
 };
+
+export const DerivedBox = createPolymorphic<DerivedBoxProps, 'div'>(
+    forwardRef(DerivedBoxImpl),
+    'DerivedBox',
+);

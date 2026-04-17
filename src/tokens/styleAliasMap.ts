@@ -11,7 +11,10 @@ export const styleAliasMap = {
     bc: 'borderColor',
     bst: 'borderStyle',
     bw: 'borderWidth',
+
     aspect: 'aspectRatio',
+    objFit: 'objectFit',
+    objPos: 'objectPosition',
 
     ptr: 'pointerEvents',
 

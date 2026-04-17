@@ -1,123 +1,331 @@
 @use '../../abstracts/config' as *;
 @use '../../abstracts/variables' as *;
 @use '../../abstracts/mixins' as *;
+@use '../../abstracts/palette' as *;
 
 @use "sass:map";
 
 // LIGHT THEME COLORS
-$semantic-colors: (
-    primary: #4f46e5,
-    secondary: #7c828a,
-    success: #16a34a,
-    danger: #dc2626,
-    warning: #f59e0b,
-    info: #0ea5e9,
-    light: #e5e7eb,
-    dark: #1f2937,
-);
-
-$extended-colors: (
-    slate: #7a849e,
-    gray: #7b746f,
-    zinc: #75777f,
-    neutral: #7f7a72,
-    stone: #6f6258,
-    red: #e03c3c,
-    orange: #e26914,
-    amber: #d9980a,
-    yellow: #f1c40f,
-    lime: #78b813,
-    green: #1fbe50,
-    emerald: #0eb177,
-    teal: #12a193,
-    cyan: #05a0c0,
-    sky: #0d93d6,
-    blue: #3670e0,
-    indigo: #5a5ed0,
-    violet: #6d33da,
-    purple: #862bd3,
-    fuchsia: #c735e0,
-    pink: #c63a7f,
-    rose: #e23a52,
-);
+//$semantic-colors: (
+//    primary: #4f46e5,
+//    secondary: #7c828a,
+//    success: #16a34a,
+//    danger: #dc2626,
+//    warning: #f59e0b,
+//    info: #0ea5e9,
+//    light: #e5e7eb,
+//    dark: #1f2937,
+//);
+//
+//$extended-colors: (
+//    slate: #7a849e,
+//    gray: #7b746f,
+//    zinc: #75777f,
+//    neutral: #7f7a72,
+//    stone: #6f6258,
+//    red: #e03c3c,
+//    orange: #e26914,
+//    amber: #d9980a,
+//    yellow: #f1c40f,
+//    lime: #78b813,
+//    green: #1fbe50,
+//    emerald: #0eb177,
+//    teal: #12a193,
+//    cyan: #05a0c0,
+//    sky: #0d93d6,
+//    blue: #3670e0,
+//    indigo: #5a5ed0,
+//    violet: #6d33da,
+//    purple: #862bd3,
+//    fuchsia: #c735e0,
+//    pink: #c63a7f,
+//    rose: #e23a52,
+//);
 
 $colors: map.merge($semantic-colors, $extended-colors);
 
-@function surface-light($color) {
-    // mix color with white → soft tint
-    @return mix(white, $color, 92%);
+@function color($name, $step) {
+    @return map.get(map.get($colors, $name), $step);
 }
 
-@function surface-light-section($color) {
-    @return mix(white, $color, 88%); // header/footer (stronger tint)
+@function divider-color-light($name) {
+    @return color($name, 200); // softer than 0.2
 }
 
-@function surface-dark($color) {
-    // mix color with dark background → subtle glow
-    @return mix(#121212, $color, 85%);
+@function divider-color-dark($name) {
+    @return color($name, 700); // softer than 0.35
 }
 
-@function surface-dark-section($color) {
-    @return mix(#1a1a1a, $color, 75%); // header/footer (more color)
-}
+$card-prefix: '.dru--card';
 
-@function border-color-light($color, $alpha: 0.2) {
-    @return rgba($color, $alpha);
-}
+#{$card-prefix}{
+    // normalize when rendered as button
+    &:where(button) {
+        appearance: none;
+        border: none;
+        background: none;
+        padding: 0;
+        margin: 0;
+        font: inherit;
+        color: inherit;
+        text-align: inherit;
 
-@function border-color-dark($color, $alpha: 0.35) {
-    @return rgba($color, $alpha);
-}
+        display: block;      // 🔥 important
+        width: 100%;         // 🔥 prevents shrink
+    }
+    &:where(a) {
+        text-decoration: none;   // remove underline
+        color: inherit;          // inherit text color
 
-$semantic-surfaces-light: ();
-$extended-surfaces-light: ();
-$semantic-surfaces-dark: ();
-$extended-surfaces-dark: ();
+        display: block;          // 🔥 important
+        width: 100%;             // 🔥 consistent layout
+    }
 
-@each $name, $color in $semantic-colors {
-    $semantic-surfaces-light: map-merge(
-        $semantic-surfaces-light,
-        (
-            $name: surface-light($color)
-        )
-    );
+    &--disabled {
+        //pointer-events: none;
+        cursor: not-allowed;
+        user-select: none;
+        &:hover {
+            transform: none;
+            background-color: inherit;
+        }
+    }
 
-    $semantic-surfaces-dark: map-merge(
-        $semantic-surfaces-dark,
-        (
-            $name: surface-dark($color)
-        )
-    );
-}
+    &--outlined {
+        background-color: transparent;
+    }
+    &--accent-top {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
+    &--interactive {
+        cursor: pointer;
+        transition: transform 120ms ease, background-color 120ms ease;
+        user-select: none;
 
-@each $name, $color in $extended-colors {
-    $extended-surfaces-light: map-merge(
-        $extended-surfaces-light,
-        (
-            $name: surface-light($color)
-        )
-    );
+        &:hover {
+            will-change: transform;
+            transform: translateY(-1px);
+            //filter: brightness(1.02);
+        }
 
-    $extended-surfaces-dark: map-merge(
-        $extended-surfaces-dark,
-        (
-            $name: surface-dark($color)
-        )
-    );
-}
+        &:active {
+            user-select: none;
+            transform: translateY(0.5px);
+        }
 
-$light-surface-palette-colors: map.merge($semantic-surfaces-light, $extended-surfaces-light);
-$dark-surface-palette-colors: map.merge($semantic-surfaces-dark, $extended-surfaces-dark);
+        //&:focus-visible {
+        //    outline: 2px solid red;
+        //    outline-offset: 2px;
+        //}
+    }
+    &__media {
+        flex-shrink: 0;
+        overflow: hidden;
+        border-radius: inherit;
+    }
+    &__content {
+        flex: 1;
+        min-width: 0; // 🔥 VERY important
+    }
+    &__image {
+        display: block;
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
+    &__body {
+        border-radius: inherit;
+    }
 
-.dru--card{
     @each $name, $color in $colors {
         &--#{$name} {
-            background-color: map.get($light-surface-palette-colors, $name);
-            border: 1px solid border-color-light($color);
-            @include dark {
-                background-color: map.get($dark-surface-palette-colors, $name);
-                border: 1px solid border-color-dark($color);
+            background-color: color($name, 50);
+            border: 1px solid color($name, 300);
+
+            &#{$card-prefix}--disabled {
+                background-color: color($name, 50); // or 100 if you want more contrast
+                border-color: color($name, 200);
+
+                & #{$card-prefix}__header,
+                & #{$card-prefix}__footer {
+                    background-color: color($name, 50);
+                }
+
+                color: color(gray, 400);
+
+                &#{$card-prefix}--accent-left {
+                    border-left-color: color($name, 300) !important;
+                }
+
+                &#{$card-prefix}--accent-top {
+                    border-top-color: color($name, 300) !important;
+                }
             }
+
+            &#{$card-prefix}--interactive:focus-visible {
+                outline: 2px solid color($name, 500);
+                outline-offset: 2px;
+            }
+
+            &#{$card-prefix}--interactive:hover {
+                background-color: color($name, 100);
+            }
+
+            &#{$card-prefix}--accent-left {
+                border-left: 4px solid color($name, 500);
+            }
+            &#{$card-prefix}--accent-top {
+                border-top: 4px solid color($name, 500);
+            }
+
+            & #{$card-prefix}__header, & #{$card-prefix}__footer  {
+                background-color: color($name, 100);
+            }
+
+            & #{$card-prefix}__header {
+                border-bottom: 1px solid divider-color-light($name);
+            }
+
+            & #{$card-prefix}__footer {
+                border-top: 1px solid divider-color-light($name);
+            }
+
+            // 🔥 OUTLINED OVERRIDE
+            &#{$card-prefix}--outlined {
+                background-color: transparent;
+
+                &#{$card-prefix}--interactive:hover {
+                    background-color: color($name, 50);
+                }
+
+                & #{$card-prefix}__header,
+                & #{$card-prefix}__footer {
+                    background-color: color($name, 50);// very subtle
+                    //background-color: transparent;
+                }
+
+                & #{$card-prefix}__header {
+                    border-bottom-color: color($name, 200);
+                }
+
+                & #{$card-prefix}__footer {
+                    border-top-color: color($name, 200);
+                }
+            }
+
+            &#{$card-prefix}--flat {
+                background-color: color($name, 50);
+                border: none;
+                & #{$card-prefix}__header,
+                & #{$card-prefix}__footer {
+                    background-color: color($name, 100); // 👈 subtle difference
+                }
+            }
+
+            &#{$card-prefix}--ghost, &#{$card-prefix}--flat {
+                &#{$card-prefix}--accent-left {
+                    border-left: 4px solid color($name, 500);
+                }
+                &#{$card-prefix}--accent-top {
+                    border-top: 4px solid color($name, 500);
+                }
+            }
+
+            @include dark {
+                background-color: color($name, 975);
+                border: 1px solid color($name, 800);
+
+                &#{$card-prefix}--disabled {
+                    background-color: color($name, 800);
+                    border-color: color($name, 700);
+
+                    & #{$card-prefix}__header,
+                    & #{$card-prefix}__footer {
+                        background-color: color($name, 900);
+                    }
+
+                    color: color(gray, 500);
+                }
+
+                &#{$card-prefix}--interactive:focus-visible {
+                    outline: 2px solid color($name, 500);
+                }
+
+                &#{$card-prefix}--interactive:hover {
+                    background-color: color($name, 800);
+                }
+
+                &#{$card-prefix}--accent-left {
+                    border-left: 4px solid color($name, 500);
+                }
+                &#{$card-prefix}--accent-top {
+                    border-top: 4px solid color($name, 500);
+                }
+
+                & #{$card-prefix}__header, & #{$card-prefix}__footer  {
+                    background-color: color($name, 900);
+                }
+
+                & #{$card-prefix}__header {
+                    border-bottom-color: divider-color-dark($name);
+                }
+
+                & #{$card-prefix}__footer {
+                    border-top-color: divider-color-dark($name);
+                }
+
+                // 🔥 OUTLINED DARK
+                &#{$card-prefix}--outlined {
+                    background-color: transparent;
+
+                    &#{$card-prefix}--interactive:hover {
+                        background-color: color($name, 800);
+                    }
+
+                    & #{$card-prefix}__header,
+                    & #{$card-prefix}__footer {
+                        background-color: color($name, 900);
+                    }
+
+                    & #{$card-prefix}__header {
+                        border-bottom-color: color($name, 700);
+                    }
+
+                    & #{$card-prefix}__footer {
+                        border-top-color: color($name, 700);
+                    }
+                }
+
+                &#{$card-prefix}--flat {
+                    background-color: color($name, 975);
+                    border: none;
+
+                    & #{$card-prefix}__header,
+                    & #{$card-prefix}__footer {
+                        background-color: color($name, 950);
+                    }
+
+                    &#{$card-prefix}--accent-left {
+                        border-left: 4px solid color($name, 500);
+                    }
+
+                    &#{$card-prefix}--accent-top {
+                        border-top: 4px solid color($name, 500);
+                    }
+                }
+            }
+
+        }
+    }
+
+    &#{$card-prefix}--ghost {
+        background-color: transparent;
+        border: none;
+        //box-shadow: none;
+        & #{$card-prefix}__header,
+        & #{$card-prefix}__footer {
+            background-color: transparent;
         }
     }
 }

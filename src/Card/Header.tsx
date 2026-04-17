@@ -1,14 +1,13 @@
-import React from 'react';
-import { Section, type SectionProps } from './Section';
+import React, { forwardRef } from 'react';
+import { Section, type SectionOwnProps } from './Section';
+import { createPolymorphic } from '../types/polymorphic';
 
-type HeaderProps = Omit<SectionProps, 'type'>;
+export type HeaderOwnProps = Omit<SectionOwnProps, 'type'>;
 
-// export const Header = (props: HeaderProps) => {
-//     return <Section {...props} type="header" />;
-// };
+type HeaderProps = HeaderOwnProps;
 
-export const Header = React.forwardRef<HTMLDivElement, HeaderProps>((props, ref) => {
+export const HeaderImpl = (props: HeaderOwnProps, ref: React.Ref<any>) => {
     return <Section ref={ref} {...props} type="header" />;
-});
+};
 
-Header.displayName = 'Card.Header';
+export const Header = createPolymorphic<HeaderProps, 'div'>(forwardRef(HeaderImpl), 'Card.Header');

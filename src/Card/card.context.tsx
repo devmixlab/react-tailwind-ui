@@ -8,6 +8,8 @@ export type CardContextProps = {
     tone: Color;
     kind: Kind;
     density: Density;
+    interactive: boolean;
+    disabled: boolean;
 };
 
 // Create the context with undefined as default

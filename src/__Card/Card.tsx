@@ -12,7 +12,7 @@ import { CardProvider } from './Card.context';
 import { DEFAULT_SIZE } from './constants';
 import { CLASS_PREFIX } from '../constants';
 
-import { TokenizedBoxProps } from '../Box/core/TokenizedBox';
+import { TokenizedBoxProps } from '../Box/core/__TokenizedBox';
 import { Color } from '../Box/core/tokens';
 import { Kind } from './tokens';
 

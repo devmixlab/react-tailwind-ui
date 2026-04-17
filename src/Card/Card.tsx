@@ -1,15 +1,4 @@
-// import React from 'react';
-import React, { useMemo, ElementType, ComponentPropsWithoutRef } from 'react';
-// import {
-//     type ShadowWithNone,
-//     type View,
-//     type SizeWithNone,
-//     type RadiusWithNone,
-// } from '../tokens/__card';
-// import { type Variant } from '../tokens/common';
-// import clsx from 'clsx';
-// import { CardProvider } from './Card.context';
-// import { DEFAULT_SIZE } from './constants';
+import React, { useMemo } from 'react';
 import { CLASS_PREFIX } from '../constants';
 import { CardProvider } from './card.context';
 
@@ -18,20 +7,21 @@ import { Kind, Density } from './card.tokens';
 
 import { Box, type BoxProps } from '../Box/Box';
 import clsx from 'clsx';
-import { Header } from './Header';
 
 export const prefix = (name: string = '') => {
     return `${CLASS_PREFIX}--card${name}`;
 };
 
 type CardProps = {
-    // rounded?: TokenizedBoxProps['rounded'];
-    // shadow?: TokenizedBoxProps['rounded'];
+    as?: React.ElementType;
     tone?: Color;
     kind?: Kind;
     density?: Density;
+    accent?: boolean;
+    accentSide?: 'left' | 'top';
     // size?: SizeWithNone;
-    // interactive?: boolean;
+    interactive?: boolean;
+    disabled?: boolean;
     // accent?: 'left' | 'top';
 } & BoxProps;
 
@@ -41,35 +31,99 @@ type CardProps = {
 
 export type CardComponent = React.FC<CardProps> & {
     Header: React.FC<any>;
-    // Body: React.FC<any>;
-    // Footer: React.FC<any>;
-    // Group: React.FC<any>;
-    // Image: React.FC<any>;
+    Body: React.FC<any>;
+    Footer: React.FC<any>;
+    Media: React.FC<any>;
+    Content: React.FC<any>;
 };
 
 export const Card: React.FC<CardProps> = ({
     className,
-    rounded = 'md',
-    shadow = 'sm',
+    as,
+    rounded,
+    shadow,
     kind = 'solid',
     tone = 'secondary',
-    density = 'lg',
-    // variant = 'primary',
-    // view = 'solid',
-    // size = DEFAULT_SIZE,
-    // interactive = true,
-    // accent,
+    density = 'md',
+    interactive = false,
+    disabled = false,
+    accent = false,
+    accentSide = 'left',
     // children,
     ...rest
 }) => {
+    const { onClick, onKeyDown, href, role, tabIndex, ...restProps } = rest;
+
+    const finalShadow = shadow ?? (kind === 'solid' ? 'sm' : 'none');
+    const finalRounded = rounded ?? (kind === 'flat' || kind === 'ghost' ? 'none' : 'md');
+
+    const isNaturallyInteractive = (as === 'a' && href != null) || as === 'button';
+    const isDisabled = disabled;
+    const finalInteractive =
+        !isDisabled && (isNaturallyInteractive || (interactive && (!as || as === 'button')));
+    const isButtonLike = finalInteractive && !as;
+
     const cl = useMemo(
-        () => clsx(prefix(), prefix(`--${tone}`), prefix(`--${kind}`), className),
-        [className, kind, tone],
+        () =>
+            clsx(prefix(), prefix(`--${tone}`), prefix(`--${kind}`), className, {
+                // [prefix(`--outlined`)]: outlined,
+                [prefix(`--interactive`)]: finalInteractive,
+                [prefix(`--disabled`)]: isDisabled,
+                [prefix(`--accent`)]: accent,
+                [prefix(`--accent-${accentSide}`)]: accent,
+            }),
+        [className, kind, tone, finalInteractive, accent, accentSide, isDisabled],
     );
 
     return (
-        <CardProvider value={{ tone, kind, density }}>
-            <Box className={cl} shadow={shadow} rounded={rounded} {...rest} />
+        <CardProvider
+            value={{ tone, kind, density, interactive: finalInteractive, disabled: isDisabled }}
+        >
+            <Box
+                as={as}
+                href={as === 'a' && isDisabled ? undefined : href}
+                aria-disabled={isDisabled || undefined}
+                tabIndex={isDisabled ? -1 : isButtonLike ? 0 : tabIndex}
+                role={isButtonLike ? 'button' : role}
+                type={as === 'button' ? 'button' : undefined}
+                onClick={
+                    isDisabled
+                        ? (e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                          }
+                        : onClick
+                }
+                onKeyDown={
+                    isDisabled
+                        ? (e) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                              }
+                              onKeyDown?.(e);
+                          }
+                        : isButtonLike
+                          ? (e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    onClick?.(e as any);
+                                }
+                                onKeyDown?.(e);
+                            }
+                          : onKeyDown
+                }
+                disabled={as === 'button' ? isDisabled : undefined}
+                data-tone={tone}
+                data-kind={kind}
+                data-interactive={finalInteractive || undefined}
+                data-disabled={isDisabled || undefined}
+                // ov="hidden"
+                className={cl}
+                shadow={finalShadow}
+                rounded={finalRounded}
+                {...restProps}
+            />
         </CardProvider>
     );
 };

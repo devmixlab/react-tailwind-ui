@@ -1,26 +1,30 @@
-import React from 'react';
-import { DerivedBoxProps, DerivedBox } from './core/DerivedBox';
+import React, { forwardRef } from 'react';
+import { DerivedProps, DerivedBox } from './core/DerivedBox';
 import clsx from 'clsx';
 import { getActiveBreakpoint, type Responsive, resolveResponsive } from './core/helpers';
 import { classPrefix } from '../utils/classPrefix';
-import { typedEntries } from '../utils/ts';
+import { hasKey, typedEntries } from '../utils/ts';
 import { useWindowWidthContext } from './WindowWidthProvider';
 import { useWindowWidth } from '../hooks/useWindowWidth';
-import { configLookup } from './core/config';
+import { configLookup, type PropValue } from './core/config';
+import { createPolymorphic } from '../types/polymorphic';
 
 type Responsiveify<T> = {
     [K in keyof T]?: Responsive<T[K]>;
 };
 
-export type Props = {};
+export type Props = {} & DerivedProps;
 
-export type BoxProps = Props & DerivedBoxProps;
+export type BoxProps = Responsiveify<Props>;
 
-export type ResponsiveBoxProps = Responsiveify<BoxProps>;
+type ImplProps = {
+    children?: React.ReactNode;
+    className?: string;
+} & Record<string, unknown>;
 
-export const Box: React.FC<ResponsiveBoxProps> = ({ className, ...rest }) => {
+const BoxImpl = ({ className, ...rest }: ImplProps, ref: React.Ref<any>) => {
     const widthFromContext = useWindowWidthContext();
-    const windowWidth = widthFromContext || useWindowWidth();
+    const windowWidth = widthFromContext ?? useWindowWidth();
     const bp = getActiveBreakpoint(windowWidth);
 
     const restProps = rest;
@@ -30,60 +34,71 @@ export const Box: React.FC<ResponsiveBoxProps> = ({ className, ...rest }) => {
 
     const classes: string[] = [];
     const locked = new Set<string>();
-    const propsToPassNext: Partial<Record<keyof BoxProps, any>> = {};
+    const propsToPassNext: Partial<Record<keyof BoxProps, unknown>> = {};
 
-    const passNext = (key: string, val: any) => {
+    const passNext = (key: string, val: unknown) => {
         propsToPassNext[key as keyof BoxProps] = val;
     };
 
-    restEntries.forEach(([key, value]) => {
+    restEntries.forEach(([rawKey, value]) => {
+        const key = rawKey as string;
         if (locked.has(key)) return;
 
         const resolved = resolveResponsive(value, bp);
 
         if (resolved == null) return;
 
-        const config = configLookup[key];
-        if (!config) {
+        if (!hasKey(configLookup, key)) {
             passNext(key, resolved);
             return;
         }
 
+        const config = configLookup[key];
+
         locked.add(config.key);
         if (config.alias) locked.add(config.alias);
 
-        const finalResolved = config.map !== undefined ? config.map[resolved] : resolved;
+        const finalResolved =
+            config.map != null ? config.map[resolved as string | number] : resolved;
+
+        const finalValue = finalResolved as PropValue;
 
         const configCheck = config.check
-            ? config.check({ props: restProps, key, value: finalResolved })
+            ? config.check({ props: restProps as Props, key, value: finalValue })
             : true;
 
         if (config.resolveInStyle) {
             if (!configCheck) {
-                passNext(key, finalResolved);
+                passNext(key, finalValue);
                 return;
             }
 
             passNext(
                 key,
                 config.resolveInStyle({
-                    value: finalResolved,
+                    value: finalValue,
                 }),
             );
 
             return;
         }
 
-        if (config.isToken && config.isToken(finalResolved) && configCheck) {
-            const safeResolved =
-                typeof finalResolved === 'string'
-                    ? finalResolved.replace(/\//g, '-')
-                    : finalResolved;
-            classes.push(classPrefix(`--${config.prefix}-${safeResolved}`));
+        if (config.isToken && config.isToken(finalValue) && configCheck) {
+            const safeValue =
+                typeof finalValue === 'string' ? finalValue.replace(/\//g, '-') : finalValue;
+            classes.push(classPrefix(`--${config.prefix}-${safeValue}`));
         } else {
-            passNext(key, finalResolved);
+            passNext(key, finalValue);
         }
     });
 
-    return <DerivedBox {...propsToPassNext} className={clsx(classes, className)} />;
+    return (
+        <DerivedBox
+            ref={ref}
+            {...(propsToPassNext as Props)}
+            className={clsx(classes, className)}
+        />
+    );
 };
+
+export const Box = createPolymorphic<BoxProps, 'div'>(forwardRef(BoxImpl), 'Box');

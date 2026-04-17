@@ -256,6 +256,7 @@ $z-indexes: (
 }
 
 .dru {
+
     // gap
     @each $size, $value in $spacing {
         &--gap-#{$size} {
@@ -271,13 +272,13 @@ $z-indexes: (
 
     // overflow
     @each $token in ('auto', 'hidden', 'scroll', 'visible') {
-        &--overflow-#{$token} {
+        &--ov-#{$token} {
             overflow: #{$token};
         }
-        &--overflow-x-#{$token} {
+        &--ov-x-#{$token} {
             overflow-x: #{$token};
         }
-        &--overflow-y-#{$token} {
+        &--ov-y-#{$token} {
             overflow-y: #{$token};
         }
     }

@@ -1,45 +1,50 @@
-import React, { CSSProperties, ElementType } from 'react';
+import React, { CSSProperties, forwardRef } from 'react';
 import { styleProps, type StyleProp as StylePropKey } from '../../tokens/styleProps';
+import { createPolymorphic } from '../../types/polymorphic';
+import { typedEntries } from '../../utils/ts';
 
 const stylePropSet = new Set(styleProps);
 const isStyleProp = (key: string): key is StylePropKey => stylePropSet.has(key as StylePropKey);
 
-type StyleProps = {
-    // [K in StylePropKey]?: Responsive<React.CSSProperties[K]>;
+export type StyleProps = {
     [K in StylePropKey]?: React.CSSProperties[K];
 };
 
-export type StyleBoxProps<C extends ElementType = 'div'> = {
-    as?: C;
-} & StyleProps &
-    Omit<React.ComponentPropsWithoutRef<C>, keyof StyleProps>;
+type StyleBoxProps = StyleProps;
 
-const StyleBox = <C extends ElementType = 'div'>({
-    as,
-    children,
-    className,
-    style: userStyle,
-    ...rest
-}: StyleBoxProps<C>) => {
-    const Component = as || 'div';
+type ImplProps = {
+    as?: React.ElementType;
+    children?: React.ReactNode;
+    className?: string;
+    style?: CSSProperties;
+} & Record<string, unknown>;
 
-    const style: CSSProperties = { ...userStyle };
+const StyleBoxImpl = (
+    { as, children, className, style: userStyle, ...rest }: ImplProps,
+    ref: React.Ref<any>,
+) => {
+    const Component = as ?? 'div';
+
+    // const style: CSSProperties = { ...userStyle };
+    const style: CSSProperties = userStyle ? { ...userStyle } : {};
     const props: Record<string, unknown> = {};
 
-    for (const key in rest) {
+    for (const [key, value] of typedEntries(rest)) {
         if (isStyleProp(key)) {
-            const value = rest[key];
-            if (value !== undefined) style[key] = value;
+            if (value != null) (style as any)[key] = value;
         } else {
-            props[key] = (rest as any)[key];
+            props[key] = value;
         }
     }
 
     return (
-        <Component className={className} style={style} {...props}>
+        <Component ref={ref} className={className} style={style} {...props}>
             {children}
         </Component>
     );
 };
 
-export { StyleBox };
+export const StyleBox = createPolymorphic<StyleBoxProps, 'div'>(
+    forwardRef(StyleBoxImpl),
+    'StyleBox',
+);

@@ -120,28 +120,28 @@ export const isResponsiveObject = <T>(value: any): value is ResponsiveObject<T> 
     );
 };
 
-type ResponsiveValue = Responsive<number | string>;
-export const getResponsiveClasses = (value?: ResponsiveValue, p: string) => {
-    if (value === undefined) return '';
-
-    // p = prefix(p);
-
-    if (typeof value !== 'object') {
-        return classPrefix(`--${p}${value}`);
-    }
-
-    return [
-        value.base !== undefined && classPrefix(`--base:${p}${value.base}`),
-        value.xs !== undefined && classPrefix(`--xs:${p}${value.xs}`),
-        value.sm !== undefined && classPrefix(`--sm:${p}${value.sm}`),
-        value.md !== undefined && classPrefix(`--md:${p}${value.md}`),
-        value.lg !== undefined && classPrefix(`--lg:${p}${value.lg}`),
-        value.xl !== undefined && classPrefix(`--xl:${p}${value.xl}`),
-        value['2xl'] !== undefined && classPrefix(`--2xl:${p}${value['2xl']}`),
-    ]
-        .filter(Boolean)
-        .join(' ');
-};
+// type ResponsiveValue = Responsive<number | string>;
+// export const getResponsiveClasses = (value?: ResponsiveValue, p: string) => {
+//     if (value === undefined) return '';
+//
+//     // p = prefix(p);
+//
+//     if (typeof value !== 'object') {
+//         return classPrefix(`--${p}${value}`);
+//     }
+//
+//     return [
+//         value.base !== undefined && classPrefix(`--base:${p}${value.base}`),
+//         value.xs !== undefined && classPrefix(`--xs:${p}${value.xs}`),
+//         value.sm !== undefined && classPrefix(`--sm:${p}${value.sm}`),
+//         value.md !== undefined && classPrefix(`--md:${p}${value.md}`),
+//         value.lg !== undefined && classPrefix(`--lg:${p}${value.lg}`),
+//         value.xl !== undefined && classPrefix(`--xl:${p}${value.xl}`),
+//         value['2xl'] !== undefined && classPrefix(`--2xl:${p}${value['2xl']}`),
+//     ]
+//         .filter(Boolean)
+//         .join(' ');
+// };
 
 // const resolveResponsive = <T>(value: Responsive<T> | undefined): T | undefined => {
 //     if (value == null || typeof value !== 'object') {
@@ -223,25 +223,50 @@ export const getResponsiveClasses = (value?: ResponsiveValue, p: string) => {
 //     return result;
 // };
 
-export const resolveResponsive = <T, R = T>(
+// export const resolveResponsive = <T, R = T>(
+//     value: Responsive<T | undefined> | undefined,
+//     bp: keyof typeof breakpoints | 'base',
+//     modify?: (value: T) => R,
+// ): R | undefined => {
+//     if (!isResponsiveObject<T>(value)) {
+//         if (value === undefined) return undefined;
+//         return modify ? modify(value as T) : (value as unknown as R);
+//     }
+//
+//     const order: (keyof typeof value)[] = ['base', 'xs', 'sm', 'md', 'lg', 'xl', '2xl'];
+//
+//     let result: R | undefined;
+//
+//     for (const key of order) {
+//         const v = value[key];
+//
+//         if (v !== undefined) {
+//             result = modify ? modify(v) : (v as unknown as R);
+//         }
+//
+//         if (key === bp) break;
+//     }
+//
+//     return result;
+// };
+
+export const resolveResponsive = <T>(
     value: Responsive<T | undefined> | undefined,
     bp: keyof typeof breakpoints | 'base',
-    modify?: (value: T) => R,
-): R | undefined => {
-    if (!isResponsiveObject<T>(value)) {
-        if (value === undefined) return undefined;
-        return modify ? modify(value as T) : (value as unknown as R);
+): T | undefined => {
+    if (value == null || !isResponsiveObject<T>(value)) {
+        return value as T | undefined;
     }
 
-    const order: (keyof typeof value)[] = ['base', 'xs', 'sm', 'md', 'lg', 'xl', '2xl'];
+    const order = ['base', 'xs', 'sm', 'md', 'lg', 'xl', '2xl'] as const;
 
-    let result: R | undefined;
+    let result: T | undefined;
 
     for (const key of order) {
         const v = value[key];
 
         if (v !== undefined) {
-            result = modify ? modify(v) : (v as unknown as R);
+            result = v;
         }
 
         if (key === bp) break;

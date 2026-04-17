@@ -1,5 +1,5 @@
 import React from 'react';
-import { TokenizedBox, type TokenizedBoxProps } from './core/TokenizedBox';
+import { __TokenizedBox, type TokenizedBoxProps } from './core/__TokenizedBox';
 import type { Responsive } from './core/helpers';
 
 type ColProps = TokenizedBoxProps & {
@@ -7,5 +7,5 @@ type ColProps = TokenizedBoxProps & {
 };
 
 export const Col: React.FC<ColProps> = ({ span, ...props }) => {
-    return <TokenizedBox gridCol={`span ${span}`} {...props} />;
+    return <__TokenizedBox gridCol={`span ${span}`} {...props} />;
 };
