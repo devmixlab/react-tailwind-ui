@@ -24,6 +24,7 @@ $neutral-colors: (secondary, gray, slate, neutral, stone, zinc);
 $surface-dark: (
     base: #12141a, // main card
     raised: #171923, // slightly elevated
+    hover: #22263a,
     floating: #1c1f2b, // modal / dropdown
     border: #2a2f45,
     divider: #23283a,
@@ -129,11 +130,10 @@ $card-prefix: '.dru--card';
         transition: transform 120ms ease, background-color 120ms ease;
         user-select: none;
 
-        &:hover {
-            will-change: transform;
-            transform: translateY(-1px);
-            //filter: brightness(1.02);
-        }
+        //&:hover {
+        //    will-change: transform;
+        //    transform: translateY(-1px);
+        //}
 
         &:active {
             user-select: none;
@@ -172,17 +172,12 @@ $card-prefix: '.dru--card';
         &--#{$name} {
             --dru--card--background-color: #{color($name, 100)};
             --dru--card--border-color: #{color($name, 300)};
+            --dru--card--background-color-hover: #{mix(color($name, 100), color($name, 200), 50%)};
 
             @include accent($name);
 
             &#{$card-prefix}--disabled {
-                //& #{$card-prefix}__header,
-                //& #{$card-prefix}__footer {
-                //    background-color: color($name, 50);
-                //}
-
                 color: color(gray, 500);
-
                 @include accent($name, 300);
             }
 
@@ -191,25 +186,19 @@ $card-prefix: '.dru--card';
                 outline-offset: 2px;
             }
 
-            &#{$card-prefix}--interactive:hover {
-                --dru--card--background-color: #{mix(color($name, 100), color($name, 200), 50%)};
-            }
-
             @include section(mix(color($name, 100), color($name, 200), 50%), color($name, 300));
 
             // 🔥 OUTLINED OVERRIDE
             &#{$card-prefix}--outlined {
                 --dru--card--background-color: transparent;
-
-                &#{$card-prefix}--interactive:hover {
-                    --dru--card--background-color: #{color($name, 50)};
-                }
+                --dru--card--background-color-hover: #{color($name, 50)};
 
                 @include section(transparent, color($name, 300));
             }
 
             &#{$card-prefix}--filled {
                 --dru--card--background-color: #{color($name, 200)};
+                --dru--card--background-color-hover: #{mix(color($name, 200), color($name, 300), 50%)};
                 --dru--card--border-color: #{color($name, 200)};
 
                 $filled-section-color: mix(color($name, 200), color($name, 300), 50%);
@@ -220,15 +209,12 @@ $card-prefix: '.dru--card';
                 &#{$card-prefix}--disabled {
                     @include accent($name, 300);
                 }
-
-                &#{$card-prefix}--interactive:hover {
-                    --dru--card--background-color: #{mix(color($name, 200), color($name, 300), 50%)};
-                }
             }
 
             &#{$card-prefix}--soft {
                 --dru--card--background-color: #{color($name, 50)};
                 --dru--card--border-color: #{color($name, 200)};
+                --dru--card--background-color-hover: #{mix(color($name, 50), color($name, 100), 50%)};
 
                 @include section(mix(color($name, 50), color($name, 100), 50%), color($name, 200));
 
@@ -237,55 +223,41 @@ $card-prefix: '.dru--card';
                 &#{$card-prefix}--disabled {
                     @include accent($name, 300);
                 }
-
-                &#{$card-prefix}--interactive:hover {
-                    --dru--card--background-color: #{mix(color($name, 50), color($name, 100), 50%)};
-                }
             }
 
             &#{$card-prefix}--ghost {
+                --dru--card--background-color-hover: #{color($name, 50)};
+
                 @include accent($name);
 
                 &#{$card-prefix}--disabled {
                     @include accent($name, 300);
                 }
-
-                &#{$card-prefix}--interactive:hover {
-                    --dru--card--background-color: #{color($name, 50)};
-                }
             }
-
-            @include dark {
+        }
+        @include dark {
+            &--#{$name} {
                 @if index($neutral-colors, $name) {
                     --dru--card--background-color: #{mix(map.get($surface-dark, floating), map.get($surface-dark, border), 70%)};
+                    --dru--card--background-color-hover: #{map.get($surface-dark, divider)};
                     --dru--card--border-color: #{map.get($surface-dark, border)};
 
                     @include section(map.get($surface-dark, divider), map.get($surface-dark, border));
-
-                    &#{$card-prefix}--interactive:hover {
-                        --dru--card--background-color: #{map.get($surface-dark, divider)};
-                    }
                 } @else {
+                    $section-bg: mix(color($name, 900), color($name, 950), 50%);
                     --dru--card--background-color: #{color($name, 950)};
+                    --dru--card--background-color-hover: #{$section-bg};
                     --dru--card--border-color: #{color($name, 800)};
 
-                    $section-bg: mix(color($name, 900), color($name, 950), 50%);
                     @include section($section-bg, color($name, 800));
-
-                    &#{$card-prefix}--interactive:hover {
-                        --dru--card--background-color: #{$section-bg};
-                    }
                 }
 
                 &#{$card-prefix}--interactive:focus-visible {
                     outline: 2px solid color($name, 500);
                 }
 
-                //&#{$card-prefix}--interactive:hover {
-                //    --dru--card--background-color: #{color($name, 900)};
-                //}
-
                 @include accent($name);
+
                 &#{$card-prefix}--disabled {
                     color: color(gray, 400);
                     @include accent($name, 700);
@@ -293,6 +265,11 @@ $card-prefix: '.dru--card';
 
                 // 🔥 OUTLINED DARK
                 &#{$card-prefix}--outlined {
+                    @if index($neutral-colors, $name) {
+                        --dru--card--background-color-hover: #{map.get($surface-dark, raised)};
+                    } @else {
+                        --dru--card--background-color-hover: #{color($name, 950)};
+                    }
                     --dru--card--border-color: #{color($name, 700)};
                     --dru--card--background-color: transparent;
 
@@ -303,43 +280,23 @@ $card-prefix: '.dru--card';
                     &#{$card-prefix}--disabled {
                         @include accent($name, 700);
                     }
-
-                    @if index($neutral-colors, $name) {
-                        &#{$card-prefix}--interactive:hover {
-                            --dru--card--background-color: #{map.get($surface-dark, raised)};
-                        }
-                    } @else {
-                        //$section-bg: mix(color($name, 950), #000, 50%);
-                        $section-bg: color($name, 950);
-                        &#{$card-prefix}--interactive:hover {
-                            --dru--card--background-color: #{$section-bg};
-                        }
-                    }
                 }
 
                 &#{$card-prefix}--soft {
-
                     @if index($neutral-colors, $name) {
+                        $section-bg: map.get($surface-dark, hover);
                         --dru--card--background-color: #{map.get($surface-dark, raised)};
+                        --dru--card--background-color-hover: #{$section-bg};
                         --dru--card--border-color: #{map.get($surface-dark, border)};
 
-                        $section-bg: map.get($surface-dark, floating);
                         @include section($bg: $section-bg);
-
-                        &#{$card-prefix}--interactive:hover {
-                            --dru--card--background-color: #{$section-bg};
-                        }
                     } @else {
+                        $section-bg: mix(color($name, 950), #000, 80%);
                         --dru--card--background-color: #{mix(color($name, 950), #000, 50%)};
+                        --dru--card--background-color-hover: #{$section-bg};
                         --dru--card--border-color: #{color($name, 900)};
 
-                        //$section-bg: color($name, 950);
-                        $section-bg: mix(color($name, 950), #000, 80%);
                         @include section($section-bg, mix(color($name, 900), color($name, 950), 50%));
-
-                        &#{$card-prefix}--interactive:hover {
-                            --dru--card--background-color: #{$section-bg};
-                        }
                     }
 
                     @include accent($name);
@@ -350,26 +307,20 @@ $card-prefix: '.dru--card';
                 }
 
                 &#{$card-prefix}--filled {
-
                     @if index($neutral-colors, $name) {
+                        $section-bg: mix(color(slate, 500), map.get($surface-dark, border), 10%);
                         --dru--card--background-color: #{map.get($surface-dark, border)};
+                        --dru--card--background-color-hover: #{$section-bg};
                         --dru--card--border-color: #{map.get($surface-dark, border)};
 
-                        $section-bg: mix(color(slate, 500), map.get($surface-dark, border), 10%);
-                        @include section($section-bg, transition);
-
-                        &#{$card-prefix}--interactive:hover {
-                            --dru--card--background-color: #{$section-bg};
-                        }
+                        @include section($section-bg, transparent);
                     } @else {
+                        $section-bg: mix(color($name, 800), color($name, 900), 50%);
                         --dru--card--background-color: #{color($name, 900)};
+                        --dru--card--background-color-hover: #{$section-bg};
                         --dru--card--border-color: #{color($name, 900)};
 
-                        @include section(mix(color($name, 800), color($name, 900), 50%), transparent);
-
-                        &#{$card-prefix}--interactive:hover {
-                            --dru--card--background-color: #{mix(color($name, 800), color($name, 900), 50%)};
-                        }
+                        @include section($section-bg, transparent);
                     }
 
                     @include accent($name);
@@ -381,18 +332,12 @@ $card-prefix: '.dru--card';
 
                 &#{$card-prefix}--ghost {
                     @if index($neutral-colors, $name) {
-                        &#{$card-prefix}--interactive:hover {
-                            --dru--card--background-color: #{map.get($surface-dark, raised)};
-                        }
+                        --dru--card--background-color-hover: #{map.get($surface-dark, raised)};
                     } @else {
-                        $section-bg: color($name, 950);
-                        &#{$card-prefix}--interactive:hover {
-                            --dru--card--background-color: #{$section-bg};
-                        }
+                        --dru--card--background-color-hover: #{color($name, 950)};
                     }
                 }
             }
-
         }
     }
 
@@ -401,5 +346,13 @@ $card-prefix: '.dru--card';
         --dru--card--border-color: transparent;
 
         @include section(transparent, transparent);
+    }
+
+    &--interactive:hover {
+        //--dru--card--background-color: var(--dru--card--background-color-hover);
+        background-color: var(--dru--card--background-color-hover);
+
+        will-change: transform;
+        transform: translateY(-1px);
     }
 }
