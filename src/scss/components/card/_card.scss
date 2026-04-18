@@ -61,9 +61,7 @@ $card-prefix: '.dru--card';
     --dru--card__section--background-color: transparent;
     --dru--card__section--border-color: transparent;
     --dru--card--accent-color: transparent;
-
-    background-color: var(--dru--card--background-color);
-    border: 1px solid var(--dru--card--border-color);
+    --dru--card--text-color: inherit;
 
     &__header {
         background-color: var(--dru--card__section--background-color);
@@ -177,7 +175,7 @@ $card-prefix: '.dru--card';
             @include accent($name);
 
             &#{$card-prefix}--disabled {
-                color: color(gray, 500);
+                --dru--card--text-color: #{color(gray, 500)};
                 @include accent($name, 300);
             }
 
@@ -259,7 +257,7 @@ $card-prefix: '.dru--card';
                 @include accent($name);
 
                 &#{$card-prefix}--disabled {
-                    color: color(gray, 400);
+                    --dru--card--text-color: #{color(gray, 400)};
                     @include accent($name, 700);
                 }
 
@@ -340,6 +338,10 @@ $card-prefix: '.dru--card';
             }
         }
     }
+
+    background-color: var(--dru--card--background-color);
+    border: 1px solid var(--dru--card--border-color);
+    color: var(--dru--card--text-color);
 
     &#{$card-prefix}--ghost {
         --dru--card--background-color: transparent;
