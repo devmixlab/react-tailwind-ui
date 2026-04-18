@@ -5,44 +5,9 @@
 
 @use "sass:map";
 
-// LIGHT THEME COLORS
-//$semantic-colors: (
-//    primary: #4f46e5,
-//    secondary: #7c828a,
-//    success: #16a34a,
-//    danger: #dc2626,
-//    warning: #f59e0b,
-//    info: #0ea5e9,
-//    light: #e5e7eb,
-//    dark: #1f2937,
-//);
-//
-//$extended-colors: (
-//    slate: #7a849e,
-//    gray: #7b746f,
-//    zinc: #75777f,
-//    neutral: #7f7a72,
-//    stone: #6f6258,
-//    red: #e03c3c,
-//    orange: #e26914,
-//    amber: #d9980a,
-//    yellow: #f1c40f,
-//    lime: #78b813,
-//    green: #1fbe50,
-//    emerald: #0eb177,
-//    teal: #12a193,
-//    cyan: #05a0c0,
-//    sky: #0d93d6,
-//    blue: #3670e0,
-//    indigo: #5a5ed0,
-//    violet: #6d33da,
-//    purple: #862bd3,
-//    fuchsia: #c735e0,
-//    pink: #c63a7f,
-//    rose: #e23a52,
-//);
-
 $colors: map.merge($semantic-colors, $extended-colors);
+
+$neutral-colors: (secondary, gray, slate, neutral, stone, zinc);
 
 @function color($name, $step) {
     @return map.get(map.get($colors, $name), $step);
@@ -72,9 +37,55 @@ $surface-light: (
     divider: #e5e7eb,
 );
 
+@mixin section($bg: null, $bc: null) {
+    @if $bg != null {
+        --dru--card__section--background-color: #{$bg};
+    }
+
+    @if $bc != null {
+        --dru--card__section--border-color: #{$bc};
+    }
+}
+
+@mixin accent($color, $grade: 500) {
+    --dru--card--accent-color: #{color($color, $grade)};
+}
+
 $card-prefix: '.dru--card';
 
 #{$card-prefix} {
+    --dru--card--background-color: transparent;
+    --dru--card--background-color-hover: transparent;
+    --dru--card--border-color: transparent;
+    --dru--card__section--background-color: transparent;
+    --dru--card__section--border-color: transparent;
+    --dru--card--accent-color: transparent;
+
+    background-color: var(--dru--card--background-color);
+    border: 1px solid var(--dru--card--border-color);
+
+    &__header {
+        background-color: var(--dru--card__section--background-color);
+        border-bottom: 1px solid var(--dru--card__section--border-color);
+        border-top-right-radius: inherit;
+        border-top-left-radius: inherit;
+    }
+
+    &__footer {
+        background-color: var(--dru--card__section--background-color);
+        border-top: 1px solid var(--dru--card__section--border-color);
+        border-bottom-right-radius: inherit;
+        border-bottom-left-radius: inherit;
+    }
+
+    &--accent-left {
+        border-left: 4px solid var(--dru--card--accent-color);
+    }
+
+    &--accent-top {
+        border-top: 4px solid var(--dru--card--accent-color);
+    }
+
     // normalize when rendered as button
     &:where(button) {
         appearance: none;
@@ -105,12 +116,7 @@ $card-prefix: '.dru--card';
 
         &:hover {
             transform: none;
-            background-color: inherit;
         }
-    }
-
-    &--outlined {
-        background-color: transparent;
     }
 
     &--accent-top {
@@ -162,44 +168,22 @@ $card-prefix: '.dru--card';
         border-radius: inherit;
     }
 
-    &__header {
-        border-top-right-radius: inherit;
-        border-top-left-radius: inherit;
-        border-bottom: 1px solid transparent;
-    }
-
-    &__footer {
-        border-bottom-right-radius: inherit;
-        border-bottom-left-radius: inherit;
-        border-bottom: 1px solid transparent;
-    }
-
     @each $name, $color in $colors {
         &--#{$name} {
-            //background-color: color($name, 100);
-            background-color: mix(color($name, 100), color($name, 200), 50%);
-            border-width: 1px;
-            border-style: solid;
-            border-color: color($name, 300);
+            --dru--card--background-color: #{color($name, 100)};
+            --dru--card--border-color: #{color($name, 300)};
+
+            @include accent($name);
 
             &#{$card-prefix}--disabled {
-                background-color: color($name, 50); // or 100 if you want more contrast
-                border-color: color($name, 200);
+                //& #{$card-prefix}__header,
+                //& #{$card-prefix}__footer {
+                //    background-color: color($name, 50);
+                //}
 
-                & #{$card-prefix}__header,
-                & #{$card-prefix}__footer {
-                    background-color: color($name, 50);
-                }
+                color: color(gray, 500);
 
-                color: color(gray, 400);
-
-                &#{$card-prefix}--accent-left {
-                    border-left-color: color($name, 300) !important;
-                }
-
-                &#{$card-prefix}--accent-top {
-                    border-top-color: color($name, 300) !important;
-                }
+                @include accent($name, 300);
             }
 
             &#{$card-prefix}--interactive:focus-visible {
@@ -208,375 +192,204 @@ $card-prefix: '.dru--card';
             }
 
             &#{$card-prefix}--interactive:hover {
-                background-color: color($name, 100);
+                --dru--card--background-color: #{mix(color($name, 100), color($name, 200), 50%)};
             }
 
-            &#{$card-prefix}--accent-left {
-                border-left: 4px solid color($name, 500);
-            }
-
-            &#{$card-prefix}--accent-top {
-                border-top: 4px solid color($name, 500);
-            }
-
-            & #{$card-prefix}__header, & #{$card-prefix}__footer {
-                background-color: color($name, 200);
-                //background-color: mix(color($name, 200), color($name, 300), 50%);
-            }
-
-            & #{$card-prefix}__header {
-                border-bottom: 1px solid color($name, 300);
-            }
-            & #{$card-prefix}__footer {
-                border-top: 1px solid color($name, 300);
-            }
-
-            //& #{$card-prefix}__header {
-            //    border-bottom: 1px solid divider-color-light($name);
-            //}
-            //
-            //& #{$card-prefix}__footer {
-            //    border-top: 1px solid divider-color-light($name);
-            //}
+            @include section(mix(color($name, 100), color($name, 200), 50%), color($name, 300));
 
             // 🔥 OUTLINED OVERRIDE
             &#{$card-prefix}--outlined {
-                background-color: transparent;
+                --dru--card--background-color: transparent;
 
                 &#{$card-prefix}--interactive:hover {
-                    background-color: color($name, 50);
+                    --dru--card--background-color: #{color($name, 50)};
                 }
 
-                & #{$card-prefix}__header,
-                & #{$card-prefix}__footer {
-                    //background-color: color($name, 50); // very subtle
-                    background: none;
-                    //background-color: transparent;
-                }
-
-                & #{$card-prefix}__header {
-                    border-bottom: 1px solid color($name, 400) !important;
-                }
-
-                & #{$card-prefix}__footer {
-                    //border-top-color: color($name, 300);
-                    border-top: 1px solid color($name, 400) !important;
-                }
+                @include section(transparent, color($name, 300));
             }
 
             &#{$card-prefix}--filled {
-                //background-color: color($name, 300);
-                background-color: mix(color($name, 200), color($name, 300), 50%);
-                border-color: color($name, 300);
+                --dru--card--background-color: #{color($name, 200)};
+                --dru--card--border-color: #{color($name, 200)};
 
-                & #{$card-prefix}__header,
-                & #{$card-prefix}__footer {
-                    //background-color: mix(color($name, 300), color($name, 400), 50%); // very subtle
-                    background-color: color($name, 300);
-                    //background-color: transparent;
+                $filled-section-color: mix(color($name, 200), color($name, 300), 50%);
+                @include section($filled-section-color, $filled-section-color);
+
+                @include accent($name);
+
+                &#{$card-prefix}--disabled {
+                    @include accent($name, 300);
+                }
+
+                &#{$card-prefix}--interactive:hover {
+                    --dru--card--background-color: #{mix(color($name, 200), color($name, 300), 50%)};
                 }
             }
 
             &#{$card-prefix}--soft {
-                //background-color: color($name, 100);
-                background-color: mix(color($name, 50), color($name, 100), 50%);
-                border-color: color($name, 200);
+                --dru--card--background-color: #{color($name, 50)};
+                --dru--card--border-color: #{color($name, 200)};
 
-                & #{$card-prefix}__header,
-                & #{$card-prefix}__footer {
-                    background-color: color($name, 100);
-                    //background-color: mix(color($name, 100), color($name, 200), 50%); // very subtle
-                    //background-color: transparent;
+                @include section(mix(color($name, 50), color($name, 100), 50%), color($name, 200));
+
+                @include accent($name);
+
+                &#{$card-prefix}--disabled {
+                    @include accent($name, 300);
                 }
 
-                & #{$card-prefix}__header {
-                    border-bottom: 1px solid color($name, 200);
-                    //background-color: color($name, 200);
-                }
-                & #{$card-prefix}__footer {
-                    border-top: 1px solid color($name, 200);
-                    //background-color: color($name, 200);
+                &#{$card-prefix}--interactive:hover {
+                    --dru--card--background-color: #{mix(color($name, 50), color($name, 100), 50%)};
                 }
             }
 
-            &#{$card-prefix}--flat {
-                background-color: color($name, 50);
-                //background-color: mix(#fff, color($name, 50), 80%);
-                border: none;
+            &#{$card-prefix}--ghost {
+                @include accent($name);
 
-                & #{$card-prefix}__header,
-                & #{$card-prefix}__footer {
-                    //background-color: color($name, 100); // 👈 subtle difference
-                    //background-color: color($name, 50);
-                    background-color: mix(color($name, 50), color($name, 100), 50%);
-                    //background-color: mix(#fff, color($name, 50), 70%);
-                    //background-color: mix(color($name, 50), color($name, 100), 50%);
-                    border: none!important;
-                }
-            }
-
-            &#{$card-prefix}--ghost, &#{$card-prefix}--flat {
-                &#{$card-prefix}--accent-left {
-                    border-left: 4px solid color($name, 500);
+                &#{$card-prefix}--disabled {
+                    @include accent($name, 300);
                 }
 
-                &#{$card-prefix}--accent-top {
-                    border-top: 4px solid color($name, 500);
+                &#{$card-prefix}--interactive:hover {
+                    --dru--card--background-color: #{color($name, 50)};
                 }
             }
 
             @include dark {
-                @if ($name == gray or $name == slate or $name == neutral or $name == stone or $name == zinc) {
-                    background-color: map.get($surface-dark, floating);
-                    border-color: map.get($surface-dark, border);
-                    //border: 1px solid color($name, 600);
+                @if index($neutral-colors, $name) {
+                    --dru--card--background-color: #{mix(map.get($surface-dark, floating), map.get($surface-dark, border), 70%)};
+                    --dru--card--border-color: #{map.get($surface-dark, border)};
 
-                    & #{$card-prefix}__header, & #{$card-prefix}__footer {
-                        background-color: map.get($surface-dark, divider);
-                    }
+                    @include section(map.get($surface-dark, divider), map.get($surface-dark, border));
 
-                    & #{$card-prefix}__header {
-                        border-bottom: 1px solid map.get($surface-dark, border);
-                    }
-
-                    & #{$card-prefix}__footer {
-                        border-top: 1px solid map.get($surface-dark, border);
+                    &#{$card-prefix}--interactive:hover {
+                        --dru--card--background-color: #{map.get($surface-dark, divider)};
                     }
                 } @else {
-                    //background-color: color($name, 950);
-                    background-color: mix(color($name, 900), color($name, 950), 50%);
-                    border: 1px solid color($name, 800);
+                    --dru--card--background-color: #{color($name, 950)};
+                    --dru--card--border-color: #{color($name, 800)};
 
-                    & #{$card-prefix}__header, & #{$card-prefix}__footer {
-                        background-color: color($name, 900);
+                    $section-bg: mix(color($name, 900), color($name, 950), 50%);
+                    @include section($section-bg, color($name, 800));
+
+                    &#{$card-prefix}--interactive:hover {
+                        --dru--card--background-color: #{$section-bg};
                     }
-
-                    & #{$card-prefix}__header {
-                        border-bottom: 1px solid color($name, 800);
-                    }
-
-                    & #{$card-prefix}__footer {
-                        border-top: 1px solid color($name, 800);
-                    }
-                }
-                //background-color: mix(color($name, 800), color($name, 900), 50%);
-                //background-color: color($name, 900);
-                //background-color: transparent;
-                //border: 1px solid color($name, 600);
-                //border: 1px solid color($name, 800);
-                //border-color: transparent;
-
-                //mix(#121212, color($name, 950), 90%)
-
-                &#{$card-prefix}--disabled {
-                    background-color: color($name, 800);
-                    border-color: color($name, 700);
-
-                    & #{$card-prefix}__header,
-                    & #{$card-prefix}__footer {
-                        background-color: color($name, 900);
-                    }
-
-                    color: color(gray, 500);
                 }
 
                 &#{$card-prefix}--interactive:focus-visible {
                     outline: 2px solid color($name, 500);
                 }
 
-                &#{$card-prefix}--interactive:hover {
-                    background-color: color($name, 800);
-                }
-
-                &#{$card-prefix}--accent-left {
-                    border-left: 4px solid color($name, 500);
-                }
-                &#{$card-prefix}--accent-top {
-                    border-top: 4px solid color($name, 500);
-                }
-
-                //& #{$card-prefix}__header, & #{$card-prefix}__footer {
-                //    background-color: color($name, 800);
+                //&#{$card-prefix}--interactive:hover {
+                //    --dru--card--background-color: #{color($name, 900)};
                 //}
 
-
+                @include accent($name);
+                &#{$card-prefix}--disabled {
+                    color: color(gray, 400);
+                    @include accent($name, 700);
+                }
 
                 // 🔥 OUTLINED DARK
                 &#{$card-prefix}--outlined {
-                    background-color: transparent;
-                    //background-color: color($name, 950);
-                    border-color: color($name, 700);
+                    --dru--card--border-color: #{color($name, 700)};
+                    --dru--card--background-color: transparent;
 
-                    //&#{$card-prefix}--interactive:hover {
-                    //    background-color: color($name, 800);
-                    //}
+                    @include section(transparent, color($name, 700));
 
-                    & #{$card-prefix}__header,
-                    & #{$card-prefix}__footer {
-                        background: none;
+                    @include accent($name);
+
+                    &#{$card-prefix}--disabled {
+                        @include accent($name, 700);
                     }
 
-                    //& #{$card-prefix}__header {
-                    //    border-bottom-color: color($name, 700);
-                    //}
-                    //
-                    //& #{$card-prefix}__footer {
-                    //    border-top-color: color($name, 700);
-                    //}
-
-                    & #{$card-prefix}__header{
-                        border-bottom: 1px solid color($name, 700)!important;
-                    }
-                    & #{$card-prefix}__footer{
-                        border-top: 1px solid color($name, 700)!important;
+                    @if index($neutral-colors, $name) {
+                        &#{$card-prefix}--interactive:hover {
+                            --dru--card--background-color: #{map.get($surface-dark, raised)};
+                        }
+                    } @else {
+                        //$section-bg: mix(color($name, 950), #000, 50%);
+                        $section-bg: color($name, 950);
+                        &#{$card-prefix}--interactive:hover {
+                            --dru--card--background-color: #{$section-bg};
+                        }
                     }
                 }
 
                 &#{$card-prefix}--soft {
 
-                    @if ($name == gray or $name == slate or $name == neutral or $name == stone or $name == zinc) {
-                        background-color: map.get($surface-dark, raised);
-                        border-color: map.get($surface-dark, border);
-                        //border-color: color($name, 800);
-                        & #{$card-prefix}__header,
-                        & #{$card-prefix}__footer {
-                            background-color: map.get($surface-dark, floating);
+                    @if index($neutral-colors, $name) {
+                        --dru--card--background-color: #{map.get($surface-dark, raised)};
+                        --dru--card--border-color: #{map.get($surface-dark, border)};
+
+                        $section-bg: map.get($surface-dark, floating);
+                        @include section($bg: $section-bg);
+
+                        &#{$card-prefix}--interactive:hover {
+                            --dru--card--background-color: #{$section-bg};
                         }
                     } @else {
-                        //background-color: color($name, 950);
-                        background-color: mix(color($name, 950), #000, 80%);
-                        //border-color: color($name, 900);
-                        border-color: mix(color($name, 900), color($name, 950), 50%);
-                        & #{$card-prefix}__header,
-                        & #{$card-prefix}__footer {
-                            //background-color: mix(color($name, 900), color($name, 950), 30%);
-                            background-color: color($name, 950);
+                        --dru--card--background-color: #{mix(color($name, 950), #000, 50%)};
+                        --dru--card--border-color: #{color($name, 900)};
+
+                        //$section-bg: color($name, 950);
+                        $section-bg: mix(color($name, 950), #000, 80%);
+                        @include section($section-bg, mix(color($name, 900), color($name, 950), 50%));
+
+                        &#{$card-prefix}--interactive:hover {
+                            --dru--card--background-color: #{$section-bg};
                         }
                     }
 
-                    //@if (index((stone, secondary, gray, slate), $name)) {
-                    //    background-color: mix(color($name, 800), color($name, 900), 40%);
-                    //    border-color: color($name, 700);
-                    //} @else {
-                    //    background-color: color($name, 950);
-                    //    border-color: color($name, 800);
-                    //}
+                    @include accent($name);
 
-                    //background-color: rgba(color($name, 900), .4);
-                    //border-color: rgba(color($name, 600), .4);
-                    //background-color: mix(color($name, 950), color($name, 900), 30%);
-                    //border-color: color($name, 800);
-                    //border: none;
-
-                    //& #{$card-prefix}__header,
-                    //& #{$card-prefix}__footer {
-                    //    background-color: mix(color($name, 900), color($name, 950), 50%);
-                    //}
-
-                    & #{$card-prefix}__header{
-                        //border-bottom: 1px solid color($name, 900);
-                        border-bottom: 1px solid mix(color($name, 900), color($name, 950), 50%);
+                    &#{$card-prefix}--disabled {
+                        @include accent($name, 700);
                     }
-                    & #{$card-prefix}__footer{
-                        border-top: 1px solid mix(color($name, 900), color($name, 950), 50%);
-                    }
-
-                    //&#{$card-prefix}--accent-left {
-                    //    border-left: 4px solid color($name, 500);
-                    //}
-                    //
-                    //&#{$card-prefix}--accent-top {
-                    //    border-top: 4px solid color($name, 500);
-                    //}
                 }
 
                 &#{$card-prefix}--filled {
 
-                    @if ($name == gray or $name == slate or $name == neutral or $name == stone or $name == zinc) {
-                        background-color: map.get($surface-dark, border);
-                        border-color: map.get($surface-dark, border);
-                        & #{$card-prefix}__header,
-                        & #{$card-prefix}__footer {
-                            background-color: mix(color(slate, 500), map.get($surface-dark, border), 10%);
-                            border: none!important;
+                    @if index($neutral-colors, $name) {
+                        --dru--card--background-color: #{map.get($surface-dark, border)};
+                        --dru--card--border-color: #{map.get($surface-dark, border)};
+
+                        $section-bg: mix(color(slate, 500), map.get($surface-dark, border), 10%);
+                        @include section($section-bg, transition);
+
+                        &#{$card-prefix}--interactive:hover {
+                            --dru--card--background-color: #{$section-bg};
                         }
                     } @else {
-                        background-color: color($name, 800);
-                        //background-color: mix(color($name, 700), color($name, 800), 50%);
-                        //border: mix(color($name, 700), color($name, 800), 50%);
-                        border-color: color($name, 800);
-                        & #{$card-prefix}__header,
-                        & #{$card-prefix}__footer {
-                            //background-color: color($name, 700);
-                            background-color: mix(color($name, 700), color($name, 800), 50%);
-                            border: none!important;
+                        --dru--card--background-color: #{color($name, 900)};
+                        --dru--card--border-color: #{color($name, 900)};
+
+                        @include section(mix(color($name, 800), color($name, 900), 50%), transparent);
+
+                        &#{$card-prefix}--interactive:hover {
+                            --dru--card--background-color: #{mix(color($name, 800), color($name, 900), 50%)};
                         }
                     }
 
-                    //&#{$card-prefix}--accent-left {
-                    //    border-left: 4px solid color($name, 500);
-                    //}
-                    //
-                    //&#{$card-prefix}--accent-top {
-                    //    border-top: 4px solid color($name, 500);
-                    //}
+                    @include accent($name);
+
+                    &#{$card-prefix}--disabled {
+                        @include accent($name, 700);
+                    }
                 }
 
-                &#{$card-prefix}--flat {
-
-                    @if ($name == gray or $name == slate or $name == neutral or $name == stone or $name == zinc) {
-                        background-color: map.get($surface-dark, base);
-                        border-color: map.get($surface-dark, base);
-                        & #{$card-prefix}__header{
-                            background-color: map.get($surface-dark, raised);
-                        }
-                        & #{$card-prefix}__footer{
-                            background-color: map.get($surface-dark, raised);
+                &#{$card-prefix}--ghost {
+                    @if index($neutral-colors, $name) {
+                        &#{$card-prefix}--interactive:hover {
+                            --dru--card--background-color: #{map.get($surface-dark, raised)};
                         }
                     } @else {
-                        //background-color: color($name, 975);
-                        background-color: mix(color($name, 950), #000, 50%);
-                        border-color: transparent;
-                        & #{$card-prefix}__header{
-                            //background-color: color($name, 950);
-                            background-color: mix(color($name, 950), #000, 80%);
-                        }
-                        & #{$card-prefix}__footer{
-                            //background-color: color($name, 950);
-                            background-color: mix(color($name, 950), #000, 80%);
+                        $section-bg: color($name, 950);
+                        &#{$card-prefix}--interactive:hover {
+                            --dru--card--background-color: #{$section-bg};
                         }
                     }
-
-                    //& #{$card-prefix}__header {
-                    //    border-bottom: 1px solid map.get($surface-dark, border)!important;
-                    //}
-                    //
-                    //& #{$card-prefix}__footer {
-                    //    border-top: 1px solid map.get($surface-dark, border)!important;
-                    //}
-
-                    //background-color: rgba(color($name, 950), .2);
-                    //border-color: rgba(color($name, 600), .4);
-
-                    //background-color: mix(color($name, 950), black, 36%);
-                    //background-color: color($name, 975);
-                    //border-color: transparent;
-                    //background-color: rgba(color($name, 950), .2);
-                    //border: rgba(color($name, 900), .7);
-                    //border: mix(color($name, 950), black, 50%);
-
-                    & #{$card-prefix}__header,
-                    & #{$card-prefix}__footer {
-                        border: none!important;
-                    }
-
-                    //&#{$card-prefix}--accent-left {
-                    //    border-left: 4px solid color($name, 500);
-                    //}
-                    //
-                    //&#{$card-prefix}--accent-top {
-                    //    border-top: 4px solid color($name, 500);
-                    //}
                 }
             }
 
@@ -584,13 +397,9 @@ $card-prefix: '.dru--card';
     }
 
     &#{$card-prefix}--ghost {
-        background-color: transparent;
-        border: none;
-        //box-shadow: none;
-        & #{$card-prefix}__header,
-        & #{$card-prefix}__footer {
-            background-color: transparent;
-            border: none!important;
-        }
+        --dru--card--background-color: transparent;
+        --dru--card--border-color: transparent;
+
+        @include section(transparent, transparent);
     }
 }
