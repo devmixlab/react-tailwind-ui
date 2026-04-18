@@ -56,9 +56,25 @@ $colors: map.merge($semantic-colors, $extended-colors);
     @return color($name, 700); // softer than 0.35
 }
 
+$surface-dark: (
+    base: #12141a, // main card
+    raised: #171923, // slightly elevated
+    floating: #1c1f2b, // modal / dropdown
+    border: #2a2f45,
+    divider: #23283a,
+);
+
+$surface-light: (
+    base: #ffffff,
+    raised: #f9fafb,
+    floating: #ffffff,
+    border: #e5e7eb,
+    divider: #e5e7eb,
+);
+
 $card-prefix: '.dru--card';
 
-#{$card-prefix}{
+#{$card-prefix} {
     // normalize when rendered as button
     &:where(button) {
         appearance: none;
@@ -70,21 +86,23 @@ $card-prefix: '.dru--card';
         color: inherit;
         text-align: inherit;
 
-        display: block;      // 🔥 important
-        width: 100%;         // 🔥 prevents shrink
+        display: block; // 🔥 important
+        width: 100%; // 🔥 prevents shrink
     }
-    &:where(a) {
-        text-decoration: none;   // remove underline
-        color: inherit;          // inherit text color
 
-        display: block;          // 🔥 important
-        width: 100%;             // 🔥 consistent layout
+    &:where(a) {
+        text-decoration: none; // remove underline
+        color: inherit; // inherit text color
+
+        display: block; // 🔥 important
+        width: 100%; // 🔥 consistent layout
     }
 
     &--disabled {
         //pointer-events: none;
         cursor: not-allowed;
         user-select: none;
+
         &:hover {
             transform: none;
             background-color: inherit;
@@ -94,10 +112,12 @@ $card-prefix: '.dru--card';
     &--outlined {
         background-color: transparent;
     }
+
     &--accent-top {
         border-top-left-radius: 0;
         border-top-right-radius: 0;
     }
+
     &--interactive {
         cursor: pointer;
         transition: transform 120ms ease, background-color 120ms ease;
@@ -119,29 +139,47 @@ $card-prefix: '.dru--card';
         //    outline-offset: 2px;
         //}
     }
+
     &__media {
         flex-shrink: 0;
         overflow: hidden;
         border-radius: inherit;
     }
+
     &__content {
         flex: 1;
         min-width: 0; // 🔥 VERY important
     }
+
     &__image {
         display: block;
         width: 100%;
         height: auto;
         object-fit: cover;
     }
+
     &__body {
         border-radius: inherit;
     }
 
+    &__header {
+        border-top-right-radius: inherit;
+        border-top-left-radius: inherit;
+        border-bottom: 1px solid transparent;
+    }
+
+    &__footer {
+        border-bottom-right-radius: inherit;
+        border-bottom-left-radius: inherit;
+        border-bottom: 1px solid transparent;
+    }
+
     @each $name, $color in $colors {
         &--#{$name} {
-            background-color: color($name, 50);
-            border: 1px solid color($name, 300);
+            background-color: color($name, 200);
+            border-width: 1px;
+            border-style: solid;
+            border-color: color($name, 400);
 
             &#{$card-prefix}--disabled {
                 background-color: color($name, 50); // or 100 if you want more contrast
@@ -175,21 +213,30 @@ $card-prefix: '.dru--card';
             &#{$card-prefix}--accent-left {
                 border-left: 4px solid color($name, 500);
             }
+
             &#{$card-prefix}--accent-top {
                 border-top: 4px solid color($name, 500);
             }
 
-            & #{$card-prefix}__header, & #{$card-prefix}__footer  {
-                background-color: color($name, 100);
+            & #{$card-prefix}__header, & #{$card-prefix}__footer {
+                background-color: color($name, 300);
+                //background-color: mix(color($name, 200), color($name, 300), 50%);
             }
 
             & #{$card-prefix}__header {
-                border-bottom: 1px solid divider-color-light($name);
+                border-bottom: 1px solid color($name, 400)!important;
+            }
+            & #{$card-prefix}__footer {
+                border-top: 1px solid color($name, 400)!important;
             }
 
-            & #{$card-prefix}__footer {
-                border-top: 1px solid divider-color-light($name);
-            }
+            //& #{$card-prefix}__header {
+            //    border-bottom: 1px solid divider-color-light($name);
+            //}
+            //
+            //& #{$card-prefix}__footer {
+            //    border-top: 1px solid divider-color-light($name);
+            //}
 
             // 🔥 OUTLINED OVERRIDE
             &#{$card-prefix}--outlined {
@@ -201,25 +248,64 @@ $card-prefix: '.dru--card';
 
                 & #{$card-prefix}__header,
                 & #{$card-prefix}__footer {
-                    background-color: color($name, 50);// very subtle
+                    //background-color: color($name, 50); // very subtle
+                    background: none;
                     //background-color: transparent;
                 }
 
                 & #{$card-prefix}__header {
-                    border-bottom-color: color($name, 200);
+                    border-bottom: 1px solid color($name, 400) !important;
                 }
 
                 & #{$card-prefix}__footer {
-                    border-top-color: color($name, 200);
+                    //border-top-color: color($name, 300);
+                    border-top: 1px solid color($name, 400) !important;
+                }
+            }
+
+            &#{$card-prefix}--filled {
+                background-color: color($name, 300);
+                border-color: color($name, 300);
+
+                & #{$card-prefix}__header,
+                & #{$card-prefix}__footer {
+                    //background-color: mix(color($name, 300), color($name, 400), 50%); // very subtle
+                    background-color: color($name, 400);
+                    //background-color: transparent;
+                }
+            }
+
+            &#{$card-prefix}--soft {
+                background-color: color($name, 100);
+                border-color: color($name, 200);
+
+                & #{$card-prefix}__header,
+                & #{$card-prefix}__footer {
+                    background-color: color($name, 200);
+                    //background-color: mix(color($name, 100), color($name, 200), 50%); // very subtle
+                    //background-color: transparent;
+                }
+
+                & #{$card-prefix}__header {
+                    border-bottom: 1px solid color($name, 200)!important;
+                    //background-color: color($name, 200);
+                }
+                & #{$card-prefix}__footer {
+                    border-top: 1px solid color($name, 200)!important;
+                    //background-color: color($name, 200);
                 }
             }
 
             &#{$card-prefix}--flat {
                 background-color: color($name, 50);
                 border: none;
+
                 & #{$card-prefix}__header,
                 & #{$card-prefix}__footer {
-                    background-color: color($name, 100); // 👈 subtle difference
+                    //background-color: color($name, 100); // 👈 subtle difference
+                    background-color: color($name, 100);
+                    //background-color: mix(color($name, 50), color($name, 100), 50%);
+                    border: none!important;
                 }
             }
 
@@ -227,14 +313,37 @@ $card-prefix: '.dru--card';
                 &#{$card-prefix}--accent-left {
                     border-left: 4px solid color($name, 500);
                 }
+
                 &#{$card-prefix}--accent-top {
                     border-top: 4px solid color($name, 500);
                 }
             }
 
             @include dark {
-                background-color: color($name, 975);
-                border: 1px solid color($name, 800);
+                @if ($name == gray or $name == slate or $name == neutral or $name == stone or $name == zinc) {
+                    background-color: map.get($surface-dark, floating);
+                    border-color: map.get($surface-dark, border);
+                    //border: 1px solid color($name, 600);
+
+                    & #{$card-prefix}__header, & #{$card-prefix}__footer {
+                        background-color: map.get($surface-dark, divider);
+                    }
+                } @else {
+                    background-color: color($name, 900);
+                    border: 1px solid color($name, 600);
+
+                    & #{$card-prefix}__header, & #{$card-prefix}__footer {
+                        background-color: color($name, 800);
+                    }
+                }
+                //background-color: mix(color($name, 800), color($name, 900), 50%);
+                //background-color: color($name, 900);
+                //background-color: transparent;
+                //border: 1px solid color($name, 600);
+                //border: 1px solid color($name, 800);
+                //border-color: transparent;
+
+                //mix(#121212, color($name, 950), 90%)
 
                 &#{$card-prefix}--disabled {
                     background-color: color($name, 800);
@@ -263,56 +372,184 @@ $card-prefix: '.dru--card';
                     border-top: 4px solid color($name, 500);
                 }
 
-                & #{$card-prefix}__header, & #{$card-prefix}__footer  {
-                    background-color: color($name, 900);
-                }
+                //& #{$card-prefix}__header, & #{$card-prefix}__footer {
+                //    background-color: color($name, 800);
+                //}
 
                 & #{$card-prefix}__header {
-                    border-bottom-color: divider-color-dark($name);
+                    border-bottom: 1px solid map.get($surface-dark, border)!important;
                 }
 
                 & #{$card-prefix}__footer {
-                    border-top-color: divider-color-dark($name);
+                    border-top: 1px solid map.get($surface-dark, border)!important;
                 }
 
                 // 🔥 OUTLINED DARK
                 &#{$card-prefix}--outlined {
                     background-color: transparent;
+                    //background-color: color($name, 950);
+                    border-color: color($name, 700);
 
-                    &#{$card-prefix}--interactive:hover {
-                        background-color: color($name, 800);
-                    }
+                    //&#{$card-prefix}--interactive:hover {
+                    //    background-color: color($name, 800);
+                    //}
 
                     & #{$card-prefix}__header,
                     & #{$card-prefix}__footer {
-                        background-color: color($name, 900);
+                        background: none;
                     }
 
-                    & #{$card-prefix}__header {
-                        border-bottom-color: color($name, 700);
-                    }
+                    //& #{$card-prefix}__header {
+                    //    border-bottom-color: color($name, 700);
+                    //}
+                    //
+                    //& #{$card-prefix}__footer {
+                    //    border-top-color: color($name, 700);
+                    //}
 
-                    & #{$card-prefix}__footer {
-                        border-top-color: color($name, 700);
+                    & #{$card-prefix}__header{
+                        border-bottom: 1px solid color($name, 700)!important;
+                    }
+                    & #{$card-prefix}__footer{
+                        border-top: 1px solid color($name, 700)!important;
                     }
                 }
 
+                &#{$card-prefix}--soft {
+
+                    @if ($name == gray or $name == slate or $name == neutral or $name == stone or $name == zinc) {
+                        background-color: map.get($surface-dark, raised);
+                        border-color: map.get($surface-dark, border);
+                        //border-color: color($name, 800);
+                        & #{$card-prefix}__header,
+                        & #{$card-prefix}__footer {
+                            background-color: map.get($surface-dark, floating);
+                        }
+                    } @else {
+                        background-color: color($name, 950);
+                        border-color: color($name, 800);
+                        & #{$card-prefix}__header,
+                        & #{$card-prefix}__footer {
+                            background-color: mix(color($name, 900), color($name, 950), 50%);
+                        }
+                    }
+
+                    //@if (index((stone, secondary, gray, slate), $name)) {
+                    //    background-color: mix(color($name, 800), color($name, 900), 40%);
+                    //    border-color: color($name, 700);
+                    //} @else {
+                    //    background-color: color($name, 950);
+                    //    border-color: color($name, 800);
+                    //}
+
+                    //background-color: rgba(color($name, 900), .4);
+                    //border-color: rgba(color($name, 600), .4);
+                    //background-color: mix(color($name, 950), color($name, 900), 30%);
+                    //border-color: color($name, 800);
+                    //border: none;
+
+                    //& #{$card-prefix}__header,
+                    //& #{$card-prefix}__footer {
+                    //    background-color: mix(color($name, 900), color($name, 950), 50%);
+                    //}
+
+                    & #{$card-prefix}__header{
+                        border-bottom: 1px solid color($name, 800)!important;
+                    }
+                    & #{$card-prefix}__footer{
+                        border-top: 1px solid color($name, 800)!important;
+                    }
+
+                    //&#{$card-prefix}--accent-left {
+                    //    border-left: 4px solid color($name, 500);
+                    //}
+                    //
+                    //&#{$card-prefix}--accent-top {
+                    //    border-top: 4px solid color($name, 500);
+                    //}
+                }
+
+                &#{$card-prefix}--filled {
+
+                    @if ($name == gray or $name == slate or $name == neutral or $name == stone or $name == zinc) {
+                        background-color: map.get($surface-dark, border);
+                        border-color: map.get($surface-dark, border);
+                        & #{$card-prefix}__header,
+                        & #{$card-prefix}__footer {
+                            background-color: mix(color(slate, 500), map.get($surface-dark, border), 10%);
+                            border: none!important;
+                        }
+                    } @else {
+                        background-color: mix(color($name, 700), color($name, 800), 50%);
+                        border: mix(color($name, 700), color($name, 800), 50%);
+                        & #{$card-prefix}__header,
+                        & #{$card-prefix}__footer {
+                            background-color: color($name, 700);
+                            border: none!important;
+                        }
+                    }
+
+                    //&#{$card-prefix}--accent-left {
+                    //    border-left: 4px solid color($name, 500);
+                    //}
+                    //
+                    //&#{$card-prefix}--accent-top {
+                    //    border-top: 4px solid color($name, 500);
+                    //}
+                }
+
                 &#{$card-prefix}--flat {
-                    background-color: color($name, 975);
-                    border: none;
+
+                    @if ($name == gray or $name == slate or $name == neutral or $name == stone or $name == zinc) {
+                        background-color: map.get($surface-dark, base);
+                        border-color: map.get($surface-dark, base);
+                        & #{$card-prefix}__header{
+                            background-color: map.get($surface-dark, raised);
+                        }
+                        & #{$card-prefix}__footer{
+                            background-color: map.get($surface-dark, raised);
+                        }
+                    } @else {
+                        background-color: color($name, 975);
+                        border-color: transparent;
+                        & #{$card-prefix}__header{
+                            background-color: color($name, 950);
+                        }
+                        & #{$card-prefix}__footer{
+                            background-color: color($name, 950);
+                        }
+                    }
+
+                    //& #{$card-prefix}__header {
+                    //    border-bottom: 1px solid map.get($surface-dark, border)!important;
+                    //}
+                    //
+                    //& #{$card-prefix}__footer {
+                    //    border-top: 1px solid map.get($surface-dark, border)!important;
+                    //}
+
+                    //background-color: rgba(color($name, 950), .2);
+                    //border-color: rgba(color($name, 600), .4);
+
+                    //background-color: mix(color($name, 950), black, 36%);
+                    //background-color: color($name, 975);
+                    //border-color: transparent;
+                    //background-color: rgba(color($name, 950), .2);
+                    //border: rgba(color($name, 900), .7);
+                    //border: mix(color($name, 950), black, 50%);
 
                     & #{$card-prefix}__header,
                     & #{$card-prefix}__footer {
-                        background-color: color($name, 950);
+                        border: none!important;
                     }
 
-                    &#{$card-prefix}--accent-left {
-                        border-left: 4px solid color($name, 500);
-                    }
-
-                    &#{$card-prefix}--accent-top {
-                        border-top: 4px solid color($name, 500);
-                    }
+                    //&#{$card-prefix}--accent-left {
+                    //    border-left: 4px solid color($name, 500);
+                    //}
+                    //
+                    //&#{$card-prefix}--accent-top {
+                    //    border-top: 4px solid color($name, 500);
+                    //}
                 }
             }
 
@@ -326,6 +563,7 @@ $card-prefix: '.dru--card';
         & #{$card-prefix}__header,
         & #{$card-prefix}__footer {
             background-color: transparent;
+            border: none!important;
         }
     }
 }

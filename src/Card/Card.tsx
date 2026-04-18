@@ -22,6 +22,7 @@ type CardProps = {
     // size?: SizeWithNone;
     interactive?: boolean;
     disabled?: boolean;
+    appearance?: 'neutral' | 'semantic';
     // accent?: 'left' | 'top';
 } & BoxProps;
 
@@ -49,6 +50,7 @@ export const Card: React.FC<CardProps> = ({
     disabled = false,
     accent = false,
     accentSide = 'left',
+    appearance = 'neutral',
     // children,
     ...rest
 }) => {
@@ -65,14 +67,21 @@ export const Card: React.FC<CardProps> = ({
 
     const cl = useMemo(
         () =>
-            clsx(prefix(), prefix(`--${tone}`), prefix(`--${kind}`), className, {
-                // [prefix(`--outlined`)]: outlined,
-                [prefix(`--interactive`)]: finalInteractive,
-                [prefix(`--disabled`)]: isDisabled,
-                [prefix(`--accent`)]: accent,
-                [prefix(`--accent-${accentSide}`)]: accent,
-            }),
-        [className, kind, tone, finalInteractive, accent, accentSide, isDisabled],
+            clsx(
+                prefix(),
+                prefix(`--${tone}`),
+                prefix(`--${kind}`),
+                prefix(`--appearance-${appearance}`),
+                className,
+                {
+                    // [prefix(`--outlined`)]: outlined,
+                    [prefix(`--interactive`)]: finalInteractive,
+                    [prefix(`--disabled`)]: isDisabled,
+                    [prefix(`--accent`)]: accent,
+                    [prefix(`--accent-${accentSide}`)]: accent,
+                },
+            ),
+        [className, kind, tone, finalInteractive, accent, accentSide, isDisabled, appearance],
     );
 
     return (
