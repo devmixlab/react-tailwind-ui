@@ -1,4 +1,4 @@
-export const kinds = ['filled', 'solid', 'soft', 'outlined', 'flat', 'ghost'] as const;
+export const kinds = ['filled', 'solid', 'soft', 'outlined', 'ghost'] as const;
 export type Kind = (typeof kinds)[number];
 
 export const density = ['none', 'xs', 'sm', 'md', 'lg', 'xl'] as const;

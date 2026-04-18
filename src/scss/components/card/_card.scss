@@ -343,19 +343,20 @@ $card-prefix: '.dru--card';
                         border-top: 1px solid map.get($surface-dark, border);
                     }
                 } @else {
-                    background-color: color($name, 900);
-                    border: 1px solid color($name, 700);
+                    //background-color: color($name, 950);
+                    background-color: mix(color($name, 900), color($name, 950), 50%);
+                    border: 1px solid color($name, 800);
 
                     & #{$card-prefix}__header, & #{$card-prefix}__footer {
-                        background-color: color($name, 800);
+                        background-color: color($name, 900);
                     }
 
                     & #{$card-prefix}__header {
-                        border-bottom: 1px solid color($name, 700);
+                        border-bottom: 1px solid color($name, 800);
                     }
 
                     & #{$card-prefix}__footer {
-                        border-top: 1px solid color($name, 700);
+                        border-top: 1px solid color($name, 800);
                     }
                 }
                 //background-color: mix(color($name, 800), color($name, 900), 50%);
@@ -442,11 +443,14 @@ $card-prefix: '.dru--card';
                             background-color: map.get($surface-dark, floating);
                         }
                     } @else {
-                        background-color: color($name, 950);
-                        border-color: color($name, 800);
+                        //background-color: color($name, 950);
+                        background-color: mix(color($name, 950), #000, 80%);
+                        //border-color: color($name, 900);
+                        border-color: mix(color($name, 900), color($name, 950), 50%);
                         & #{$card-prefix}__header,
                         & #{$card-prefix}__footer {
-                            background-color: mix(color($name, 900), color($name, 950), 50%);
+                            //background-color: mix(color($name, 900), color($name, 950), 30%);
+                            background-color: color($name, 950);
                         }
                     }
 
@@ -470,10 +474,11 @@ $card-prefix: '.dru--card';
                     //}
 
                     & #{$card-prefix}__header{
-                        border-bottom: 1px solid color($name, 800)!important;
+                        //border-bottom: 1px solid color($name, 900);
+                        border-bottom: 1px solid mix(color($name, 900), color($name, 950), 50%);
                     }
                     & #{$card-prefix}__footer{
-                        border-top: 1px solid color($name, 800)!important;
+                        border-top: 1px solid mix(color($name, 900), color($name, 950), 50%);
                     }
 
                     //&#{$card-prefix}--accent-left {
@@ -496,11 +501,14 @@ $card-prefix: '.dru--card';
                             border: none!important;
                         }
                     } @else {
-                        background-color: mix(color($name, 700), color($name, 800), 50%);
-                        border: mix(color($name, 700), color($name, 800), 50%);
+                        background-color: color($name, 800);
+                        //background-color: mix(color($name, 700), color($name, 800), 50%);
+                        //border: mix(color($name, 700), color($name, 800), 50%);
+                        border-color: color($name, 800);
                         & #{$card-prefix}__header,
                         & #{$card-prefix}__footer {
-                            background-color: color($name, 700);
+                            //background-color: color($name, 700);
+                            background-color: mix(color($name, 700), color($name, 800), 50%);
                             border: none!important;
                         }
                     }
