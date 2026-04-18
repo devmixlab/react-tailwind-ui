@@ -176,10 +176,11 @@ $card-prefix: '.dru--card';
 
     @each $name, $color in $colors {
         &--#{$name} {
-            background-color: color($name, 200);
+            //background-color: color($name, 100);
+            background-color: mix(color($name, 100), color($name, 200), 50%);
             border-width: 1px;
             border-style: solid;
-            border-color: color($name, 400);
+            border-color: color($name, 300);
 
             &#{$card-prefix}--disabled {
                 background-color: color($name, 50); // or 100 if you want more contrast
@@ -219,15 +220,15 @@ $card-prefix: '.dru--card';
             }
 
             & #{$card-prefix}__header, & #{$card-prefix}__footer {
-                background-color: color($name, 300);
+                background-color: color($name, 200);
                 //background-color: mix(color($name, 200), color($name, 300), 50%);
             }
 
             & #{$card-prefix}__header {
-                border-bottom: 1px solid color($name, 400)!important;
+                border-bottom: 1px solid color($name, 300);
             }
             & #{$card-prefix}__footer {
-                border-top: 1px solid color($name, 400)!important;
+                border-top: 1px solid color($name, 300);
             }
 
             //& #{$card-prefix}__header {
@@ -264,46 +265,51 @@ $card-prefix: '.dru--card';
             }
 
             &#{$card-prefix}--filled {
-                background-color: color($name, 300);
+                //background-color: color($name, 300);
+                background-color: mix(color($name, 200), color($name, 300), 50%);
                 border-color: color($name, 300);
 
                 & #{$card-prefix}__header,
                 & #{$card-prefix}__footer {
                     //background-color: mix(color($name, 300), color($name, 400), 50%); // very subtle
-                    background-color: color($name, 400);
+                    background-color: color($name, 300);
                     //background-color: transparent;
                 }
             }
 
             &#{$card-prefix}--soft {
-                background-color: color($name, 100);
+                //background-color: color($name, 100);
+                background-color: mix(color($name, 50), color($name, 100), 50%);
                 border-color: color($name, 200);
 
                 & #{$card-prefix}__header,
                 & #{$card-prefix}__footer {
-                    background-color: color($name, 200);
+                    background-color: color($name, 100);
                     //background-color: mix(color($name, 100), color($name, 200), 50%); // very subtle
                     //background-color: transparent;
                 }
 
                 & #{$card-prefix}__header {
-                    border-bottom: 1px solid color($name, 200)!important;
+                    border-bottom: 1px solid color($name, 200);
                     //background-color: color($name, 200);
                 }
                 & #{$card-prefix}__footer {
-                    border-top: 1px solid color($name, 200)!important;
+                    border-top: 1px solid color($name, 200);
                     //background-color: color($name, 200);
                 }
             }
 
             &#{$card-prefix}--flat {
                 background-color: color($name, 50);
+                //background-color: mix(#fff, color($name, 50), 80%);
                 border: none;
 
                 & #{$card-prefix}__header,
                 & #{$card-prefix}__footer {
                     //background-color: color($name, 100); // 👈 subtle difference
-                    background-color: color($name, 100);
+                    //background-color: color($name, 50);
+                    background-color: mix(color($name, 50), color($name, 100), 50%);
+                    //background-color: mix(#fff, color($name, 50), 70%);
                     //background-color: mix(color($name, 50), color($name, 100), 50%);
                     border: none!important;
                 }
@@ -328,12 +334,28 @@ $card-prefix: '.dru--card';
                     & #{$card-prefix}__header, & #{$card-prefix}__footer {
                         background-color: map.get($surface-dark, divider);
                     }
+
+                    & #{$card-prefix}__header {
+                        border-bottom: 1px solid map.get($surface-dark, border);
+                    }
+
+                    & #{$card-prefix}__footer {
+                        border-top: 1px solid map.get($surface-dark, border);
+                    }
                 } @else {
                     background-color: color($name, 900);
-                    border: 1px solid color($name, 600);
+                    border: 1px solid color($name, 700);
 
                     & #{$card-prefix}__header, & #{$card-prefix}__footer {
                         background-color: color($name, 800);
+                    }
+
+                    & #{$card-prefix}__header {
+                        border-bottom: 1px solid color($name, 700);
+                    }
+
+                    & #{$card-prefix}__footer {
+                        border-top: 1px solid color($name, 700);
                     }
                 }
                 //background-color: mix(color($name, 800), color($name, 900), 50%);
@@ -376,13 +398,7 @@ $card-prefix: '.dru--card';
                 //    background-color: color($name, 800);
                 //}
 
-                & #{$card-prefix}__header {
-                    border-bottom: 1px solid map.get($surface-dark, border)!important;
-                }
 
-                & #{$card-prefix}__footer {
-                    border-top: 1px solid map.get($surface-dark, border)!important;
-                }
 
                 // 🔥 OUTLINED DARK
                 &#{$card-prefix}--outlined {
@@ -510,13 +526,16 @@ $card-prefix: '.dru--card';
                             background-color: map.get($surface-dark, raised);
                         }
                     } @else {
-                        background-color: color($name, 975);
+                        //background-color: color($name, 975);
+                        background-color: mix(color($name, 950), #000, 50%);
                         border-color: transparent;
                         & #{$card-prefix}__header{
-                            background-color: color($name, 950);
+                            //background-color: color($name, 950);
+                            background-color: mix(color($name, 950), #000, 80%);
                         }
                         & #{$card-prefix}__footer{
-                            background-color: color($name, 950);
+                            //background-color: color($name, 950);
+                            background-color: mix(color($name, 950), #000, 80%);
                         }
                     }
 
