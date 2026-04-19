@@ -13,14 +13,6 @@ $neutral-colors: (secondary, gray, slate, neutral, stone, zinc);
     @return map.get(map.get($colors, $name), $step);
 }
 
-@function divider-color-light($name) {
-    @return color($name, 200); // softer than 0.2
-}
-
-@function divider-color-dark($name) {
-    @return color($name, 700); // softer than 0.35
-}
-
 $surface-dark: (
     base: #12141a, // main card
     raised: #171923, // slightly elevated
@@ -38,21 +30,75 @@ $surface-light: (
     divider: #e5e7eb,
 );
 
-@mixin section($bg: null, $bc: null) {
-    @if $bg != null {
-        --dru--card__section--background-color: #{$bg};
-    }
-
-    @if $bc != null {
-        --dru--card__section--border-color: #{$bc};
-    }
-}
-
-@mixin accent($color, $grade: 500) {
-    --dru--card--accent-color: #{color($color, $grade)};
-}
-
 $card-prefix: '.dru--card';
+
+@function tone($name, $light, $dark: null, $mode: 'light') {
+    @if ($mode == 'dark') {
+        //@if index($neutral-colors, $name) {
+        //    //@return if($is-dark, $dark, $light);
+        //} @else {
+        //    @return color($name, $dark);
+        //}
+        @return color($name, $dark);
+    } @else {
+        @return color($name, $light);
+    }
+}
+
+@mixin set-palette-vars($name, $mode: 'light') {
+    // Accent
+    --accent-color: #{tone($name, 500, 500, $mode)};
+    --accent-color-disabled: #{tone($name, 300, 700, $mode)};
+
+    // Text
+    --text-color-disabled: #{tone($name, 500, 400, $mode)};
+
+    // Card colors
+    $solid-section-bg: tone($name, 150, 900, $mode);
+    $solid-border-color: tone($name, 300, 800, $mode);
+    --solid-background-color: #{tone($name, 100, 950, $mode)};
+    --solid-background-color-hover: #{$solid-section-bg};
+    --solid-border-color: #{$solid-border-color};
+
+    $filled-section-bg: tone($name, 250, 750, $mode);
+    $filled-bg: tone($name, 200, 800, $mode);
+    --filled-background-color: #{$filled-bg};
+    --filled-background-color-hover: #{$filled-section-bg};
+    --filled-border-color: #{$filled-bg};
+
+    --outlined-background-color: transparent;
+    --outlined-background-color-hover: #{tone($name, 50, 950, $mode)};
+    --outlined-border-color: #{tone($name, 300, 700, $mode)};
+
+    $soft-section-bg: tone($name, 75, 925, $mode);
+    --soft-background-color: #{tone($name, 50, 975, $mode)};
+    --soft-background-color-hover: #{$soft-section-bg};
+    --soft-border-color: #{tone($name, 200, 900, $mode)};
+
+    --ghost-background-color: transparent;
+    --ghost-background-color-hover: #{tone($name, 50, 950, $mode)};
+    --ghost-border-color: transparent;
+
+    // Sections
+    --solid-section-bg: #{$solid-section-bg};
+    --solid-section-border: #{tone($name, 300, 800, $mode)};
+
+    --filled-section-bg: #{$filled-section-bg};
+    --filled-section-border: transparent;
+
+    --outlined-section-bg: transparent;
+    --outlined-section-border: #{tone($name, 300, 700, $mode)};
+
+    --soft-section-bg: #{$soft-section-bg};
+    --soft-section-border: #{tone($name, 200, 850, $mode)};
+
+    --ghost-section-bg: transparent;
+    --ghost-section-border: transparent;
+
+
+    // Interactivity
+    --outline-color: #{color($name, 500)};
+}
 
 #{$card-prefix} {
     --dru--card--text-color: inherit;
@@ -118,52 +164,11 @@ $card-prefix: '.dru--card';
 
     @each $name, $color in $colors {
         &--#{$name} {
-            // Accent
-            --accent-color: #{color($name, 500)};
-            --accent-color-disabled: #{color($name, 300)};
-
-            // Text
-            --text-color-disabled: #{color(gray, 500)};
-
-            // Card colors
-            --solid-background-color: #{color($name, 100)};
-            --solid-background-color-hover: #{color($name, 150)};
-            --solid-border-color: #{color($name, 300)};
-
-            --filled-background-color: #{color($name, 200)};
-            --filled-background-color-hover: #{color($name, 250)};
-            --filled-border-color: #{color($name, 200)};
-
-            --outlined-background-color: transparent;
-            --outlined-background-color-hover: #{color($name, 50)};
-            --outlined-border-color: var(--solid-border-color);
-
-            --soft-background-color: #{color($name, 50)};
-            --soft-background-color-hover: #{color($name, 75)};
-            --soft-border-color: #{color($name, 200)};
-
-            --ghost-background-color: transparent;
-            --ghost-background-color-hover: #{color($name, 50)};
-            --ghost-border-color: transparent;
-
-            // Sections
-            --solid-section-bg: #{color($name, 150)};
-            --solid-section-border: #{color($name, 300)};
-            --filled-section-bg: #{color($name, 250)};
-            --filled-section-border: transparent;
-            --outlined-section-bg: transparent;
-            --outlined-section-border: #{color($name, 300)};
-            --soft-section-bg: #{color($name, 75)};
-            --soft-section-border: #{color($name, 200)};
-            --ghost-section-bg: transparent;
-            --ghost-section-border: transparent;
-
-
-            // Interactivity
-            --outline-color: #{color($name, 500)};
+            @include set-palette-vars($name);
         }
         @include dark {
             &--#{$name} {
+                //@include set-palette-vars($name, 'dark');
                 // Accent
                 --accent-color-disabled: #{color($name, 700)};
 
@@ -205,39 +210,7 @@ $card-prefix: '.dru--card';
                     --soft-section-bg: #{$soft-section-bg};
                     --soft-section-border: #{map.get($surface-dark, border)};
                 } @else {
-                    // Card colors
-                    $solid-section-bg: color($name, 900);
-                    --solid-background-color: #{color($name, 950)};
-                    --solid-background-color-hover: #{$solid-section-bg};
-                    --solid-border-color: #{color($name, 800)};
-
-                    $filled-section-bg: #{color($name, 750)};
-                    --filled-background-color: #{color($name, 800)};
-                    --filled-background-color-hover: #{$filled-section-bg};
-                    --filled-border-color: #{color($name, 800)};
-
-                    --outlined-background-color-hover: #{color($name, 950)};
-                    --outlined-border-color: #{color($name, 700)};
-
-                    $soft-section-bg: color($name, 925);
-                    --soft-background-color: #{color($name, 975)};
-                    --soft-background-color-hover: #{$soft-section-bg};
-                    --soft-border-color: #{color($name, 900)};
-
-                    --ghost-background-color-hover: #{color($name, 950)};
-
-                    // Sections
-                    --solid-section-bg: #{$solid-section-bg};
-                    --solid-section-border: #{color($name, 800)};
-
-                    --filled-section-bg: #{$filled-section-bg};
-                    --filled-section-border: transparent;
-
-                    --outlined-section-bg: transparent;
-                    --outlined-section-border: #{color($name, 700)};
-
-                    --soft-section-bg: #{$soft-section-bg};
-                    --soft-section-border: #{color($name, 850)};
+                    @include set-palette-vars($name, 'dark');
                 }
             }
         }
