@@ -206,21 +206,21 @@ $card-prefix: '.dru--card';
                     --soft-section-border: #{map.get($surface-dark, border)};
                 } @else {
                     // Card colors
-                    $solid-section-bg: mix(color($name, 900), color($name, 950), 50%);
+                    $solid-section-bg: color($name, 900);
                     --solid-background-color: #{color($name, 950)};
                     --solid-background-color-hover: #{$solid-section-bg};
                     --solid-border-color: #{color($name, 800)};
 
-                    $filled-section-bg: #{color($name, 850)};
-                    --filled-background-color: #{color($name, 900)};
+                    $filled-section-bg: #{color($name, 750)};
+                    --filled-background-color: #{color($name, 800)};
                     --filled-background-color-hover: #{$filled-section-bg};
-                    --filled-border-color: #{color($name, 900)};
+                    --filled-border-color: #{color($name, 800)};
 
                     --outlined-background-color-hover: #{color($name, 950)};
                     --outlined-border-color: #{color($name, 700)};
 
-                    $soft-section-bg: mix(color($name, 950), #000, 80%);
-                    --soft-background-color: #{mix(color($name, 950), #000, 50%)};
+                    $soft-section-bg: color($name, 925);
+                    --soft-background-color: #{color($name, 975)};
                     --soft-background-color-hover: #{$soft-section-bg};
                     --soft-border-color: #{color($name, 900)};
 
@@ -237,7 +237,7 @@ $card-prefix: '.dru--card';
                     --outlined-section-border: #{color($name, 700)};
 
                     --soft-section-bg: #{$soft-section-bg};
-                    --soft-section-border: #{mix(color($name, 900), color($name, 950), 50%)};
+                    --soft-section-border: #{color($name, 850)};
                 }
             }
         }
