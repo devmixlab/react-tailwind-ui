@@ -58,10 +58,15 @@ $card-prefix: '.dru--card';
     --dru--card--background-color: transparent;
     --dru--card--background-color-hover: transparent;
     --dru--card--border-color: transparent;
+
+    // Section
     --dru--card__section--background-color: transparent;
     --dru--card__section--border-color: transparent;
+
     --dru--card--accent-color: transparent;
+    --dru--card--accent-color-disabled: transparent;
     --dru--card--text-color: inherit;
+    --dru--card--text-color-disabled: inherit;
 
     &__header {
         background-color: var(--dru--card__section--background-color);
@@ -77,13 +82,7 @@ $card-prefix: '.dru--card';
         border-bottom-left-radius: inherit;
     }
 
-    &--accent-left {
-        border-left: 4px solid var(--dru--card--accent-color);
-    }
 
-    &--accent-top {
-        border-top: 4px solid var(--dru--card--accent-color);
-    }
 
     // normalize when rendered as button
     &:where(button) {
@@ -108,20 +107,7 @@ $card-prefix: '.dru--card';
         width: 100%; // 🔥 consistent layout
     }
 
-    &--disabled {
-        //pointer-events: none;
-        cursor: not-allowed;
-        user-select: none;
 
-        &:hover {
-            transform: none;
-        }
-    }
-
-    &--accent-top {
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
-    }
 
     &--interactive {
         cursor: pointer;
@@ -171,27 +157,37 @@ $card-prefix: '.dru--card';
             --dru--card--background-color: #{color($name, 100)};
             --dru--card--border-color: #{color($name, 300)};
             --dru--card--background-color-hover: #{mix(color($name, 100), color($name, 200), 50%)};
+            --dru--card--accent-color: #{color($name, 500)};
+            --dru--card--accent-color-disabled: #{color($name, 300)};
+            --dru--card--text-color-disabled: #{color(gray, 500)};
 
-            @include accent($name);
+            //Sections
+            --solid-section-bg: #{mix(color($name, 100), color($name, 200), 50%)};
+            --solid-section-border: #{color($name, 300)};
+            --filled-section-bg: #{mix(color($name, 200), color($name, 300), 50%)};
+            --filled-section-border: transparent;
+            --outlined-section-bg: transparent;
+            --outlined-section-border: #{color($name, 300)};
+            --soft-section-bg: #{mix(color($name, 50), color($name, 100), 50%)};
+            --soft-section-border: #{color($name, 200)};
 
-            &#{$card-prefix}--disabled {
-                --dru--card--text-color: #{color(gray, 500)};
-                @include accent($name, 300);
-            }
+            --dru--card__section--background-color: var(--solid-section-bg);
+            --dru--card__section--border-color: var(--solid-section-border);
+
 
             &#{$card-prefix}--interactive:focus-visible {
                 outline: 2px solid color($name, 500);
                 outline-offset: 2px;
             }
 
-            @include section(mix(color($name, 100), color($name, 200), 50%), color($name, 300));
-
             // 🔥 OUTLINED OVERRIDE
             &#{$card-prefix}--outlined {
                 --dru--card--background-color: transparent;
                 --dru--card--background-color-hover: #{color($name, 50)};
 
-                @include section(transparent, color($name, 300));
+                // Section
+                --dru--card__section--background-color: var(--outlined-section-bg);
+                --dru--card__section--border-color: var(--outlined-section-border);
             }
 
             &#{$card-prefix}--filled {
@@ -199,14 +195,9 @@ $card-prefix: '.dru--card';
                 --dru--card--background-color-hover: #{mix(color($name, 200), color($name, 300), 50%)};
                 --dru--card--border-color: #{color($name, 200)};
 
-                $filled-section-color: mix(color($name, 200), color($name, 300), 50%);
-                @include section($filled-section-color, $filled-section-color);
-
-                @include accent($name);
-
-                &#{$card-prefix}--disabled {
-                    @include accent($name, 300);
-                }
+                // Section
+                --dru--card__section--background-color: var(--filled-section-bg);
+                --dru--card__section--border-color: var(--filled-section-border);
             }
 
             &#{$card-prefix}--soft {
@@ -214,23 +205,13 @@ $card-prefix: '.dru--card';
                 --dru--card--border-color: #{color($name, 200)};
                 --dru--card--background-color-hover: #{mix(color($name, 50), color($name, 100), 50%)};
 
-                @include section(mix(color($name, 50), color($name, 100), 50%), color($name, 200));
-
-                @include accent($name);
-
-                &#{$card-prefix}--disabled {
-                    @include accent($name, 300);
-                }
+                // Section
+                --dru--card__section--background-color: var(--soft-section-bg);
+                --dru--card__section--border-color: var(--soft-section-border);
             }
 
             &#{$card-prefix}--ghost {
                 --dru--card--background-color-hover: #{color($name, 50)};
-
-                @include accent($name);
-
-                &#{$card-prefix}--disabled {
-                    @include accent($name, 300);
-                }
             }
         }
         @include dark {
@@ -343,11 +324,51 @@ $card-prefix: '.dru--card';
     border: 1px solid var(--dru--card--border-color);
     color: var(--dru--card--text-color);
 
+    //--dru--card__section--background-color: transparent;
+    //--dru--card__section--border-color: transparent;
+
+    //&--outlined {
+    //    --dru--card__section--background-color: var(--dru--card__outlined__section--background-color);
+    //    --dru--card__section--border-color: var(--dru--card__outlined__section--border-color);
+    //}
+    //
+    //&--filled {
+    //    --dru--card__section--background-color: var(--dru--card__filled__section--background-color);
+    //    --dru--card__section--border-color: var(--dru--card__filled__section--border-color);
+    //}
+    //
+    //&--soft {
+    //    --dru--card__section--background-color: var(--dru--card__soft__section--background-color);
+    //    --dru--card__section--border-color: var(--dru--card__soft__section--border-color);
+    //}
+
     &#{$card-prefix}--ghost {
         --dru--card--background-color: transparent;
         --dru--card--border-color: transparent;
 
         @include section(transparent, transparent);
+    }
+
+    &--disabled {
+        --dru--card--accent-color: var(--dru--card--accent-color-disabled);
+        --dru--card--text-color: var(--dru--card--text-color-disabled);
+        //pointer-events: none;
+        cursor: not-allowed;
+        user-select: none;
+
+        &:hover {
+            transform: none;
+        }
+    }
+
+    &--accent-left {
+        border-left: 4px solid var(--dru--card--accent-color);
+    }
+
+    &--accent-top {
+        border-top: 4px solid var(--dru--card--accent-color);
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
     }
 
     &--interactive:hover {
