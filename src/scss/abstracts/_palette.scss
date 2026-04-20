@@ -895,41 +895,91 @@ $olive: (
     975: #10130d,
 );
 
+//$pastel: (
+//    red:    #fde2e2,
+//    orange: #ffe8cc,
+//    yellow: #fff3bf,
+//    green:  #d3f9d8,
+//    teal:   #c3fae8,
+//    blue:   #dbeafe,
+//    indigo: #e0e7ff,
+//    violet: #ede9fe,
+//    pink:   #fce7f3,
+//
+//    // NEW
+//    cyan:   #cffafe, // fresh, lighter than teal
+//    lime:   #ecfccb, // brighter green option
+//    amber:  #fef3c7, // warmer than yellow
+//    rose:   #ffe4e6, // warmer pink
+//    sky:    #e0f2fe  // softer blue alternative
+//);
+
 $pastel: (
     red:    #fde2e2,
     orange: #ffe8cc,
     yellow: #fff3bf,
+    amber:  #fef3c7,
+
+    lime:   #ecfccb,
     green:  #d3f9d8,
     teal:   #c3fae8,
+    cyan:   #cffafe,
+
+    sky:    #e0f2fe,
     blue:   #dbeafe,
     indigo: #e0e7ff,
     violet: #ede9fe,
-    pink:   #fce7f3,
+    purple: #f3e8ff,
 
-    // NEW
-    cyan:   #cffafe, // fresh, lighter than teal
-    lime:   #ecfccb, // brighter green option
-    amber:  #fef3c7, // warmer than yellow
-    rose:   #ffe4e6, // warmer pink
-    sky:    #e0f2fe  // softer blue alternative
+    pink:   #fce7f3,
+    rose:   #ffe4e6,
+
+    // neutrals
+    neutral:#f3f4f6,
+    beige:  #f5efe6
 );
 
-$pastel-dark: (
-    red:    #2a1a1c,
-    orange: #2b2118,
-    yellow: #2a2716,
-    green:  #1b2a20,
-    teal:   #172a28,
-    blue:   #17212a,
-    indigo: #1b1e2a,
-    violet: #201b2a,
-    pink:   #2a1b23,
+//$pastel-dark: (
+//    red:    #2a1a1c,
+//    orange: #2b2118,
+//    yellow: #2a2716,
+//    green:  #1b2a20,
+//    teal:   #172a28,
+//    blue:   #17212a,
+//    indigo: #1b1e2a,
+//    violet: #201b2a,
+//    pink:   #2a1b23,
+//
+//    cyan:   #16262a,
+//    lime:   #1f2a18,
+//    amber:  #2a2416,
+//    rose:   #2a1a1e,
+//    sky:    #17242a
+//);
 
-    cyan:   #16262a,
-    lime:   #1f2a18,
-    amber:  #2a2416,
-    rose:   #2a1a1e,
-    sky:    #17242a
+$pastel-dark: (
+    red:    #3a1f22,
+    orange: #3a2a22,
+    yellow: #38342a,
+    amber:  #3a3226,
+
+    lime:   #2f3326,
+    green:  #25332a,
+    teal:   #23332f,
+    cyan:   #223133,
+
+    sky:    #222e33,
+    blue:   #222a33,
+    indigo: #242733,
+    violet: #272433,
+    purple: #2a2433,
+
+    pink:   #2c2430,
+    rose:   #2e2427,
+
+    // neutrals
+    neutral:#262626,
+    beige:  #2f2a24
 );
 
 $surface-light: (

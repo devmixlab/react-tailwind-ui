@@ -1,576 +1,563 @@
 @use '../../abstracts/config' as *;
 @use '../../abstracts/variables' as *;
 @use '../../abstracts/mixins' as *;
+@use '../../abstracts/palette' as *;
+@use '../../abstracts/palette_dark' as *;
 
-@use './variables' as *;
-@use './mixins' as *;
+@use "sass:map";
 
-@use 'sass:map';
-@use 'sass:color';
+$red-fallback: (
+    50:  #3a1f22,
+    75:  #331b1e,
+    100: #2d171a,
+    150: #281416,
+    200: #241112,
+    250: #200f10,
 
-$m: 'dru';
+    300: #1c0d0e,
+    400: #1a0c0d,
+    500: #180b0c, // base anchor (very deep red)
 
-@function text-color-map($name, $mode: 'light', $default: #fff) {
-    @if ($mode == 'light') {
-        @if index((light, yellow), $name) {
-            @return #1f2937;
-        }
-    } @else {
-        //@return map.get($dark-palette-colors-text, $name);
-        @if index((dark, warning, info, zinc, neutral, stone, amber, yellow, lime, green, emerald, teal, cyan, sky), $name) {
-            @return #111827;
-        }
-    }
+    600: #160a0b,
+    700: #14090a,
+    750: #130809,
 
-    @return $default;
+    800: #120708,
+    850: #110607,
+
+    900: #100506,
+    925: #0f0505,
+    950: #0d0404,
+    975: #0a0303
+);
+
+$slate-fallback: (
+    50:  #22263a,  // hover-ish (lightest usable)
+    75:  #1f2333,
+    100: #1c1f2b,  // floating
+    150: #191c27,
+    200: #171923,  // raised
+    250: #151823,
+
+    300: #141722,
+    400: #131621,
+    500: #12141a,  // base (anchor)
+
+    600: #101318,
+    700: #0f1217,
+    750: #0e1116,
+
+    800: #0d1015,
+    850: #0c0f14,
+
+    900: #0b0e13,
+    925: #0a0d12,
+    950: #090c11,
+    975: #07090d
+);
+
+$zinc-fallback: $slate-fallback;
+
+$stone-fallback: (
+    50:  #2a2623,  // warm hover
+    75:  #26221f,
+    100: #211e1b,  // floating-ish
+    150: #1e1b18,
+    200: #1c1917,  // raised
+    250: #191613,
+
+    300: #171411,
+    400: #15120f,
+    500: #14110e,  // base anchor
+
+    600: #12100d,
+    700: #110f0c,
+    750: #100e0b,
+
+    800: #0f0d0a,
+    850: #0e0c09,
+
+    900: #0d0b08,
+    925: #0c0a07,
+    950: #0b0906,
+    975: #090705
+);
+
+$neutral-fallback: (
+    50:  #262626,
+    75:  #222222,
+    100: #1e1e1e,
+    150: #1b1b1b,
+    200: #181818,
+    250: #161616,
+
+    300: #141414,
+    400: #131313,
+    500: #121212, // base anchor
+
+    600: #101010,
+    700: #0f0f0f,
+    750: #0e0e0e,
+
+    800: #0d0d0d,
+    850: #0c0c0c,
+
+    900: #0b0b0b,
+    925: #0a0a0a,
+    950: #090909,
+    975: #070707
+);
+
+$gray-fallback: $neutral-fallback;
+
+$fallback-map: (
+    secondary: $gray-fallback,
+    gray: $gray-fallback,
+    slate: $slate-fallback,
+    neutral: $gray-fallback,
+    stone: $stone-fallback,
+    zinc: $zinc-fallback,
+    red: $red-fallback,
+);
+
+$dark-palette: (
+    primary: $blue-dark,
+    secondary: $slate-dark,
+    success: $green-dark,
+    warning: $amber-dark,
+    info: $cyan-dark,
+    slate: $slate-dark,
+    zinc: $zinc-dark,
+    neutral: $neutral-dark,
+    gray: $gray-dark,
+    stone: $stone-dark,
+    red: $red-dark,
+    orange: $orange-dark,
+    amber: $amber-dark,
+    yellow: $yellow-dark,
+    lime: $lime-dark,
+    green: $green-dark,
+    emerald: $emerald-dark,
+    teal: $teal-dark,
+    cyan: $cyan-dark,
+    sky: $sky-dark,
+    blue: $blue-dark,
+    indigo: $indigo-dark,
+    violet: $violet-dark,
+    purple: $purple-dark,
+    fuchsia: $fuchsia-dark,
+    pink: $pink-dark,
+    rose: $rose-dark,
+    beige: $beige-dark,
+    tan: $tan-dark,
+    brown: $brown-dark,
+    navy: $navy-dark,
+    olive: $olive-dark
+);
+
+$colors: map.merge($semantic-colors, $extended-colors);
+
+$neutral-colors: (secondary, gray, slate, neutral, stone, zinc, red, primary, purple);
+
+@function color($name, $step) {
+    @return map.get(map.get($colors, $name), $step);
 }
 
-//
-//@mixin perColorPalette($color-palette, $mode: 'light') {
-//    @each $name, $color in $color-palette {
-//        &#{$p}#{"" + $name} {
-//            $text-color: text-color-map($name, $mode);
-//            background-color: $color;
-//            //color: $text-color;
-//            border-color: $color;
-//            //border-color: color.adjust($color, $lightness: -20%);
-//            //background-color: color.adjust($color, $lightness: -20%);
-//
-//            &#{$p}outlined {
-//                background-color: color.change($color, $alpha: 10%);
-//                //border-color: color.change($color, $alpha: 60%);
-//                border-color: $color;
-//                //@if ($mode == 'dark') {
-//                //    color: color.adjust($color, $lightness: 20%);
-//                //    @if ($name == light) {
-//                //        color: color.adjust($color, $lightness: 60%);
-//                //    } @else if index((slate, gray), $name) {
-//                //        color: color.adjust($color, $lightness: 30%);
-//                //    }
-//                //} @else {
-//                //    color: color.adjust($color, $lightness: -20%);
-//                //    @if ($name == light) {
-//                //        color: color.adjust($color, $lightness: -60%);
-//                //    } @else if index((slate, gray), $name) {
-//                //        color: color.adjust($color, $lightness: -20%);
-//                //    }
-//                //}
-//            }
-//
-//            #{$p}__card-header {
-//                //background-color: red;
-//                background-color: color.change($color, $alpha: 20%);
-//                border-bottom: 1px solid color.change($color, $alpha: 60%);
-//            }
-//
-//            #{$p}__card-footer {
-//                //background-color: red;
-//                background-color: color.change($color, $alpha: 20%);
-//                border-top: 1px solid color.change($color, $alpha: 60%);
-//            }
-//
-//            //&#{$p}accent {
-//            //    border-left-width: 4px;
-//            //    border-left-color: color.adjust($color, $lightness: -20%);
-//            //    @if($mode == 'dark') {
-//            //        border-left-color: color.adjust($color, $lightness: 40%);
-//            //        @if ($name == dark) {
-//            //            border-left-color: color.adjust($text-color, $lightness: 50%);
-//            //        }
-//            //    }
-//            //    &#{$p}outlined {
-//            //        border-left-color: color.change($color, $alpha: 60%);
-//            //        @if($mode == 'dark') {
-//            //            //border-left-color: color.adjust($color, $lightness: 40%);
-//            //            @if ($name == light) {
-//            //                border-left-color: color.adjust($text-color, $lightness: -60%);
-//            //            }
-//            //        } @else {
-//            //            @if ($name == light) {
-//            //                border-left-color: color.adjust($text-color, $lightness: 60%);
-//            //            }
-//            //        }
-//            //    }
-//            //}
-//        }
-//    }
-//}
-
-@mixin groupPerColorPalette($color-palette, $mode: 'light') {
-    @each $name, $color in $color-palette {
-        &#{$p}#{"" + $name} {
-            //$text-color: text-color-map($name, $mode);
-            //background-color: $color;
-            //color: $text-color;
-            border-color: $color;
-            border-width: 1px;
-            border-style: solid;
-            //border-color: color.change($color, $alpha: 40%);
-            //border-color: color.change($color, $alpha: 50%);
-            //outline: 1px solid color.change($color, $alpha: 30%);
-            //outline-offset: -0.5px;
-            //#{$p}__card-grid {
-            //    border-width: 1px;
-            //    border-style: solid;
-            //    border-color: color.change($color, $alpha: 30%);
-            //}
-
-            #{$p}card {
-                &#{$p}outlined {
-                    //background-color: color.change($color, $alpha: 20%);
-                    //border-color: color.change($color, $alpha: 30%);
-                    //border-left-color: transparent;
-                    //border-top-color: transparent;
-                    border-color: transparent;
-                    outline: 1px solid color.change($color, $alpha: 60%);
-                    outline-offset: -.6px;
-                }
-            }
-
-            //&#{$p}outlined {
-            //    background-color: color.change($color, $alpha: 20%);
-            //    border-color: color.change($color, $alpha: 30%);
-            //    @if ($mode == 'dark') {
-            //        color: color.adjust($color, $lightness: 20%);
-            //        @if ($name == light) {
-            //            color: color.adjust($color, $lightness: 60%);
-            //        } @else if index((slate, gray), $name) {
-            //            color: color.adjust($color, $lightness: 30%);
-            //        }
-            //    } @else {
-            //        color: color.adjust($color, $lightness: -20%);
-            //        @if ($name == light) {
-            //            color: color.adjust($color, $lightness: -60%);
-            //        } @else if index((slate, gray), $name) {
-            //            color: color.adjust($color, $lightness: -20%);
-            //        }
-            //    }
-            //}
-        }
-    }
-}
-
-
-$radius: (
-    sm: 0.25rem, // 4px
-    md: 0.5rem, // 8px
-    lg: 0.75rem, // 12px
-);
-
-$card-gaps: (
-    sm: 0.5rem,
-    md: 1rem,
-    lg: 1.5rem,
-    none: 0,
-);
-
-$card-sizes: (
-    sm: 8px,
-    md: 12px,
-    lg: 16px,
-);
-
-$image-wrapper-paddings: (
-    sm: 8px,
-    md: 12px,
-    lg: 16px,
-);
-
-$image-radius: (
-    sm: 0.25rem, // 4px
-    md: 0.5rem, // 8px
-    lg: 0.75rem, // 12px
-    full: 9999rem,
-);
-
-
-//$image-shadows: (
-//    sm: 0 1px 2px rgba(0, 0, 0, 0.08),
-//    md: 0 4px 8px rgba(0, 0, 0, 0.12),
-//    lg: 0 8px 16px rgba(0, 0, 0, 0.16),
+//$surface-dark: (
+//    base: #12141a, // main __card
+//    raised: #171923, // slightly elevated
+//    hover: #22263a,
+//    floating: #1c1f2b, // modal / dropdown
+//    border: #2a2f45,
+//    divider: #23283a,
 //);
-$image-shadows: (
-    light: (
-        sm: 0 1px 2px rgba(0, 0, 0, 0.08),
-        md: 0 4px 8px rgba(0, 0, 0, 0.12),
-        lg: 0 8px 16px rgba(0, 0, 0, 0.16),
-    ),
-    dark: (
-        sm: 0 1px 2px rgba(255, 255, 255, 0.08),
-        md: 0 4px 8px rgba(255, 255, 255, 0.12),
-        lg: 0 8px 16px rgba(255, 255, 255, 0.16),
-    )
+
+$surface-dark: (
+    base: #12141a,
+    raised: #171923,
+    floating: #1c1f2b,
+    hover: #22263a,     // 🔥 ADD (CRITICAL)
+    active: #2a2f45,    // 🔥 ADD
+    border: #2a2f45,
+    divider: #23283a,
 );
 
-//#{$p}__card-group-wrapper {
-//    border: 1px solid rgba(255, 255, 255, .3);
-//    //border-radius: $border-radius;
-//    overflow: hidden;
-//}
+//$surface-light: (
+//    base: #ffffff,
+//    raised: #f9fafb,
+//    floating: #ffffff,
+//    border: #e5e7eb,
+//    divider: #e5e7eb,
+//);
 
-#{$p}card-group {
-    #{$p}card-grid {
-        display: grid;
-        grid-template-columns: repeat(12, 1fr); // 👈 important
-        gap: map.get($card-gaps, lg); // default
+$surface-light: (
+    base: #ffffff,
+    raised: #f9fafb,
+    hover: #f3f4f6,     // 🔥 ADD
+    active: #e5e7eb,    // 🔥 ADD
+    border: #e5e7eb,
+    divider: #e5e7eb,
+);
 
-        //@each $name, $value in $__card-gaps {
-        //    @at-root #{$p}__card-group.gap-#{$name} #{$p}__card-grid {
-        //        gap: $value;
+$card-prefix: '.dru--card';
+
+@function tone($name, $light, $dark, $mode: 'light', $fallback: null, $disable-fallback: false) {
+    @if ($mode == 'dark') {
+        //@if $disable-fallback == false and index($neutral-colors, $name) {
+        //    //@return if($is-dark, $dark, $light);
+        //    $fallback-palette: map.get($fallback-map, $name);
+        //    $fallback-step: $light;
+        //    @if ($fallback) {
+        //        $fallback-step: $fallback;
         //    }
+        //    @return map.get($fallback-palette, $fallback-step);
+        //} @else {
+        //    @return color($name, $dark);
         //}
-    }
-
-    @each $name, $value in $card-gaps {
-        &.gap-#{$name} #{$p}card-grid {
-            gap: $value;
-        }
-    }
-
-    &#{$p}collapse {
-        //border-radius: 1rem;
-        overflow: hidden;
-
-        #{$p}card-grid {
-            margin: -1px;
-        }
-
-        //border: 1px solid transparent;
-        #{$p}card {
-            border-radius: 0;
-        }
-
-        @each $name, $value in $radius {
-            &#{$p}#{'rounded-' + $name} {
-                border-radius: $value;
-            }
-        }
-    }
-
-    //@each $name, $value in $__card-gaps {
-    //    &.gap-#{$name} {
-    //        gap: $value;
-    //    }
-    //}
-
-    #{$p}card {
-        grid-column: span 12 / span 12; // 👈 default full width
-    }
-
-    // spans
-    @for $i from 1 through 12 {
-        $items-per-row: floor(12 / $i); // integer division
-
-        .col-#{$i} {
-            grid-column: span #{$i} / span #{$i};
-
-            // remove right border if it's the last in the row
-            //&:nth-child(#{$items-per-row}n) {
-            //    border-right-color: transparent !important;
+        @if  map.has-key($dark-palette, $name) {
+            //@return if($is-dark, $dark, $light);
+            $fallback-palette: map.get($dark-palette, $name);
+            $fallback-step: $dark;
+            //@if ($fallback) {
+            //    $fallback-step: $fallback;
             //}
-
-            // Remove bottom border on last row
-            // last row items = total items modulo items-per-row
-            // In CSS, approximate by selecting last $items-per-row elements
-            //&:nth-last-child(-n + #{$items-per-row}) {
-            //    border-bottom-color: transparent !important;
-            //}
+            @return map.get($fallback-palette, $fallback-step);
+        } @else {
+            @return color($name, $dark);
         }
-
-
-        // remove right border if it's the last in the row
-        //&:nth-child(#{$i}n) {
-        //    border-right-color: red;
-        //}
+        //@return color($name, $dark);
+    } @else {
+        @return color($name, $light);
     }
-
-    // breakpoints
-    @media (min-width: 640px) {
-        @for $i from 1 through 12 {
-            .sm-col-#{$i} {
-                grid-column: span #{$i} / span #{$i};
-            }
-
-            // remove right border if it's the last in the row
-            //&:nth-child(#{$i}n) {
-            //    border-right-color: red;
-            //}
-        }
-    }
-
-    @media (min-width: 768px) {
-        @for $i from 1 through 12 {
-            .md-col-#{$i} {
-                grid-column: span #{$i} / span #{$i};
-
-                // remove right border if it's the last in the row
-                &:nth-child(#{$i}n) {
-                    border-right-color: transparent;
-                }
-            }
-        }
-    }
-
-    @media (min-width: 1024px) {
-        @for $i from 1 through 12 {
-            .lg-col-#{$i} {
-                grid-column: span #{$i} / span #{$i};
-            }
-        }
-    }
-
-    @media (min-width: 1280px) {
-        @for $i from 1 through 12 {
-            .xl-col-#{$i} {
-                grid-column: span #{$i} / span #{$i};
-            }
-        }
-    }
-
-    @include groupPerColorPalette($palette-colors, 'light');
-    @include dark {
-        @include groupPerColorPalette($dark-palette-colors, 'dark');
-    }
-
-    //display: grid;
-    //gap: 1rem; // default gap
-    //grid-template-columns: repeat(12, 1fr);
-
-    // dynamic cols for breakpoints
-    //&.cols-1 { grid-template-columns: repeat(1, 1fr); }
-    //&.cols-2 { grid-template-columns: repeat(2, 1fr); }
-    //&.cols-3 { grid-template-columns: repeat(3, 1fr); }
-    //&.cols-4 { grid-template-columns: repeat(4, 1fr); }
-    //&.cols-5 { grid-template-columns: repeat(5, 1fr); }
-    //&.cols-6 { grid-template-columns: repeat(6, 1fr); }
-    //@for $i from 1 through 12 {
-    //    .col-#{$i} {
-    //        grid-column: span #{$i} / span #{$i};
-    //    }
-    //}
-
-    //@media (min-width: 640px) { // sm
-    //    &.sm-cols-1 { grid-template-columns: repeat(1, 1fr); }
-    //    &.sm-cols-2 { grid-template-columns: repeat(2, 1fr); }
-    //    &.sm-cols-3 { grid-template-columns: repeat(3, 1fr); }
-    //    &.sm-cols-4 { grid-template-columns: repeat(4, 1fr); }
-    //}
-    //@media (min-width: 768px) { // md
-    //    &.md-cols-3 { grid-template-columns: repeat(3, 1fr); }
-    //}
-    //@media (min-width: 1024px) { // lg
-    //    &.lg-cols-4 { grid-template-columns: repeat(4, 1fr); }
-    //}
 }
 
-.dru--card {
-    --dux-card-border-color: transparent;
-    --dux-card-background-color: transparent;
-    border: 1px solid var(--dux-card-border-color);
-    transition: box-shadow 0.2s ease, transform 0.2s ease;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    background-color: var(--dux-card-background-color);
 
-    @each $name, $value in $radius {
-        &--#{'rounded-' + $name} {
-            border-radius: $value;
-        }
-    }
+//@mixin set-palette-vars($name, $mode: 'light') {
+//    // Accent
+//    --accent-color: #{tone($name, 500, 500, $mode, $disable-fallback: true)};
+//    --accent-color-disabled: #{tone($name, 300, 700, $mode)};
+//
+//    // Text
+//    --text-color-disabled: #{tone($name, 500, 400, $mode)};
+//
+//    // Card colors
+//    $solid-section-bg: tone($name, 150, 900, $mode, $fallback: 100);
+//    $solid-border-color: tone($name, 300, 800, $mode, $fallback: 50);
+//    --solid-background-color: #{tone($name, 100, 950, $mode, $fallback: 150)};
+//    --solid-background-color-hover: #{$solid-section-bg};
+//    --solid-border-color: #{$solid-border-color};
+//
+//    //$solid-section-bg: tone($name, 150, 900, $mode);
+//    //$solid-border-color: tone($name, 300, 800, $mode);
+//    //--solid-background-color: #{tone($name, 100, 950, $mode)};
+//    //--solid-background-color-hover: #{$solid-section-bg};
+//    //--solid-border-color: #{$solid-border-color};
+//
+//    //$filled-section-bg: tone($name, 250, 750, $mode, $fallback: 50);
+//    //$filled-bg: tone($name, 200, 800, $mode, $fallback: 75);
+//    //--filled-background-color: #{$filled-bg};
+//    //--filled-background-color-hover: #{$filled-section-bg};
+//    //--filled-border-color: #{$filled-bg};
+//
+//    $filled-section-bg: tone($name, 250, 600, $mode);
+//    $filled-bg: tone($name, 200, 800, $mode);
+//    --filled-background-color: #{$filled-bg};
+//    --filled-background-color-hover: #{$filled-section-bg};
+//    --filled-border-color: #{$filled-bg};
+//
+//    --outlined-background-color: transparent;
+//    --outlined-background-color-hover: #{tone($name, 50, 950, $mode)};
+//    --outlined-border-color: #{tone($name, 300, 700, $mode, $disable-fallback: true)};
+//
+//    //$soft-section-bg: tone($name, 75, 925, $mode, $fallback: 200);
+//    //--soft-background-color: #{tone($name, 50, 975, $mode, $fallback: 250)};
+//    //--soft-background-color-hover: #{$soft-section-bg};
+//    //--soft-border-color: #{tone($name, 200, 900, $mode, $fallback: 200)};
+//
+//    $soft-section-bg: tone($name, 75, 925, $mode, $fallback: 50);
+//    --soft-background-color: #{tone($name, 50, 975, $mode, $fallback: 75)};
+//    --soft-background-color-hover: #{$soft-section-bg};
+//    --soft-border-color: #{tone($name, 200, 900, $mode, $fallback: 50)};
+//
+//    --ghost-background-color: transparent;
+//    --ghost-background-color-hover: #{tone($name, 50, 950, $mode)};
+//    --ghost-border-color: transparent;
+//
+//    // Sections
+//    --solid-section-bg: #{$solid-section-bg};
+//    --solid-section-border: #{tone($name, 300, 800, $mode)};
+//
+//    --filled-section-bg: #{$filled-section-bg};
+//    --filled-section-border: transparent;
+//
+//    --outlined-section-bg: transparent;
+//    --outlined-section-border: #{tone($name, 300, 700, $mode)};
+//
+//    --soft-section-bg: #{$soft-section-bg};
+//    --soft-section-border: #{tone($name, 200, 850, $mode)};
+//
+//    --ghost-section-bg: transparent;
+//    --ghost-section-border: transparent;
+//
+//
+//    // Interactivity
+//    --outline-color: #{color($name, 500)};
+//}
 
-    &__body{
-        display: flex;
-        &--row{
-            flex-direction: row;
-        }
-        &--col{
-            flex-direction: column;
-        }
-    }
+@mixin set-palette-vars($name, $mode: 'light') {
 
-    &__content {
-        background-color: red;
-        flex: 1;
-    }
+    // --- ACCENT ---
+    --accent-color: #{color($name, 500)};
+    --accent-color-disabled: #{tone($name, 300, 700, $mode)};
 
-    &__header, &__footer, &__body {
-        @each $name, $size in $card-sizes {
-            &--#{'' + $name} {
-                padding: $size;
-            }
-        }
-    }
+    // --- TEXT ---
+    --text-color-disabled: #{tone($name, 500, 400, $mode)};
+
+    // =====================
+    // SOLID
+    // =====================
+    $solid-section-bg: tone($name, 150, 400, $mode);
+
+    --solid-background-color: #{tone($name, 100, 200, $mode)};
+    --solid-background-color-hover: #{$solid-section-bg};
+    --solid-border-color: #{tone($name, 300, 600, $mode)}; // ✔ visible
+
+    // =====================
+    // FILLED
+    // =====================
+    $filled-section-bg: tone($name, 250, 100, $mode);
+    $filled-bg: tone($name, 200, 150, $mode);
+
+    --filled-background-color: #{$filled-bg};
+    --filled-background-color-hover: #{$filled-section-bg};
+    --filled-border-color: #{tone($name, 200, 700, $mode)}; // ✔ FIXED
+
+    // =====================
+    // OUTLINED (semantic!)
+    // =====================
+    --outlined-background-color: transparent;
+    --outlined-background-color-hover: #{tone($name, 50, 850, $mode)};
+    --outlined-border-color: #{tone($name, 500, 50, $mode)}; // ✔ IMPORTANT
+
+    // =====================
+    // SOFT
+    // =====================
+    $soft-section-bg: tone($name, 75, 850, $mode);
+
+    //--soft-background-color: color-mix(in srgb, #{color($name, 500)} 8%, transparent);
+    //--soft-background-color: #{tone($name, 50, 925, $mode)};
+    --soft-background-color: #{tone($name, 50, 850, $mode)};
+    --soft-background-color-hover: #{$soft-section-bg};
+    --soft-border-color: #{tone($name, 200, 700, $mode)}; // ✔ FIXED
+
+    // =====================
+    // GHOST
+    // =====================
+    --ghost-background-color: transparent;
+    --ghost-background-color-hover: #{tone($name, 50, 850, $mode)};
+    --ghost-border-color: transparent;
+
+    // =====================
+    // SECTIONS
+    // =====================
+    --solid-section-bg: #{$solid-section-bg};
+    --solid-section-border: #{tone($name, 300, 600, $mode)};
+
+    --filled-section-bg: #{$filled-section-bg};
+    --filled-section-border: transparent;
+
+    --outlined-section-bg: transparent;
+    --outlined-section-border: #{color($name, 500)}; // ✔ semantic
+
+    --soft-section-bg: #{$soft-section-bg};
+    --soft-section-border: #{tone($name, 200, 700, $mode)};
+
+    --ghost-section-bg: transparent;
+    --ghost-section-border: transparent;
+
+    // =====================
+    // INTERACTION
+    // =====================
+    --outline-color: #{color($name, 500)};
+}
+
+#{$card-prefix} {
+    --dru--card--text-color: inherit;
 
     &__header {
-        --dux-card-header-background-color: transparent;
-        --dux-card-header-border-color: transparent;
-        background-color: var(--dux-card-header-background-color);
-        border-bottom: 1px solid var(--dux-card-header-border-color);
+        background-color: var(--dru--card__section--background-color);
+        border-bottom: 1px solid var(--dru--card__section--border-color);
+        border-top-right-radius: inherit;
+        border-top-left-radius: inherit;
     }
 
     &__footer {
-        --dux-card-footer-background-color: transparent;
-        --dux-card-footer-border-color: transparent;
-        background-color: var(--dux-card-footer-background-color);
-        border-top: 1px solid var(--dux-card-footer-border-color);
+        background-color: var(--dru--card__section--background-color);
+        border-top: 1px solid var(--dru--card__section--border-color);
+        border-bottom-right-radius: inherit;
+        border-bottom-left-radius: inherit;
     }
 
-    @include perColorPalette($palette-colors, 'light');
-    @include dark {
-        @include perColorPalette($dark-palette-colors, 'dark');
-    }
-}
+    // normalize when rendered as button
+    &:where(button) {
+        appearance: none;
+        border: none;
+        background: none;
+        padding: 0;
+        margin: 0;
+        font: inherit;
+        color: inherit;
+        text-align: inherit;
 
-#{$p}card {
-    border-width: 1px;
-    border-style: solid;
-    //border-radius: $border-radius;
-    //border: 1px solid map.get($palette-colors, gray);
-    //background-color: map.get($palette-colors, light);
-    //background-color: blue;
-    //padding: 1rem;
-    transition: box-shadow 0.2s ease, transform 0.2s ease;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-
-    @each $name, $value in $radius {
-        &#{$p}#{'rounded-' + $name} {
-            border-radius: $value;
-        }
+        display: block; // 🔥 important
+        width: 100%; // 🔥 prevents shrink
     }
 
-    #{$p}card-header, #{$p}card-body, #{$p}card-footer {
-        @each $name, $size in $card-sizes {
-            &#{$p}#{'size-' + $name} {
-                padding: $size;
-            }
-        }
-        //padding: 7px 15px;
-        //background-color: red;
+    &:where(a) {
+        text-decoration: none; // remove underline
+        color: inherit; // inherit text color
+
+        display: block; // 🔥 important
+        width: 100%; // 🔥 consistent layout
     }
 
-    #{$p}card-body-wrapper {
-        display: flex;
-        flex-direction: column;
+    &__media {
+        flex-shrink: 0;
+        overflow: hidden;
+        border-radius: inherit;
+    }
+
+    &__content {
         flex: 1;
-        //gap: 10px;
+        min-width: 0; // 🔥 VERY important
+    }
 
-        &#{$p}direction-horizontal {
-            flex-direction: row;
+    &__image {
+        display: block;
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
+
+    &__body {
+        border-radius: inherit;
+    }
+
+    @each $name, $color in $colors {
+        &--#{$name} {
+            @include set-palette-vars($name);
         }
-
-        #{$p}card-body {
-            flex: 1;
-            //display: flex;
-            //flex-direction: column;
-            //gap: 8px;
-        }
-
-        &#{$p}direction-vertical {
-            #{$p}card-image-wrapper {
-                width: 100%;
+        @include dark {
+            &--#{$name} {
+                @include set-palette-vars($name, 'dark');
             }
-        }
-
-        &#{$p}direction-horizontal {
-            #{$p}card-body-image-wrapper {
-                align-items: start;
-            }
-        }
-
-        #{$p}card-body-image-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            @each $name, $value in $image-wrapper-paddings {
-                &#{$p}#{'padding-size-' + $name} {
-                    &#{$p}placement-bottom {
-                        padding: 0px $value $value;
-                    }
-
-                    &#{$p}placement-left {
-                        padding: $value 0px $value $value;
-                    }
-
-                    &#{$p}placement-top {
-                        padding: $value $value 0px;
-                    }
-
-                    &#{$p}placement-right {
-                        padding: $value $value $value 0px;
-                    }
-                }
-            }
-
-            //&#{$p}direction-vertical {
-            //    #{$p}__card-image-wrapper {
-            //        width: 100%;
-            //    }
-            //}
-
-            //width: 100%;
-            //object-fit: cover;
-            #{$p}card-image {
-                width: 100%;
-                object-fit: cover;
-
-                @each $name, $value in $image-radius {
-                    &#{$p}#{'image-rounded-' + $name} {
-                        border-radius: $value;
-                    }
-                }
-
-                $shadows: map.get($image-shadows, light);
-                @include dark {
-                    $shadows: map.get($image-shadows, dark);
-                }
-                @each $name, $value in $shadows {
-                    &#{$p}#{'image-shadow-' + $name} {
-                        box-shadow: $value;
-                    }
-                }
-
-                &#{$p}bordered {
-                    border: 1px solid rgba(0, 0, 0, 0.08);
-                    @include dark {
-                        border: 1px solid rgba(255, 255, 255, 0.08);
-                    }
-                }
-            }
-
-            #{$p}placement-left,
-            #{$p}placement-right {
-                //width: 120px;
-                flex-shrink: 0;
-            }
-
-            //&#{$p}placement-top {
-            //    //width: 100%;
-            //    //background-color: red;
-            //}
         }
     }
 
-    #{$p}card-footer {
-        //padding: 5px 10px;
-        //background-color: red;
+    // Card colors
+    --dru--card--background-color: var(--solid-background-color);
+    --dru--card--background-color-hover: var(--solid-background-color-hover);
+    --dru--card--border-color: var(--solid-border-color);
+
+    // Section colors
+    --dru--card__section--background-color: var(--solid-section-bg);
+    --dru--card__section--border-color: var(--solid-section-border);
+
+    --dru--card--accent-color: var(--accent-color);
+    --dru--card--accent-color-disabled: var(--accent-color-disabled);
+    --dru--card--text-color-disabled: var(--text-color-disabled);
+
+    background-color: var(--dru--card--background-color);
+    border: 1px solid var(--dru--card--border-color);
+    color: var(--dru--card--text-color);
+
+    &--interactive {
+        cursor: pointer;
+        transition: transform 120ms ease, background-color 120ms ease;
+        user-select: none;
+
+        &:focus-visible {
+            outline: 2px solid var(--outline-color);
+            outline-offset: 2px;
+        }
+
+        &:hover {
+            background-color: var(--dru--card--background-color-hover);
+
+            //will-change: transform;
+            transform: translateY(-1px);
+        }
+
+        &:active {
+            user-select: none;
+            transform: translateY(0.5px);
+        }
+
+        //&:focus-visible {
+        //    outline: 2px solid red;
+        //    outline-offset: 2px;
+        //}
     }
 
-    //&.shadow-md {
-    //    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    //}
-    //
-    //&.hoverEffect:hover {
-    //    transform: translateY(-2px);
-    //    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    //    cursor: pointer;
-    //}
+    &--filled {
+        --dru--card--background-color: var(--filled-background-color);
+        --dru--card--background-color-hover: var(--filled-background-color-hover);
+        --dru--card--border-color: var(--filled-border-color);
 
-    @include perColorPalette($palette-colors, 'light');
-    @include dark {
-        @include perColorPalette($dark-palette-colors, 'dark');
+        // Section
+        --dru--card__section--background-color: var(--filled-section-bg);
+        --dru--card__section--border-color: var(--filled-section-border);
+    }
+
+    &--outlined {
+        --dru--card--background-color: var(--outlined-background-color);
+        --dru--card--background-color-hover: var(--outlined-background-color-hover);
+        --dru--card--border-color: var(--outlined-border-color);
+
+        // Section
+        --dru--card__section--background-color: var(--outlined-section-bg);
+        --dru--card__section--border-color: var(--outlined-section-border);
+    }
+
+    &--soft {
+        --dru--card--background-color: var(--soft-background-color);
+        --dru--card--border-color: var(--soft-border-color);
+        --dru--card--background-color-hover: var(--soft-background-color-hover);
+
+        // Section
+        --dru--card__section--background-color: var(--soft-section-bg);
+        --dru--card__section--border-color: var(--soft-section-border);
+    }
+
+    &--ghost {
+        --dru--card--background-color: var(--ghost-background-color);
+        --dru--card--background-color-hover: var(--ghost-background-color-hover);
+        --dru--card--border-color: var(--ghost-border-color);
+
+        // Section
+        --dru--card__section--background-color: var(--ghost-section-bg);
+        --dru--card__section--border-color: var(--ghost-section-border);
+    }
+
+    &--disabled {
+        --dru--card--accent-color: var(--dru--card--accent-color-disabled);
+        --dru--card--text-color: var(--dru--card--text-color-disabled);
+        //pointer-events: none;
+        cursor: not-allowed;
+        user-select: none;
+
+        &:hover {
+            transform: none;
+        }
+    }
+
+    &--accent-left {
+        border-left: 4px solid var(--dru--card--accent-color);
+    }
+
+    &--accent-top {
+        border-top: 4px solid var(--dru--card--accent-color);
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
     }
 }

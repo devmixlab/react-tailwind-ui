@@ -12,7 +12,7 @@ export const prefix = (name: string = '') => {
     return `${CLASS_PREFIX}--card${name}`;
 };
 
-type CardProps = {
+export type CardProps = {
     as?: React.ElementType;
     tone?: Color;
     kind?: Kind;
