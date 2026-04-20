@@ -8,6 +8,9 @@ import { Kind, Density } from './card.tokens';
 import { Box, type BoxProps } from '../Box/Box';
 import clsx from 'clsx';
 
+import { defaultCardTheme } from './card.themes';
+import { toCardVars } from './card.helpers';
+
 export const prefix = (name: string = '') => {
     return `${CLASS_PREFIX}--card${name}`;
 };
@@ -23,6 +26,7 @@ export type CardProps = {
     interactive?: boolean;
     disabled?: boolean;
     appearance?: 'neutral' | 'semantic';
+    theme?: typeof defaultCardTheme;
     // accent?: 'left' | 'top';
 } & BoxProps;
 
@@ -43,6 +47,7 @@ export const Card: React.FC<CardProps> = ({
     as,
     rounded,
     shadow,
+    theme,
     kind = 'solid',
     tone = 'secondary',
     density = 'md',
@@ -89,6 +94,7 @@ export const Card: React.FC<CardProps> = ({
             value={{ tone, kind, density, interactive: finalInteractive, disabled: isDisabled }}
         >
             <Box
+                style={toCardVars(theme ?? defaultCardTheme)}
                 as={as}
                 href={as === 'a' && isDisabled ? undefined : href}
                 aria-disabled={isDisabled || undefined}
