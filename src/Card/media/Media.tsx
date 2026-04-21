@@ -2,16 +2,18 @@ import React, { forwardRef } from 'react';
 import clsx from 'clsx';
 import { prefix as classPrefix } from '../Card';
 import { Box, type BoxProps } from '../../Box/Box';
-import { createPolymorphic } from '../../types/polymorphic';
+import { createPolymorphic, type PolymorphicComponent } from '../../types/polymorphic';
+import { type ImageProps } from './Image';
+import { type IconProps } from './Icon';
 
 export type MediaProps = {
     children?: React.ReactNode;
     className?: string;
 } & BoxProps;
 
-export type MediaComponent = React.FC<MediaProps> & {
-    Image: React.FC<any>;
-    Icon: React.FC<any>;
+export type MediaComponent = PolymorphicComponent<MediaProps, 'div'> & {
+    Image: PolymorphicComponent<ImageProps>;
+    Icon: PolymorphicComponent<IconProps>;
 };
 
 const prefix = (name: string = '') => {

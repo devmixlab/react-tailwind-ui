@@ -5,17 +5,8 @@ import { Footer } from './Footer';
 import { CompMedia } from './media';
 import { Content } from './Content';
 import { Section } from './Section';
-// import { Image } from './media/Image';
-// import { Icon } from './media/Icon';
-// import { Group } from './Group';
-// import { BodyImage } from './Media/BodyImage';
-// import { TableRow } from './TableRow';
-// import { TableCell } from './TableCell';
-// import { TableHeaderCell } from './TableHeaderCell';
-// import { TableSortableHeaderCell } from './TableSortableHeaderCell';
 
 // Attach subcomponents
-// const CompTable = Table as TableComponent;
 const CompCard = Card as CardComponent;
 
 CompCard.Header = Header;
@@ -24,10 +15,5 @@ CompCard.Footer = Footer;
 CompCard.Media = CompMedia;
 CompCard.Content = Content;
 CompCard.Section = Section;
-// CompCard.Image = BodyImage;
-// CompTable.Row = TableRow;
-// CompTable.Cell = TableCell;
-// CompTable.HeaderCell = TableHeaderCell;
-// CompTable.SortableHeaderCell = TableSortableHeaderCell;
 
 export { CompCard };

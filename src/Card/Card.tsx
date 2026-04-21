@@ -14,6 +14,11 @@ import { createPolymorphic, type PolymorphicComponent } from '../types/polymorph
 import { HeadingsProps, HProps } from '../Heading/Heading';
 
 import { type HeaderOwnProps } from './Header';
+import { type BodyOwnProps } from './Body';
+import { type MediaProps } from './media/Media';
+import { type FooterOwnProps } from './Footer';
+import { type ContentProps } from './Content';
+import { type SectionOwnProps } from './Section';
 
 export const prefix = (name: string = '') => {
     return `${CLASS_PREFIX}--card${name}`;
@@ -52,11 +57,11 @@ export type CardProps = {
 
 export type CardComponent = PolymorphicComponent<CardProps, 'div'> & {
     Header: PolymorphicComponent<HeaderOwnProps>;
-    Body: PolymorphicComponent<CardProps>;
-    Footer: PolymorphicComponent<CardProps>;
-    Media: PolymorphicComponent<CardProps>;
-    Content: PolymorphicComponent<CardProps>;
-    Section: PolymorphicComponent<CardProps>;
+    Body: PolymorphicComponent<BodyOwnProps>;
+    Footer: PolymorphicComponent<FooterOwnProps>;
+    Media: PolymorphicComponent<MediaProps>;
+    Content: PolymorphicComponent<ContentProps>;
+    Section: PolymorphicComponent<SectionOwnProps>;
 };
 
 export const CardImpl = (
