@@ -40,6 +40,7 @@ export type CardComponent = React.FC<CardProps> & {
     Footer: React.FC<any>;
     Media: React.FC<any>;
     Content: React.FC<any>;
+    Section: React.FC<any>;
 };
 
 export const Card: React.FC<CardProps> = ({

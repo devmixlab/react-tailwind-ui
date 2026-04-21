@@ -7,11 +7,11 @@ import { useCardContext } from './card.context';
 import { hasKey } from '../utils/ts';
 import { createPolymorphic } from '../types/polymorphic';
 
-type SectionType = 'header' | 'body' | 'footer';
+type SectionType = 'header' | 'body' | 'footer' | 'section';
 
 export type SectionOwnProps = {
     density?: Density;
-    type: SectionType;
+    type?: SectionType;
 } & BoxProps;
 
 type SectionProps = SectionOwnProps;
@@ -26,7 +26,7 @@ type ImplProps = {
 } & Record<string, unknown>;
 
 export const SectionImpl = (
-    { className, children, px, py, density, type, ...rest }: ImplProps,
+    { className, children, px, py, density, type = 'section', ...rest }: ImplProps,
     ref: React.Ref<any>,
 ) => {
     const { density: ctxDensity } = useCardContext();

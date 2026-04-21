@@ -1,0 +1,20 @@
+$dru-heading-sizes: (
+    h1: (font-size: 28px, line-height: 36px, font-weight: 600),
+    h2: (font-size: 24px, line-height: 32px, font-weight: 600),
+    h3: (font-size: 20px, line-height: 28px, font-weight: 600),
+    h4: (font-size: 18px, line-height: 26px, font-weight: 500),
+    h5: (font-size: 16px, line-height: 24px, font-weight: 500),
+    h6: (font-size: 14px, line-height: 20px, font-weight: 500),
+);
+
+.dru--heading {
+    margin: 0;
+
+    @each $key, $styles in $dru-heading-sizes {
+        &--#{$key} {
+            @each $prop, $value in $styles {
+                #{$prop}: $value;
+            }
+        }
+    }
+}

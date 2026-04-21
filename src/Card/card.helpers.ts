@@ -11,7 +11,11 @@ export const toCardVars = (theme: typeof defaultCardTheme) => {
         '--dru-card--accent-disabled-light': theme.light.accentDisabled,
 
         '--dru-card--border-light': theme.light.border,
+        '--dru-card--border-section-light': theme.light.borderSection,
         '--dru-card--ring-light': theme.light.ring,
+
+        '--dru-card--icon-surface-light': theme.light.surfaceIcon,
+        '--dru-card--icon-color-light': theme.light.icon,
 
         '--dru-card--text-light': theme.light.text,
         '--dru-card--text-muted-light': theme.light.textMuted,
@@ -26,7 +30,11 @@ export const toCardVars = (theme: typeof defaultCardTheme) => {
         '--dru-card--accent-disabled-dark': theme.dark.accentDisabled,
 
         '--dru-card--border-dark': theme.dark.border,
+        '--dru-card--border-section-dark': theme.dark.borderSection,
         '--dru-card--ring-dark': theme.dark.ring,
+
+        '--dru-card--icon-surface-dark': theme.dark.surfaceIcon,
+        '--dru-card--icon-color-dark': theme.dark.icon,
 
         '--dru-card--text-dark': theme.dark.text,
         '--dru-card--text-muted-dark': theme.dark.textMuted,

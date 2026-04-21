@@ -9,7 +9,11 @@ export const defaultCardTheme = {
         accentDisabled: '#94a3b8',
 
         border: '#e2e8f0',
+        borderSection: '#e2e8f0',
         ring: '#94a3b8',
+
+        surfaceIcon: '#f1f5f9',
+        icon: '#cbd5e1',
 
         text: '#1e293b', // slightly cooler than neutral
         textMuted: '#64748b',
@@ -26,7 +30,11 @@ export const defaultCardTheme = {
         accentDisabled: '#6b7280',
 
         border: '#374151',
+        borderSection: '#374151',
         ring: '#6b7280',
+
+        surfaceIcon: 'red',
+        icon: '#4b5563',
 
         text: '#e5e7eb',
         textMuted: '#9ca3af',

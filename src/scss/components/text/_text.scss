@@ -1,0 +1,97 @@
+@use '../../abstracts/config' as *;
+@use '../../abstracts/mixins' as *;
+
+
+@mixin text-theme($mode) {
+    --dru-text--color-default: var(--dru-text--color-default-#{$mode});
+    --dru-text--color-secondary: var(--dru-text--color-secondary-#{$mode});
+    --dru-text--color-muted: var(--dru-text--color-muted-#{$mode});
+}
+
+.dru--text {
+
+    /* ================== LIGHT ================== */
+
+    --dru-text--color-default-light: #0f172a;
+    --dru-text--color-secondary-light: #475569;
+    --dru-text--color-muted-light: #94a3b8;
+
+    /* ================== DARK ================== */
+
+    --dru-text--color-default-dark: #f8fafc;
+    --dru-text--color-secondary-dark: #cbd5e1;
+    --dru-text--color-muted-dark: #64748b;
+
+    /* ================== CARD ================== */
+
+    @include text-theme('light');
+    @include dark {
+        @include text-theme('dark');
+    }
+
+    margin: 0;
+
+    // Sizes
+    &--inherit {
+        font-size: inherit;
+        line-height: inherit;
+    }
+    &--2xs {
+        font-size: 10px;
+        line-height: 14px;
+    }
+
+    &--xs {
+        font-size: 12px;
+        line-height: 16px;
+    }
+
+    &--sm {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    &--md {
+        font-size: 16px;
+        line-height: 24px;
+    }
+
+    &--lg {
+        font-size: 18px;
+        line-height: 26px;
+    }
+
+    &--xl {
+        font-size: 20px;
+        line-height: 28px;
+    }
+
+    // Tones
+    &--tone {
+        &-default {
+            color: var(--dru-text--color-default);
+        }
+
+        &-secondary {
+            color: var(--dru-text--color-secondary);
+        }
+
+        &-muted {
+            color: var(--dru-text--color-muted);
+        }
+    }
+
+    // Truncate (single line)
+    &--truncate {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    // Clamp (multi-line)
+    &--clamp {
+        display: -webkit-box;
+        overflow: hidden;
+        -webkit-box-orient: vertical;
+    }
+}

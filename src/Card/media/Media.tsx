@@ -11,6 +11,7 @@ export type MediaProps = {
 
 export type MediaComponent = React.FC<MediaProps> & {
     Image: React.FC<any>;
+    Icon: React.FC<any>;
 };
 
 const prefix = (name: string = '') => {

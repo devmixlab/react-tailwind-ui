@@ -13,7 +13,11 @@ $card-prefix: '.dru--card';
     --dru-card--accent-disabled: var(--dru-card--accent-disabled-#{$mode});
 
     --dru-card--border: var(--dru-card--border-#{$mode});
+    --dru-card--border-section: var(--dru-card--border-section-#{$mode});
     --dru-card--ring: var(--dru-card--ring-#{$mode});
+
+    --dru-card--icon-surface: var(--dru-card--icon-surface-#{$mode});
+    --dru-card--icon-color: var(--dru-card--icon-color-#{$mode});
 
     --dru-card--text: var(--dru-card--text-#{$mode});
     --dru-card--text-muted: var(--dru-card--text-muted-#{$mode});
@@ -32,7 +36,11 @@ $card-prefix: '.dru--card';
     --dru-card--accent-disabled-light: #9ca3af;
 
     --dru-card--border-light: #e5e7eb;
+    --dru-card--border-section-light: #e5e7eb;
     --dru-card--ring-light: #9ca3af;
+
+    --dru-card--icon-surface-light: #f8fafc;
+    --dru-card--icon-color-light: #1f2937;
 
     --dru-card--text-light: #111827;
     --dru-card--text-muted-light: #6b7280;
@@ -50,7 +58,11 @@ $card-prefix: '.dru--card';
     --dru-card--accent-disabled-dark: #6b7280;
 
     --dru-card--border-dark: #303645;                 // more visible border
+    --dru-card--border-section-dark: #303645;
     --dru-card--ring-dark: #6b7280;
+
+    --dru-card--icon-surface-dark: #f8fafc;
+    --dru-card--icon-color-dark: #1f2937;
 
     --dru-card--text-dark: #e5e7eb;
     --dru-card--text-muted-dark: #9ca3af;
@@ -66,6 +78,8 @@ $card-prefix: '.dru--card';
 
     background-color: var(--dru-card--surface);
     border: 1px solid var(--dru-card--border);
+    display: flex;
+    flex-direction: column;
 
     &,
     & * {
@@ -84,6 +98,11 @@ $card-prefix: '.dru--card';
         border-top: 1px solid var(--dru-card--border);
         border-bottom-right-radius: inherit;
         border-bottom-left-radius: inherit;
+    }
+
+    &__header,
+    &__footer {
+        flex-shrink: 0; // 🔥 prevents collapsing
     }
 
     // normalize when rendered as button
@@ -127,8 +146,97 @@ $card-prefix: '.dru--card';
         object-fit: cover;
     }
 
+    &__icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50%;
+        background-color: var(--dru-card--icon-surface);
+        //background-color: red;
+        color: var(--dru-card--icon-color);
+
+        flex-shrink: 0;
+
+        &--xs {
+            width: 24px;
+            height: 24px;
+            font-size: 12px;
+        }
+
+        &--sm {
+            width: 32px;
+            height: 32px;
+            font-size: 16px;
+        }
+
+        &--md {
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+        }
+
+        &--lg {
+            width: 56px;
+            height: 56px;
+            font-size: 28px;
+        }
+
+        &--xl {
+            width: 72px;
+            height: 72px;
+            font-size: 36px;
+        }
+
+        &--2xl {
+            width: 96px;
+            height: 96px;
+            font-size: 48px;
+        }
+
+        &--3xl {
+            width: 128px;
+            height: 128px;
+            font-size: 64px;
+        }
+
+        &--4xl {
+            width: 160px;
+            height: 160px;
+            font-size: 80px;
+        }
+
+        &--5xl {
+            width: 192px;
+            height: 192px;
+            font-size: 96px;
+        }
+
+        //svg {
+        //    width: 1em;
+        //    height: 1em;
+        //}
+        svg,
+        .MuiSvgIcon-root {
+            width: 1em !important;
+            height: 1em !important;
+            font-size: 1em !important;
+        }
+    }
+
     &__body {
         border-radius: inherit;
+        display: flex; // because you use dir="row"
+        flex: 1;       // 🔥 this is your rule
+        min-height: 0; // 🔥 VERY important (prevents overflow bugs)
+    }
+
+    &__section {
+        border-bottom: 1px solid var(--dru-card--border-section);
+
+        &:last-child {
+            border-bottom: none;
+        }
     }
 
     &--interactive {

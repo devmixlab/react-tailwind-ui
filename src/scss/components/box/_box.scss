@@ -733,6 +733,9 @@ $z-indexes: (
     }
 
     /* font weight */
+    &--fw-thin {
+        font-weight: 100;
+    }
     &--fw-light {
         font-weight: 300;
     }
