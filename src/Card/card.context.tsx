@@ -1,12 +1,8 @@
 import { createContext, useContext } from 'react';
-// import { type Color } from '../tokens/common';
-import { Color } from '../Box/core/tokens';
-import { type Kind, type Density } from './card.tokens';
+import { type Density } from './card.tokens';
 
 // Define the context type
 export type CardContextProps = {
-    tone: Color;
-    kind: Kind;
     density: Density;
     interactive: boolean;
     disabled: boolean;

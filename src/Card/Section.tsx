@@ -41,7 +41,7 @@ export const SectionImpl = (
         : undefined;
 
     return (
-        <Box px={px ?? spacing?.px} py={py ?? spacing?.py} className={cl} {...rest}>
+        <Box ref={ref} px={px ?? spacing?.px} py={py ?? spacing?.py} className={cl} {...rest}>
             {children}
         </Box>
     );
