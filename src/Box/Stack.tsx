@@ -1,10 +1,10 @@
 import React from 'react';
-import { __TokenizedBox, type TokenizedBoxProps } from './core/__TokenizedBox';
+import { Box, type BoxProps } from './Box';
 
-type StackProps = TokenizedBoxProps & {
-    gap?: TokenizedBoxProps['gap'];
+type StackProps = BoxProps & {
+    gap?: BoxProps['gap'];
 };
 
 export const Stack: React.FC<StackProps> = ({ gap = 'md', ...props }) => {
-    return <__TokenizedBox d="flex" dir="column" gap={gap} {...props} />;
+    return <Box d="flex" dir="column" gap={gap} {...props} />;
 };
