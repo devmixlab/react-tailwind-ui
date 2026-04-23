@@ -78,8 +78,8 @@ $card-prefix: '.dru--card';
 
     background-color: var(--dru-card--surface);
     border: 1px solid var(--dru-card--border);
-    display: flex;
-    flex-direction: column;
+    //display: flex;
+    //flex-direction: column;
 
     &,
     & * {

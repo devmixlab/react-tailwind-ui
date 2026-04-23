@@ -1,4 +1,10 @@
-import { defaultCardTheme } from './card.themes';
+import {
+    CardTheme,
+    defaultCardTheme,
+    type CardThemePartial,
+    type CardLightThemePartial,
+    type CardDarkThemePartial,
+} from './card.themes';
 
 export const toCardVars = (theme: typeof defaultCardTheme) => {
     return {
@@ -41,3 +47,53 @@ export const toCardVars = (theme: typeof defaultCardTheme) => {
         '--dru-card--text-disabled-dark': theme.dark.textDisabled,
     } as React.CSSProperties;
 };
+
+export type DeepPartial<T> = {
+    [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K];
+};
+
+export function deepMerge<T>(base: T, override: DeepPartial<T>): T {
+    const result = { ...base };
+
+    for (const key in override) {
+        const baseValue = base[key];
+        const overrideValue = override[key];
+
+        if (
+            typeof baseValue === 'object' &&
+            baseValue !== null &&
+            !Array.isArray(baseValue) &&
+            typeof overrideValue === 'object' &&
+            overrideValue !== null &&
+            !Array.isArray(overrideValue)
+        ) {
+            result[key] = deepMerge(baseValue, overrideValue as any);
+        } else if (overrideValue !== undefined) {
+            result[key] = overrideValue as any;
+        }
+    }
+
+    return result;
+}
+
+export const deriveThemeProps = (
+    given: CardThemePartial,
+    overrideLight?: (lightGiven: CardLightThemePartial) => CardLightThemePartial,
+    overrideDark?: (given: CardDarkThemePartial) => CardDarkThemePartial,
+) => {
+    const finalOverride: CardThemePartial = {};
+
+    if (given.light != null && overrideLight) {
+        finalOverride.light = overrideLight(given.light);
+    }
+
+    if (given.dark != null && overrideDark) {
+        finalOverride.dark = overrideDark(given.dark);
+    }
+
+    return deepMerge(given, finalOverride);
+};
+
+export function extendCardTheme(overrides: DeepPartial<CardTheme>): CardTheme {
+    return deepMerge(defaultCardTheme, overrides);
+}

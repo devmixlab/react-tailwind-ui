@@ -12,7 +12,7 @@ export { buttonTokens, commonTokens, badgeTokens, alertTokens, cardTokens };
 
 export { Badge } from './src/Badge/Badge';
 export { Alert } from './src/Alert/Alert';
-export { CompCard as Card } from './src/Card';
+export { Card } from './src/Card';
 export { Heading, H1, H2, H3, H4, H5, H6 } from './src/Heading';
 export { Text } from './src/Text/Text';
 

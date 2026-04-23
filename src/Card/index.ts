@@ -1,4 +1,4 @@
-import { Card, type CardComponent } from './Card';
+import { Card as CardBase, type CardComponent } from './Card';
 import { Header } from './Header';
 import { Body } from './Body';
 import { Footer } from './Footer';
@@ -7,7 +7,7 @@ import { Content } from './Content';
 import { Section } from './Section';
 
 // Attach subcomponents
-const CompCard = Card as CardComponent;
+const CompCard = CardBase as CardComponent;
 
 CompCard.Header = Header;
 CompCard.Body = Body;
@@ -16,4 +16,4 @@ CompCard.Media = CompMedia;
 CompCard.Content = Content;
 CompCard.Section = Section;
 
-export { CompCard };
+export { CompCard as Card };

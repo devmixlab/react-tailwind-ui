@@ -75,6 +75,8 @@ export const CardImpl = (
         accent = false,
         accentSide = 'left',
         appearance = 'neutral',
+        d = 'flex',
+        dir = 'column',
         ...rest
     }: CardProps,
     ref: React.Ref<any>,
@@ -140,6 +142,8 @@ export const CardImpl = (
                 data-density={density}
                 className={cl}
                 {...restProps}
+                d={d}
+                dir={dir}
             />
         </CardProvider>
     );

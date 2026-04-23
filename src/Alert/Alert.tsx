@@ -1,53 +1,84 @@
-import type { Variant } from '../tokens/common';
-import type { Size, View } from '../tokens/badge';
-import { alertStyles as aSt } from './Alert.styles';
-import { useMemo } from 'react';
+import React, { forwardRef, useState } from 'react';
+import { createPolymorphic, type PolymorphicComponent } from '../types/polymorphic';
+import { type BoxProps } from '../Box/Box';
+import { Card } from '../Card';
+import { type CardProps } from '../Card/Card';
+import { themes } from './alert.themes';
+import { Box } from '../Box/Box';
+import { CLASS_PREFIX } from '../constants';
 import clsx from 'clsx';
+
+export const prefix = (name: string = '') => {
+    return `${CLASS_PREFIX}--alert${name}`;
+};
+
+type Intent = keyof typeof themes;
+type Variant = 'base' | 'solid';
 
 type AlertProps = {
     children: React.ReactNode;
+    intent?: Intent;
     variant?: Variant;
-    view?: View;
     className?: string;
-    dismissible?: boolean;
-    accent?: boolean;
-    icon?: React.ReactNode;
-};
 
-const Alert = ({
-    className,
-    children,
-    variant = 'primary',
-    view = 'solid',
-    dismissible = false,
-    accent = false,
-    icon,
-}: AlertProps) => {
-    const alertClass = useMemo(
-        () =>
-            clsx(className, aSt.base, aSt.view[view], aSt.variant[variant], {
-                [aSt.dismissible]: dismissible,
-                [aSt.accent]: accent,
-                // [aSt.icon.base]: icon,
-            }),
-        [className, view, variant, dismissible, accent],
-    );
+    dismissible?: boolean;
+    onDismiss?: () => void;
+} & CardProps;
+
+const AlertImpl = (
+    {
+        children,
+        intent = 'primary',
+        variant = 'base',
+        className,
+        dismissible,
+        onDismiss,
+        ...rest
+    }: AlertProps,
+    ref: React.Ref<any>,
+) => {
+    const [visible, setVisible] = useState(true);
+
+    if (!visible) return null;
+
+    const handleDismiss = () => {
+        setVisible(false);
+        onDismiss?.();
+    };
 
     return (
-        <div className={alertClass}>
-            {icon && <span className={aSt.icon.icon}>{icon}</span>}
-
-            <div className="alert-content">{children}</div>
+        <Card
+            className={clsx(
+                prefix(),
+                // prefix(`--intent-${intent}`),
+                // prefix(`--variant-${variant}`),
+                className,
+            )}
+            dir="row"
+            rounded="md"
+            theme={themes[intent][variant]}
+            ref={ref}
+            {...rest}
+        >
+            {/*<Card.Body pos="relative">*/}
+            <Card.Section grow={1}>{children}</Card.Section>
 
             {dismissible && (
-                <button className="alert-dismiss" aria-label="Close">
-                    ×
-                </button>
+                <Card.Section centerY>
+                    <Box
+                        as="button"
+                        size={20}
+                        onClick={handleDismiss}
+                        aria-label="Close alert"
+                        className={prefix('__dismiss-button')}
+                    >
+                        ×
+                    </Box>
+                </Card.Section>
             )}
-        </div>
+            {/*</Card.Body>*/}
+        </Card>
     );
 };
 
-Alert.displayName = 'Alert';
-
-export { Alert };
+export const Alert = createPolymorphic<AlertProps, 'div'>(forwardRef(AlertImpl), 'Alert');
