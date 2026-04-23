@@ -47,4 +47,7 @@ export const SectionImpl = (
     );
 };
 
-export const Section = createPolymorphic<SectionProps, 'div'>(forwardRef(SectionImpl), 'Section');
+export const Section = createPolymorphic<SectionProps, 'div'>(
+    forwardRef(SectionImpl),
+    'Card.Section',
+);

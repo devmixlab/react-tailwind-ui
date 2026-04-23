@@ -8,14 +8,14 @@ import { Box, type BoxProps } from '../Box/Box';
 import clsx from 'clsx';
 
 import { defaultCardTheme } from './card.themes';
-import { toCardVars } from './card.helpers';
+// import { toCardVars } from './card.helpers';
 
 import { createPolymorphic, type PolymorphicComponent } from '../types/polymorphic';
 import { HeadingsProps, HProps } from '../Heading/Heading';
 
 import { type HeaderOwnProps } from './Header';
 import { type BodyOwnProps } from './Body';
-import { type MediaProps } from './media/Media';
+import { type MediaComponent } from './media/Media';
 import { type FooterOwnProps } from './Footer';
 import { type ContentProps } from './Content';
 import { type SectionOwnProps } from './Section';
@@ -59,7 +59,7 @@ export type CardComponent = PolymorphicComponent<CardProps, 'div'> & {
     Header: PolymorphicComponent<HeaderOwnProps>;
     Body: PolymorphicComponent<BodyOwnProps>;
     Footer: PolymorphicComponent<FooterOwnProps>;
-    Media: PolymorphicComponent<MediaProps>;
+    Media: MediaComponent;
     Content: PolymorphicComponent<ContentProps>;
     Section: PolymorphicComponent<SectionOwnProps>;
 };
@@ -68,7 +68,6 @@ export const CardImpl = (
     {
         className,
         as = 'div',
-        theme,
         density = 'md',
         interactive = false,
         disabled = false,
@@ -100,7 +99,7 @@ export const CardImpl = (
         <CardProvider value={{ density, interactive: finalInteractive, disabled: isDisabled }}>
             <Box
                 ref={ref}
-                style={toCardVars(theme ?? defaultCardTheme)}
+                // style={toCardVars(theme ?? defaultCardTheme)}
                 as={as}
                 href={as === 'a' && isDisabled ? undefined : href}
                 aria-disabled={isDisabled || undefined}

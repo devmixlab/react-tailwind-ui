@@ -1,4 +1,4 @@
-import { Media, MediaComponent } from './Media';
+import { Media, type MediaComponent } from './Media';
 import { Image } from './Image';
 import { Icon } from './Icon';
 
@@ -7,5 +7,10 @@ const CompMedia = Media as MediaComponent;
 
 CompMedia.Image = Image;
 CompMedia.Icon = Icon;
+
+// export const CompMedia = Object.assign(Media, {
+//     Image,
+//     Icon,
+// }) as MediaComponent;
 
 export { CompMedia };

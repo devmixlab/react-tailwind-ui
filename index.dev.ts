@@ -6,8 +6,8 @@ import * as badgeTokens from './src/tokens/badge';
 import * as alertTokens from './src/tokens/alert';
 import * as cardTokens from './src/tokens/card';
 
-export { Button } from './src/Button/Button';
-export { Group } from './src/Button/Group';
+export { Button } from './src/__Button/Button';
+export { Group } from './src/__Button/Group';
 export { buttonTokens, commonTokens, badgeTokens, alertTokens, cardTokens };
 
 export { Badge } from './src/Badge/Badge';
@@ -22,3 +22,4 @@ export { DerivedBox } from './src/Box/core/DerivedBox';
 export { Grid } from './src/Box/Grid';
 export { Col } from './src/Box/Col';
 export { Box } from './src/Box/Box';
+export { Icon } from './src/Icon/Icon';

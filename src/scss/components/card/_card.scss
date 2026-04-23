@@ -40,7 +40,8 @@ $card-prefix: '.dru--card';
     --dru-card--ring-light: #9ca3af;
 
     --dru-card--icon-surface-light: #f8fafc;
-    --dru-card--icon-color-light: #1f2937;
+    //--dru-card--icon-color-light: #1f2937;
+    --dru-card--icon-color-light: yellow;
 
     --dru-card--text-light: #111827;
     --dru-card--text-muted-light: #6b7280;
@@ -81,10 +82,11 @@ $card-prefix: '.dru--card';
     //display: flex;
     //flex-direction: column;
 
-    &,
-    & * {
-        color: var(--dru-card--text);
-    }
+    //&,
+    //& * {
+    //    color: var(--dru-card--text);
+    //}
+    color: var(--dru-card--text);
 
     &__header {
         background-color: var(--dru-card--surface-raised);
@@ -158,59 +160,71 @@ $card-prefix: '.dru--card';
 
         flex-shrink: 0;
 
-        &--xs {
-            width: 24px;
-            height: 24px;
-            font-size: 12px;
-        }
+        //&--xs {
+        //    width: 24px;
+        //    height: 24px;
+        //    font-size: 12px;
+        //}
+        //
+        //&--sm {
+        //    width: 32px;
+        //    height: 32px;
+        //    font-size: 16px;
+        //}
+        //
+        //&--md {
+        //    width: 40px;
+        //    height: 40px;
+        //    font-size: 20px;
+        //}
+        //
+        //&--lg {
+        //    width: 56px;
+        //    height: 56px;
+        //    font-size: 28px;
+        //}
+        //
+        //&--xl {
+        //    width: 72px;
+        //    height: 72px;
+        //    font-size: 36px;
+        //}
+        //
+        //&--2xl {
+        //    width: 96px;
+        //    height: 96px;
+        //    font-size: 48px;
+        //}
+        //
+        //&--3xl {
+        //    width: 128px;
+        //    height: 128px;
+        //    font-size: 64px;
+        //}
+        //
+        //&--4xl {
+        //    width: 160px;
+        //    height: 160px;
+        //    font-size: 80px;
+        //}
+        //
+        //&--5xl {
+        //    width: 192px;
+        //    height: 192px;
+        //    font-size: 96px;
+        //}
 
-        &--sm {
-            width: 32px;
-            height: 32px;
-            font-size: 16px;
-        }
+        //&--xs { width: 20px; height: 20px; font-size: 12px; }
+        //&--sm { width: 24px; height: 24px; font-size: 14px; }
+        //&--md { width: 32px; height: 32px; font-size: 16px; }
+        //&--lg { width: 40px; height: 40px; font-size: 20px; }
+        //&--xl { width: 48px; height: 48px; font-size: 24px; }
 
-        &--md {
-            width: 40px;
-            height: 40px;
-            font-size: 20px;
-        }
-
-        &--lg {
-            width: 56px;
-            height: 56px;
-            font-size: 28px;
-        }
-
-        &--xl {
-            width: 72px;
-            height: 72px;
-            font-size: 36px;
-        }
-
-        &--2xl {
-            width: 96px;
-            height: 96px;
-            font-size: 48px;
-        }
-
-        &--3xl {
-            width: 128px;
-            height: 128px;
-            font-size: 64px;
-        }
-
-        &--4xl {
-            width: 160px;
-            height: 160px;
-            font-size: 80px;
-        }
-
-        &--5xl {
-            width: 192px;
-            height: 192px;
-            font-size: 96px;
-        }
+        &--xs { width: 20px; height: 20px; font-size: 12px; }
+        &--sm { width: 28px; height: 28px; font-size: 14px; }
+        &--md { width: 36px; height: 36px; font-size: 18px; } // 👈 bumped
+        &--lg { width: 44px; height: 44px; font-size: 22px; }
+        &--xl { width: 52px; height: 52px; font-size: 26px; }
 
         //svg {
         //    width: 1em;
@@ -221,6 +235,7 @@ $card-prefix: '.dru--card';
             width: 1em !important;
             height: 1em !important;
             font-size: 1em !important;
+            //color: var(--dru-card--icon-color);
         }
     }
 
