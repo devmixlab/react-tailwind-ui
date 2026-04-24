@@ -43,7 +43,7 @@ export const tailwindColors = [
     'rose',
 ] as const;
 
-// Merge them for button variants
+// Merge them for __button variants
 export const variants = [...baseVariants, ...tailwindColors] as const;
 
 // Type for Variant

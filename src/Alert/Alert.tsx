@@ -81,7 +81,7 @@ const AlertImpl = (
                 // prefix(`--variant-${variant}`),
                 className,
             )}
-            dir="row"
+            direction="row"
             rounded="md"
             // theme={themes[intent][variant]}
             ref={ref}
@@ -111,7 +111,7 @@ const AlertImpl = (
                         size={26}
                         onClick={handleDismiss}
                         aria-label="Close alert"
-                        className={prefix('__dismiss-button')}
+                        className={prefix('__dismiss-__button')}
                     >
                         ×
                     </Box>

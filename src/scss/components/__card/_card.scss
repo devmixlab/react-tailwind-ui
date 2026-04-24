@@ -398,7 +398,7 @@ $card-prefix: '.dru--card';
         border-bottom-left-radius: inherit;
     }
 
-    // normalize when rendered as button
+    // normalize when rendered as __button
     &:where(button) {
         appearance: none;
         border: none;

@@ -107,7 +107,7 @@ $card-prefix: '.dru--card';
         flex-shrink: 0; // 🔥 prevents collapsing
     }
 
-    // normalize when rendered as button
+    // normalize when rendered as __button
     &:where(button) {
         appearance: none;
         border: none;

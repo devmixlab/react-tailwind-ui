@@ -1,4 +1,4 @@
-// import { type LodaingPosition } from '../tokens/button';
+// import { type LodaingPosition } from '../tokens/__button';
 import { type Variant } from '../tokens/common';
 import { variants } from '../tokens/common';
 import { mapToClassRecord } from '../utils/mapToClassRecord';

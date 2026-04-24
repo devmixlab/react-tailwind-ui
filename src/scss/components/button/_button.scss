@@ -1,278 +1,476 @@
 @use '../../abstracts/config' as *;
-@use './variables' as *;
-@use './functions' as *;
-@use './mixins' as *;
-@use './animations' as *;
-@use "sass:color";
-@use "sass:map";
+@use '../../abstracts/mixins' as *;
 
-$radiuses: (
-    sm: 0.25rem, // 4px
-    md: 0.5rem, // 8px
-    lg: 0.75rem, // 12px
-    full: 9999rem // fully rounded
+$button-sizes: (
+    xs: (height: 28px, padding-x: 10px, font-size: 0.75rem),
+    sm: (height: 32px, padding-x: 12px, font-size: 0.875rem),
+    md: (height: 40px, padding-x: 16px, font-size: 0.95rem),
+    lg: (height: 48px, padding-x: 20px, font-size: 1rem),
+    xl: (height: 56px, padding-x: 24px, font-size: 1.1rem),
 );
 
-@mixin radius($only: null, $setRadius: null) {
-    @each $size, $radius in $radiuses {
-        $final-radius: $setRadius;
-        @if ($final-radius == null) {
-            $final-radius: $radius;
-        }
+$intents: (primary, secondary, info, warning, success, danger);
 
-        &#{$p}#{'radius-' + $size} {
-            @if ($only == 'left') {
-                border-top-left-radius: $final-radius;
-                border-bottom-left-radius: $final-radius;
-            } @else if ($only == 'top') {
-                border-top-left-radius: $final-radius;
-                border-top-right-radius: $final-radius;
-            } @else if ($only == 'right') {
-                border-top-right-radius: $final-radius;
-                border-bottom-right-radius: $final-radius;
-            } @else if ($only == 'bottom') {
-                border-bottom-left-radius: $final-radius;
-                border-bottom-right-radius: $final-radius;
-            } @else {
-                border-radius: $final-radius;
-            }
-        }
-    }
-}
-
-#{$p}group {
-    display: flex;
-
-    &#{$p}vertical-orientation {
-        flex-direction: column;
-
-        #{$p}wrapper:first-child {
-            #{$p}button {
-                @include radius('top');
-            }
-        }
-
-        #{$p}wrapper:last-child {
-            #{$p}button {
-                @include radius('bottom');
-            }
-        }
-    }
-
-    &#{$p}horizontal-orientation {
-        flex-direction: row;
-
-        #{$p}wrapper:first-child {
-            #{$p}button {
-                @include radius('left');
-            }
-        }
-
-        #{$p}wrapper:last-child {
-            #{$p}button {
-                @include radius('right');
-            }
-        }
-    }
-
-    #{$p}wrapper {
-        #{$p}button {
-            @include radius(null, 0);
-            position: relative;
-            //border-right: none!important;
-            &:focus,
-            &:focus-visible {
-                z-index: 1;
-            }
-        }
-        &:not(:last-child) {
-            #{$p}button {
-                border-right-color: transparent; // hide right border by default
-
-                //&:focus,
-                &:focus-visible {
-                    border-right-color: var(--border-color); // restore on focus
-                }
-            }
-        }
-    }
-}
-
-#{$p}wrapper {
-    display: inline-block;
-
-    &#{$p}disabled {
-        cursor: not-allowed;
-    }
-
-    &#{$p}full-width {
-        display: block;
-    }
-}
-
-#{$p}button {
-    --ring-offset-color: #fff;
-    --border-color: transparent;
-    @include dark {
-        --ring-offset-color: #000;
-    }
-    transition: background-color 0.2s, box-shadow 0.2s, color 0.2s, opacity 0.1s;
-    //border-radius: 0.25rem; // rounded
-    border-width: 1px;
-    border-style: solid;
-    border-color: var(--border-color);
+.dru--button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    vertical-align: middle;
-    box-shadow: 0 0 0 rgba(0, 0, 0, 0); // default state
+    gap: var(--dru-button-gap, 0.5rem);
 
-    @include radius;
+    font-family: inherit;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
 
-    &#{$p}disabled {
+    border: 1px solid var(--dru-button-border);
+    border-radius: var(--dru-button-radius, 0.5rem);
+
+    cursor: pointer;
+    user-select: none;
+    text-decoration: none;
+
+    background-color: var(--dru-button-bg);
+    color: var(--dru-button-text);
+    //border-color: var(--dru-button-border);
+
+    transition: background-color 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+
+    //&:focus-visible {
+    //    outline: none;
+    //    box-shadow: 0 0 0 2px var(--dru-focus-ring, rgba(0, 0, 0, 0.2));
+    //}
+
+    &:focus-visible {
+        outline: 2px solid var(--dru-button-ring);
+        outline-offset: 2px;
+    }
+
+    &--no-interaction {
+        cursor: default;
+
+        // 🔥 kill interactions
         pointer-events: none;
-        //cursor: not-allowed;
+
+        filter: none;
+        text-decoration: none;
+
+        // optional: remove transitions if you want it fully static
+        transition: none;
     }
 
-    &#{$p}loading {
-        pointer-events: none;
-        cursor: wait;
+    &:disabled,
+    &.dru--button--disabled {
+        cursor: not-allowed;
+        opacity: 0.7;
 
-        &#{$p}loading-center {
-            color: transparent !important; // hide text & icon
-            position: relative;
+        // 🔥 kill ALL interaction styles
+        text-decoration: none;
+        filter: none;
 
-            &::after {
-                content: '';
-                position: absolute;
-                inset: 0;
-                margin: auto;
-            }
-        }
-
-        &#{$p}loading-start {
-            &::before {
-                content: '';
-            }
-        }
-
-        &#{$p}loading-end {
-            &::after {
-                content: '';
-            }
-        }
-
-        &#{$p}loading-start, &#{$p}loading-end {
-            gap: 0.5rem;
-        }
+        //--dru-button-bg-hover: var(--dru-button-bg);
     }
 
-    &#{$p}pill {
-        border-radius: 9999px;
+    &--icon-only {
+        padding: 0;
+        aspect-ratio: 1;
     }
 
-    &#{$p}full-width {
-        width: 100%;
-    }
-
-    &#{$p}fixed {
-        pointer-events: none;
+    &--numeric {
+        font-variant-numeric: tabular-nums;
     }
 
     @each $size, $props in $button-sizes {
-        &#{$p}#{$size} {
-            min-height: map.get($props, height);
-            padding: map.get($props, padding);
-            font-size: map.get($props, font);
+        &--size-#{$size} {
+            height: map-get($props, height);
+            padding: 0 map-get($props, padding-x);
+            font-size: map-get($props, font-size);
+        }
+    }
 
-            &#{$p}number {
-                font-variant-numeric: tabular-nums;
-                padding: 0;
-                min-width: map.get($props, height);
+    //&:not(.dru--button--static):not(:disabled) {
+    //    &:hover {
+    //        --dru-button-bg: var(--dru-button-bg-ghost-hover);
+    //    }
+    //}
 
-                &#{$p}big-number {
-                    padding: 0 0.5rem;
+    &:not(.dru--button--static):not(:disabled) {
+        &:hover {
+            --dru-button-bg: var(--dru-button-bg-hover);
+        }
+    }
+
+    //&--base, &--solid, &--outlined {
+    //    //--dru-button-bg: transparent;
+    //    &:not(.dru--button--static):not(:disabled) {
+    //        &:hover {
+    //            --dru-button-bg: var(--dru-button-bg-hover);
+    //        }
+    //    }
+    //}
+
+    // OUTLINED
+    &--outlined {
+        --dru-button-bg: transparent;
+    }
+
+     //SUBTLE (always has background)
+    &--subtle {
+        --dru-button-bg: var(--dru-button-bg-subtle);
+        --dru-button-border: transparent;
+        --dru-button-bg-subtle-hover: transparent;
+
+        //&:not(.dru--button--static):not(:disabled) {
+        //    &:hover {
+        //        --dru-button-bg: var(--dru-button-bg-subtle-hover);
+        //    }
+        //}
+    }
+
+     //GHOST (no bg, only on hover)
+    &--ghost {
+        --dru-button-bg: transparent;
+        --dru-button-border: transparent;
+        //&:not(.dru--button--static):not(:disabled) {
+        //    &:hover {
+        //        --dru-button-bg: var(--dru-button-bg-ghost-hover);
+        //    }
+        //}
+    }
+
+     //LINK
+    &--link {
+        --dru-button-bg: none;
+        border: none;
+        padding: 0;
+        height: auto;
+
+        color: var(--dru-button-text);
+
+        &:not(.dru--button--static):not(:disabled) {
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    @each $intent in $intents {
+        @if $intent == primary {
+
+            &--#{$intent} {
+                --dru-button-ring: rgba(37, 99, 235, 0.6);
+            }
+
+            &--solid.dru--button--#{$intent} {
+                --dru-button-bg: #2563eb;        // 600
+                --dru-button-bg-hover: #1d4ed8;  // 700
+                --dru-button-text: #fff;
+                --dru-button-border: transparent;
+
+                &:not(:disabled):not(.dru--button--disabled) {
+                    // PRESS (mouse down)
+                    &:active { //transform: translateY(1px);
+                        filter: brightness(0.95); // slightly darker
+                    }
+                }
+
+                &.dru--button--active {
+                    --dru-button-bg: #1e40af;        // 800
+                    --dru-button-bg-hover: #1e3a8a;  // 900
+
+                    &:not(:disabled):not(.dru--button--disabled) {
+                        // keep stable on hover
+                        &:hover {
+                            --dru-button-bg-hover: #1e40af;
+                        }
+
+                        // press still works on active button
+                        &:active {
+                            filter: brightness(0.95);
+                        }
+                    }
                 }
             }
 
-            $icon-only: map.get($props, icon-only);
+            &--base.dru--button--#{$intent} {
+                --dru-button-bg: #bfdbfe;        // 200
+                --dru-button-bg-hover: #93c5fd;  // 300
+                --dru-button-text: #1e3a8a;      // 900
+                --dru-button-border: #60a5fa;    // 400
 
-            &#{$p}icon-only {
-                @include iconOnly(map.get($icon-only, size));
+                &:not(:disabled):not(.dru--button--disabled) {
+                    // 🔥 PRESS (mouse down)
+                    &:active {
+                        filter: brightness(0.97); // slightly lighter effect than solid
+                    }
+                }
+
+                &.dru--button--active {
+                    --dru-button-bg: #93c5fd;        // 300
+                    --dru-button-bg-hover: #60a5fa;  // 400
+                    --dru-button-border: #3b82f6;    // 500
+
+                    &:not(:disabled):not(.dru--button--disabled) {
+                        // prevent hover change
+                        &:hover {
+                            --dru-button-bg-hover: #93c5fd;
+                        }
+
+                        // press still works when selected
+                        &:active {
+                            filter: brightness(0.97);
+                        }
+                    }
+                }
             }
 
-            $text-icon: map.get($props, text-icon);
+            &--outlined.dru--button--#{$intent} {
+                --dru-button-bg: transparent;
+                --dru-button-bg-hover: #dbeafe;  // 100
+                --dru-button-text: #2563eb;      // 600
+                --dru-button-border: #93c5fd;    // 300
 
-            &#{$p}text-icon {
-                @include textIcon(map.get($text-icon, gap), map.get($text-icon, size));
+                //&:hover {
+                //    --dru-button-border: #2563eb;  // 600
+                //}
+                &:not(:disabled):not(.dru--button--disabled) {
+                    &:hover {
+                        --dru-button-border: #2563eb;
+                    }
+
+                    // 🔥 PRESS (very subtle)
+                    &:active {
+                        filter: brightness(0.98);
+                    }
+                }
+
+                &.dru--button--active {
+                    --dru-button-bg: #dbeafe;      // 100
+                    --dru-button-border: #2563eb;  // 600
+                    --dru-button-text: #1d4ed8;    // 700
+
+                    &:not(:disabled):not(.dru--button--disabled) {
+                        &:hover {
+                            --dru-button-bg-hover: #dbeafe; // stable
+                        }
+
+                        // press still works when selected
+                        &:active {
+                            filter: brightness(0.98);
+                        }
+                    }
+                }
             }
-        }
-    }
 
-    &:focus-visible {
-        outline: none;
-        box-shadow: 0 0 0 2px var(--ring-offset-color), // ring-offset-2 light mode
-        0 0 0 4px var(--ring-color); // ring-2 ring-gray-300
-    }
+            // 🔥 Ghost now covers "subtle-ish" usage
+            &--ghost.dru--button--#{$intent} {
+                --dru-button-bg: transparent;
+                --dru-button-bg-hover: #dbeafe;  // 100
+                --dru-button-text: #2563eb;      // 600
 
-    &:active {
-        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
-        @include dark {
-            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.2);
-        }
-    }
+                &:not(:disabled):not(.dru--button--disabled) {
+                    &:hover {
+                        --dru-button-text: #1d4ed8; // 700
+                    }
 
-    &#{$p}solid {
-        --text-color: white;
-        --ring-color: #d1d5db;
-        //--ring-offset-color: green;
-        border: 1px solid transparent; // border border-transparent
-        font-weight: 500; // font-medium
-        color: var(--text-color);
+                    // 🔥 PRESS (very subtle)
+                    &:active {
+                        filter: brightness(0.99);
+                    }
+                }
 
-        &:focus-visible {
-            outline: none;
-            box-shadow: 0 0 0 2px var(--ring-offset-color), // ring-offset-2 light mode
-            0 0 0 4px var(--ring-color); // ring-2 ring-gray-300
-        }
+                &.dru--button--active {
+                    --dru-button-bg: #dbeafe;      // 100
+                    --dru-button-text: #1d4ed8;    // 700
 
-        @include button-colors($palette-colors, 'light');
+                    &:not(:disabled):not(.dru--button--disabled) {
+                        &:active {
+                            filter: brightness(0.99);
+                        }
+                    }
+                }
+            }
 
-        @include dark {
-            @include button-colors($dark-palette-colors, 'dark');
-        }
-    }
+            &--link.dru--button--#{$intent} {
+                --dru-button-text: #2563eb; // 600
 
-    &#{$p}outlined {
-        //--text-color: white;
-        //border-style: solid;
-        //border-color: transparent;
-        //border: 1px solid transparent; // border border-transparent
-        font-weight: 500; // font-medium
-        //color: var(--text-color);
+                &:not(:disabled):not(.dru--button--disabled) {
+                    &:hover {
+                        --dru-button-text: #1d4ed8; // 700
+                        text-decoration: underline;
+                    }
 
-        &#{$p}disabled {
-            cursor: not-allowed;
-        }
+                    // 🔥 PRESS (very subtle)
+                    &:active {
+                        filter: brightness(0.97);
+                    }
+                }
 
-        @include outlined-button-colors($light-outlined-palette-colors, 'light');
+                &.dru--button--active {
+                    --dru-button-text: #1e40af; // 800
 
-        @include dark {
-            @include outlined-button-colors($dark-outlined-palette-colors, 'dark');
-        }
-    }
+                    &:not(:disabled):not(.dru--button--disabled) {
+                        text-decoration: underline;
+                        &:active {
+                            filter: brightness(0.97);
+                        }
+                    }
+                }
+            }
 
-    &#{$p}outlined-filled {
-        //--text-color: white;
-        //--ring-color: #d1d5db;
-        //border: 1px solid transparent; // border border-transparent
-        font-weight: 500; // font-medium
-        //color: var(--text-color);
+            @include dark {
+                &--#{$intent} {
+                    --dru-button-ring: rgba(96, 165, 250, 0.7); // lighter blue for dark bg
+                }
 
-        @include outlined-filled-button-colors($palette-colors, $light-outlined-palette-colors, 'light');
+                &--solid.dru--button--#{$intent} {
+                    --dru-button-bg: #3b82f6;        // 500
+                    --dru-button-bg-hover: #60a5fa;  // 400 (lighter on hover)
+                    --dru-button-text: #0b1220;      // dark text for contrast
+                    --dru-button-border: transparent;
 
-        @include dark {
-            @include outlined-filled-button-colors($dark-palette-colors, $dark-outlined-palette-colors, 'dark');
+                    &:not(:disabled):not(.dru--button--disabled) {
+                        &:active {
+                            filter: brightness(1.08); // 🔥 lighter on press in dark mode
+                        }
+                    }
+
+                    &.dru--button--active {
+                        --dru-button-bg: #2563eb;        // 600 (stronger)
+                        --dru-button-bg-hover: #3b82f6;  // 500
+
+                        &:not(:disabled):not(.dru--button--disabled) {
+                            &:hover {
+                                --dru-button-bg-hover: #2563eb; // stable
+                            }
+
+                            &:active {
+                                filter: brightness(1.08);
+                            }
+                        }
+                    }
+                }
+
+                &--base.dru--button--#{$intent} {
+                    --dru-button-bg: #1e3a8a;        // 900
+                    --dru-button-bg-hover: #1d4ed8;  // 700 (lighter)
+                    --dru-button-text: #bfdbfe;      // 200
+                    --dru-button-border: #3b82f6;    // 500
+
+                    &:not(:disabled):not(.dru--button--disabled) {
+                        &:active {
+                            filter: brightness(1.05); // 🔥 lighter press
+                        }
+                    }
+
+                    &.dru--button--active {
+                        --dru-button-bg: #1d4ed8;        // 700
+                        --dru-button-bg-hover: #3b82f6;  // 500
+                        --dru-button-border: #60a5fa;    // 400
+
+                        &:not(:disabled):not(.dru--button--disabled) {
+                            &:hover {
+                                --dru-button-bg-hover: #1d4ed8;
+                            }
+
+                            &:active {
+                                filter: brightness(1.05);
+                            }
+                        }
+                    }
+                }
+
+                &--outlined.dru--button--#{$intent} {
+                    --dru-button-bg: transparent;
+                    --dru-button-bg-hover: rgba(59, 130, 246, 0.15); // softer than 100
+                    --dru-button-text: #60a5fa;      // 400
+                    --dru-button-border: #3b82f6;    // 500
+
+                    &:not(:disabled):not(.dru--button--disabled) {
+                        &:hover {
+                            --dru-button-border: #93c5fd; // 300 (lighter)
+                        }
+
+                        &:active {
+                            filter: brightness(1.05);
+                        }
+                    }
+
+                    &.dru--button--active {
+                        --dru-button-bg: rgba(59, 130, 246, 0.2);
+                        --dru-button-border: #93c5fd;
+                        --dru-button-text: #bfdbfe;
+
+                        &:not(:disabled):not(.dru--button--disabled) {
+                            &:hover {
+                                --dru-button-bg-hover: rgba(59, 130, 246, 0.2);
+                            }
+
+                            &:active {
+                                filter: brightness(1.05);
+                            }
+                        }
+                    }
+                }
+
+                &--ghost.dru--button--#{$intent} {
+                    --dru-button-bg: transparent;
+                    --dru-button-bg-hover: rgba(59, 130, 246, 0.15);
+                    --dru-button-text: #60a5fa; // 400
+
+                    &:not(:disabled):not(.dru--button--disabled) {
+                        &:hover {
+                            --dru-button-text: #93c5fd; // 300
+                        }
+
+                        &:active {
+                            filter: brightness(1.03);
+                        }
+                    }
+
+                    &.dru--button--active {
+                        --dru-button-bg: rgba(59, 130, 246, 0.2);
+                        --dru-button-text: #bfdbfe;
+
+                        &:not(:disabled):not(.dru--button--disabled) {
+                            &:active {
+                                filter: brightness(1.03);
+                            }
+                        }
+                    }
+                }
+
+                &--link.dru--button--#{$intent} {
+                    --dru-button-text: #60a5fa; // 400
+
+                    &:not(:disabled):not(.dru--button--disabled) {
+                        &:hover {
+                            --dru-button-text: #93c5fd; // 300
+                            text-decoration: underline;
+                        }
+
+                        &:active {
+                            filter: brightness(1.05);
+                        }
+                    }
+
+                    &.dru--button--active {
+                        --dru-button-text: #bfdbfe; // 200
+
+                        &:not(:disabled):not(.dru--button--disabled) {
+                            text-decoration: underline;
+
+                            &:active {
+                                filter: brightness(1.05);
+                            }
+                        }
+                    }
+                }
+            }
+
+
         }
     }
 }

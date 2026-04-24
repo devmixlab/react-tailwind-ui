@@ -28,7 +28,7 @@ export const styleAliasMap = {
     grow: 'flexGrow',
     shrink: 'flexShrink',
     basis: 'flexBasis',
-    dir: 'flexDirection',
+    direction: 'flexDirection',
     justify: 'justifyContent',
     align: 'alignItems',
     wrap: 'flexWrap',

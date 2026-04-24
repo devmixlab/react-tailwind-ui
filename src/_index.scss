@@ -233,8 +233,8 @@ $dark-palette-colors: map-merge($dark-semantic-colors, $dark-extended-colors);
   background-color: blue;
 }
 
-//@each $name, $color in $button-colors {
-//    .rtu-button--#{$name} {
+//@each $name, $color in $__button-colors {
+//    .rtu-__button--#{$name} {
 //        background-color: $color;
 //        color: if($name == 'light', black, white);
 //

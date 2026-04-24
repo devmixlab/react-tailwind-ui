@@ -75,7 +75,7 @@ export const CardImpl = (
         accentSide = 'left',
         appearance = 'neutral',
         d = 'flex',
-        dir = 'column',
+        direction = 'column',
         ...rest
     }: CardProps,
     ref: React.Ref<any>,
@@ -142,7 +142,7 @@ export const CardImpl = (
                 className={cl}
                 {...restProps}
                 d={d}
-                dir={dir}
+                direction={direction}
             />
         </CardProvider>
     );
