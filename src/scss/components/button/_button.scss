@@ -171,18 +171,6 @@ $intent-palette-map: (
         }
     }
 
-    > svg,
-    > .MuiSvgIcon-root {
-        width: 1.2em;
-        height: 1.2em;
-        //width: 1em;
-        //height: 1em;
-        //width: 1em;
-        //height: 1em;
-        font-size: 1em;
-        display: block;
-    }
-
     &:focus-visible {
         outline: 2px solid var(--dru-button-ring);
         outline-offset: 2px;
@@ -216,10 +204,9 @@ $intent-palette-map: (
     &--icon-only {
         padding: 0;
         aspect-ratio: 1;
-        > svg,
-        > .MuiSvgIcon-root {
-            width: 1.2em;
-            height: 1.2em;
+
+        .dru--button__icon {
+            display: none;
         }
     }
 
@@ -227,6 +214,23 @@ $intent-palette-map: (
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        > svg,
+        > .MuiSvgIcon-root {
+            width: 1.2em;
+            height: 1.2em;
+            font-size: 1em;
+            display: block;
+        }
+    }
+
+    &__content {
+        > svg,
+        > .MuiSvgIcon-root {
+            width: 1.2em;
+            height: 1.2em;
+            font-size: 1em;
+            display: block;
+        }
     }
 
     &--numeric {
