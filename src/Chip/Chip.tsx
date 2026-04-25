@@ -25,6 +25,8 @@ export type ChipProps = {
     onClick?: React.MouseEventHandler<any>;
 } & {
     onKeyDown?: React.KeyboardEventHandler<any>;
+    target?: React.HTMLAttributeAnchorTarget;
+    rel?: string;
 };
 
 const Chip = forwardRef(
@@ -61,9 +63,6 @@ const Chip = forwardRef(
         const isLink = !!href;
         const isLinkOnly = isLink && !removable;
         const isButton = !isLink && !!onClick && !removable;
-        // const isClickable = isLink || isButton;
-        const isClickable = (isLink || isButton) && !removable;
-
         const isInteractive = (isLink || isButton) && !disabled && !removable;
 
         const Component = as ?? (isLinkOnly ? 'a' : isButton ? 'button' : 'span');
@@ -114,10 +113,15 @@ const Chip = forwardRef(
 
         return (
             <Box
-                aria-disabled={!isButton && disabled ? true : undefined}
-                aria-pressed={isButton ? selected : undefined}
-                role={!isButton && isClickable ? 'button' : undefined}
-                tabIndex={!isButton && isClickable ? 0 : undefined}
+                aria-disabled={disabled || undefined} // safe for any element
+                aria-pressed={isButton ? selected : undefined} // only for toggle buttons (not links)
+                role={!isButton && !isLink && isInteractive ? 'button' : undefined} // add for custom interactive elements (not button/link)
+                rel={
+                    restProps.target === '_blank'
+                        ? (restProps.rel ?? 'noopener noreferrer')
+                        : restProps.rel
+                } // prevent window.opener security issues
+                tabIndex={!isButton && !isLink && isInteractive ? 0 : undefined} // enable focus for non-focusable interactive elements (link/button focusable)
                 href={href}
                 as={Component}
                 type={Component === 'button' ? 'button' : undefined}
@@ -126,9 +130,8 @@ const Chip = forwardRef(
                 disabled={Component === 'button' ? disabled : undefined}
                 rounded={rounded}
                 {...restProps}
-                // onClick={isLink || isButton ? handleClick : undefined}
-                onClick={isClickable ? handleClick : undefined}
-                onKeyDown={!isButton && !isLink && isClickable ? handleKeyDown : undefined}
+                onClick={isInteractive ? handleClick : undefined}
+                onKeyDown={!isButton && !isLink && isInteractive ? handleKeyDown : undefined}
             >
                 {/* START ICON */}
                 {startIcon != null && <span className={prefix(`__icon`)}>{startIcon}</span>}

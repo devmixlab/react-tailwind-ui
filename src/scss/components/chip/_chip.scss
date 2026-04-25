@@ -82,7 +82,6 @@ $compPrefix: 'dru--chip';
 
     &--disabled {
         opacity: 0.6;
-        pointer-events: none;
         cursor: not-allowed;
     }
 
@@ -173,6 +172,10 @@ $compPrefix: 'dru--chip';
         cursor: default;
     }
 
+    &--interactive:not(&--disabled) {
+        cursor: pointer;
+    }
+
     &__icon {
         display: inline-flex;
         align-items: center;
@@ -213,7 +216,7 @@ $compPrefix: 'dru--chip';
                     background-color: var(--intent-700); // stronger jump
                 }
 
-                &.dru--chip--interactive:not(.dru--chip--disabled):hover {
+                &.#{$compPrefix}--interactive:not(.#{$compPrefix}--disabled):hover {
                     background-color: var(--intent-600);
                 }
             }
