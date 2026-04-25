@@ -1,0 +1,347 @@
+@use '../../abstracts/config' as *;
+@use '../../abstracts/mixins' as *;
+
+@use '../../abstracts/palette' as *;
+@use 'sass:map';
+
+//$chip-sizes: (
+//    xs: (font-size: 0.65rem, padding-x: 0.35em, padding-y: 0.1em),
+//    sm: (font-size: 0.7rem, padding-x: 0.4em, padding-y: 0.12em),
+//    md: (font-size: 0.75rem, padding-x: 0.5em, padding-y: 0.15em),
+//    lg: (font-size: 0.85rem, padding-x: 0.6em, padding-y: 0.2em),
+//    xl: (font-size: 0.95rem, padding-x: 0.7em, padding-y: 0.25em),
+//);
+
+//$chip-sizes: (
+//    xs: (font-size: 0.7rem,  padding-x: 0.4em, padding-y: 0.2em, gap: 0.25em),
+//    sm: (font-size: 0.8rem,  padding-x: 0.5em, padding-y: 0.25em, gap: 0.3em),
+//    md: (font-size: 0.9rem,  padding-x: 0.6em, padding-y: 0.3em, gap: 0.35em),
+//    lg: (font-size: 1rem,    padding-x: 0.75em, padding-y: 0.35em,  gap: 0.4em),
+//    xl: (font-size: 1.1rem,  padding-x: 0.9em, padding-y: 0.4em, gap: 0.45em),
+//);
+
+$chip-sizes: (
+    sm: (font-size: 0.8rem,  padding-x: 0.4em, padding-y: 0.22em, gap: 0.25em),
+    md: (font-size: 0.9rem,  padding-x: 0.5em, padding-y: 0.26em, gap: 0.3em),
+    lg: (font-size: 1rem,    padding-x: 0.6em, padding-y: 0.3em,  gap: 0.35em),
+);
+
+//$chip-sizes: (
+//    xs: (font-size: 0.65rem, padding-x: 0.35em, padding-y: 0.1em, gap: 0.25em),
+//    sm: (font-size: 0.7rem,  padding-x: 0.4em,  padding-y: 0.12em, gap: 0.3em),
+//    md: (font-size: 0.75rem, padding-x: 0.5em,  padding-y: 0.15em, gap: 0.35em),
+//    lg: (font-size: 0.85rem, padding-x: 0.6em,  padding-y: 0.2em,  gap: 0.4em),
+//    xl: (font-size: 0.95rem, padding-x: 0.7em,  padding-y: 0.25em, gap: 0.45em),
+//);
+
+$intents: (primary, secondary, info, warning, success, danger);
+
+$intent-palette-map: (
+    primary: $blue,
+    secondary: $slate,
+    info: $cyan,
+    warning: $amber,
+    success: $green,
+    danger: $red,
+);
+
+@mixin intent-vars($palette) {
+    @each $step, $value in $palette {
+        --intent-#{$step}: #{$value};
+    }
+}
+
+$compPrefix: 'dru--chip';
+
+.#{$compPrefix} {
+
+    border: 1px solid transparent;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    //gap: 0.4em;
+
+    line-height: 1;
+    font-weight: 500;
+    white-space: nowrap;
+
+    transition:
+        transform 0.08s ease,
+        filter 0.12s ease,
+        box-shadow 0.12s ease,
+        background-color 0.12s ease,
+        border-color 0.12s ease,
+        color 0.12s ease;
+
+    .__content {
+        display: inline-flex;
+        align-items: center;
+    }
+
+    &--disabled {
+        opacity: 0.6;
+        pointer-events: none;
+        cursor: not-allowed;
+    }
+
+    &--interactive:not(&--disabled):active {
+        transform: scale(0.97);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--ring-color);
+        outline-offset: 2px;
+    }
+
+    //@each $size, $values in $chip-sizes {
+    //    &--size-#{$size} {
+    //        font-size: map-get($values, font-size);
+    //        padding: map-get($values, padding-y) map-get($values, padding-x);
+    //    }
+    //}
+
+    @each $size, $values in $chip-sizes {
+        &--size-#{$size} {
+            font-size: map-get($values, font-size);
+            padding: map-get($values, padding-y) map-get($values, padding-x);
+            gap: map-get($values, gap);
+        }
+    }
+
+    //&__remove {
+    //    position: relative;
+    //
+    //    display: inline-flex;
+    //    align-items: center;
+    //    justify-content: center;
+    //
+    //    width: 1em;
+    //    height: 1em;
+    //
+    //    flex-shrink: 0;
+    //
+    //    .#{$compPrefix}__remove-icon {
+    //        position: absolute;
+    //
+    //        inset: 0% 40%;
+    //        transform: scale(1.4);
+    //
+    //        line-height: 1;
+    //    }
+    //}
+
+    &__remove {
+        position: relative;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 1em;
+        height: 1em;
+
+        flex-shrink: 0;
+
+        &::before {
+            content: '';
+            position: absolute;
+
+            inset: -0.4em; // 👈 expand clickable area
+            border-radius: 50%;
+        }
+
+        .#{$compPrefix}__remove-icon {
+            position: absolute;
+
+            top: 50%;
+            left: 50%;
+
+            transform: translate(-50%, -50%) scale(1.6);
+
+            line-height: 1;
+            pointer-events: none;
+        }
+
+        &:active {
+            transform: scale(0.9);
+        }
+    }
+
+    &--removable{
+        cursor: default;
+    }
+
+    &__icon {
+        display: inline-flex;
+        align-items: center;
+
+        //&:first-child {
+        //    margin-right: 0.35em;
+        //}
+        //
+        //&:last-child {
+        //    margin-left: 0.35em;
+        //}
+
+        > svg,
+        > .MuiSvgIcon-root {
+            width: 1em;
+            height: 1em;
+            font-size: 1em;
+            display: block;
+        }
+    }
+
+    &--selected {
+        font-weight: 600;
+    }
+
+    @each $intent in $intents {
+        &--#{$intent} {
+            @include intent-vars(map.get($intent-palette-map, $intent));
+
+            --ring-color: var(--intent-400);
+
+            // SOLID (strong)
+            &.#{$compPrefix}--solid {
+                background-color: var(--intent-500);
+                color: white;
+
+                &.#{$compPrefix}--selected {
+                    background-color: var(--intent-700); // stronger jump
+                }
+
+                &.dru--chip--interactive:not(.dru--chip--disabled):hover {
+                    background-color: var(--intent-600);
+                }
+            }
+
+            // BASE (default subtle)
+            &.#{$compPrefix}--base {
+                background-color: var(--intent-100);
+                color: var(--intent-700);
+                border: 1px solid var(--intent-200);
+
+                &.#{$compPrefix}--selected {
+                    background-color: var(--intent-300); // stronger than 200
+                    border-color: var(--intent-400);
+                    color: var(--intent-800);
+                }
+
+                &.#{$compPrefix}--interactive:not(.#{$compPrefix}--disabled):hover {
+                    background-color: var(--intent-200);
+                    border-color: var(--intent-300);
+                }
+            }
+
+            // OUTLINED
+            &.#{$compPrefix}--outlined {
+                background-color: transparent;
+                color: var(--intent-600);
+                border: 1px solid var(--intent-300);
+
+                &.#{$compPrefix}--selected {
+                    background-color: var(--intent-200); // stronger fill
+                    border-color: var(--intent-500);
+                    color: var(--intent-800);
+                }
+
+                &.#{$compPrefix}--interactive:not(.#{$compPrefix}--disabled):hover {
+                    background-color: var(--intent-100);
+                    border-color: var(--intent-400);
+                    color: var(--intent-700);
+                }
+            }
+
+            // GHOST
+            &.#{$compPrefix}--ghost {
+                background-color: transparent;
+                color: var(--intent-600);
+
+                &.#{$compPrefix}--selected {
+                    background-color: var(--intent-200);
+                    color: var(--intent-800);
+                }
+
+                &.#{$compPrefix}--interactive:not(.#{$compPrefix}--disabled):hover {
+                    background-color: var(--intent-100);
+                    color: var(--intent-700);
+                }
+            }
+
+            @include dark {
+                --ring-color: var(--intent-300);
+
+                // SOLID
+                &.#{$compPrefix}--solid {
+                    background-color: var(--intent-600);
+                    color: var(--intent-50);
+
+                    &.#{$compPrefix}--selected {
+                        background-color: var(--intent-700);
+                        color: var(--intent-50);
+                    }
+
+                    &.#{$compPrefix}--interactive:not(.#{$compPrefix}--disabled):hover {
+                        background-color: var(--intent-500);
+                    }
+                }
+
+                // BASE
+                &.#{$compPrefix}--base {
+                    background-color: var(--intent-900);
+                    color: var(--intent-200);
+                    border: 1px solid var(--intent-700);
+
+                    &.#{$compPrefix}--selected {
+                        background-color: var(--intent-700); // stronger jump
+                        color: var(--intent-50);
+                        border-color: var(--intent-500);
+                    }
+
+                    &.#{$compPrefix}--interactive:not(.#{$compPrefix}--disabled):hover {
+                        background-color: var(--intent-800);
+                        border-color: var(--intent-600);
+                    }
+                }
+
+                // OUTLINED
+                &.#{$compPrefix}--outlined {
+                    background-color: transparent;
+                    color: var(--intent-300);
+                    border: 1px solid var(--intent-700);
+
+                    &.#{$compPrefix}--selected {
+                        background-color: var(--intent-800); // stronger fill
+                        color: var(--intent-100);
+                        border-color: var(--intent-400);
+                    }
+
+                    &.#{$compPrefix}--interactive:not(.#{$compPrefix}--disabled):hover {
+                        background-color: var(--intent-900); // subtle fill
+                        border-color: var(--intent-500);
+                        color: var(--intent-200);
+                    }
+                }
+
+                // GHOST
+                &.#{$compPrefix}--ghost {
+                    background-color: transparent;
+                    color: var(--intent-300);
+
+                    &.#{$compPrefix}--selected {
+                        background-color: var(--intent-800);
+                        color: var(--intent-100);
+                    }
+
+                    &.#{$compPrefix}--interactive:not(.#{$compPrefix}--disabled):hover {
+                        background-color: var(--intent-900);
+                        color: var(--intent-200);
+                    }
+                }
+            }
+        }
+    }
+}

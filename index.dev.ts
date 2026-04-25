@@ -11,6 +11,7 @@ export { Group as ButtonGroup } from './src/Button/Group';
 export { buttonTokens, commonTokens, badgeTokens, alertTokens, cardTokens };
 
 export { Badge } from './src/Badge/Badge';
+export { Chip } from './src/Chip/Chip';
 export { Alert } from './src/Alert/Alert';
 export { Card } from './src/Card';
 export { Heading, H1, H2, H3, H4, H5, H6 } from './src/Heading';
