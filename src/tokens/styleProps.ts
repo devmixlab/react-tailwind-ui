@@ -100,22 +100,75 @@ export const styleProps = defineStyleProps([
     'borderStyle',
     'borderColor',
     'borderRadius',
+    'borderImage',
+    'borderCollapse',
+
+    // Radius
+    'borderTopLeftRadius',
+    'borderTopRightRadius',
+    'borderBottomLeftRadius',
+    'borderBottomRightRadius',
+
+    // Border logical radius (RTL support)
+    'borderStartStartRadius',
+    'borderStartEndRadius',
+    'borderEndStartRadius',
+    'borderEndEndRadius',
+
+    // Border sides
     'borderTop',
     'borderBottom',
     'borderLeft',
     'borderRight',
+
+    // Border logical sides (RTL support)
+    'borderInlineStart',
+    'borderInlineEnd',
+    'borderBlockStart',
+    'borderBlockEnd',
+
+    // Border colors
     'borderTopColor',
     'borderBottomColor',
     'borderLeftColor',
     'borderRightColor',
+
+    // Border logical colors (RTL support)
+    'borderInlineStartColor',
+    'borderInlineEndColor',
+    'borderBlockStartColor',
+    'borderBlockEndColor',
+
+    // Border widths
     'borderTopWidth',
     'borderBottomWidth',
     'borderLeftWidth',
     'borderRightWidth',
+
+    // Border logical widths (RTL support)
+    'borderInlineStartWidth',
+    'borderInlineEndWidth',
+    'borderBlockStartWidth',
+    'borderBlockEndWidth',
+
+    // Border styles
     'borderTopStyle',
     'borderBottomStyle',
     'borderLeftStyle',
     'borderRightStyle',
+
+    // Border logical styles (RTL support)
+    'borderInlineStartStyle',
+    'borderInlineEndStyle',
+    'borderBlockStartStyle',
+    'borderBlockEndStyle',
+
+    // Border image
+    'borderImageSource',
+    'borderImageSlice',
+    'borderImageWidth',
+    'borderImageOutset',
+    'borderImageRepeat',
 
     // 9. Effects / visual
     'opacity',

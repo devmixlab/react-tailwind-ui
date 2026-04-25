@@ -7,6 +7,17 @@ export const styleAliasMap = {
     z: 'zIndex',
     bg: 'backgroundColor',
     rounded: 'borderRadius',
+
+    roundedTopLeft: 'borderTopLeftRadius',
+    roundedTopRight: 'borderTopRightRadius',
+    roundedBottomLeft: 'borderBottomLeftRadius',
+    roundedBottomRight: 'borderBottomRightRadius',
+
+    roundedStartStart: 'borderStartStartRadius',
+    roundedStartEnd: 'borderStartEndRadius',
+    roundedEndStart: 'borderEndStartRadius',
+    roundedEndEnd: 'borderEndEndRadius',
+
     shadow: 'boxShadow',
     bc: 'borderColor',
     bst: 'borderStyle',

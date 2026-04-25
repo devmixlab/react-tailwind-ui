@@ -7,7 +7,7 @@ import * as alertTokens from './src/tokens/alert';
 import * as cardTokens from './src/tokens/card';
 
 export { Button } from './src/Button/Button';
-export { Group } from './src/__Button/Group';
+export { Group as ButtonGroup } from './src/Button/Group';
 export { buttonTokens, commonTokens, badgeTokens, alertTokens, cardTokens };
 
 export { Badge } from './src/Badge/Badge';

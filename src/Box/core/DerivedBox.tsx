@@ -3,6 +3,7 @@ import { AliasBox, AliasProps } from './AliasBox';
 import { createPolymorphic } from '../../types/polymorphic';
 
 type Size = number | string;
+type Radius = CSSProperties['borderRadius'];
 
 export type DerivedProps = {
     // transform
@@ -15,6 +16,12 @@ export type DerivedProps = {
     flip?: boolean;
     flipX?: boolean;
     flipY?: boolean;
+
+    // rounded
+    roundedTop?: Radius;
+    roundedBottom?: Radius;
+    roundedLeft?: Radius;
+    roundedRight?: Radius;
 
     // transition
     transD?: string; // duration
@@ -39,12 +46,19 @@ export type DerivedProps = {
 
 type DerivedBoxProps = DerivedProps;
 
-type ImplProps = {
+type ImplProps = DerivedProps & {
     children?: React.ReactNode;
     className?: string;
-} & Record<string, unknown>;
+} & React.HTMLAttributes<HTMLElement>;
+
+// type ImplProps = {
+//     children?: React.ReactNode;
+//     className?: string;
+// } & DerivedProps &
+//     Record<string, unknown>;
 
 type DerivedEntry = [keyof AliasProps, AliasProps[keyof AliasProps]];
+// type DerivedEntry = [string, string | number];
 
 const DerivedBoxImpl = (
     {
@@ -58,6 +72,12 @@ const DerivedBoxImpl = (
         flip,
         flipX,
         flipY,
+
+        roundedTop,
+        roundedBottom,
+        roundedLeft,
+        roundedRight,
+
         transD,
         transE,
         transP,
@@ -78,6 +98,28 @@ const DerivedBoxImpl = (
 ) => {
     // const derivedProps: Array<[keyof AliasProps, any]> = [];
     const derivedProps: DerivedEntry[] = [];
+
+    // Rounded
+    if (roundedTop != null) {
+        derivedProps.push(['roundedTopLeft', roundedTop], ['roundedTopRight', roundedTop]);
+    }
+    if (roundedBottom != null) {
+        derivedProps.push(
+            ['roundedBottomLeft', roundedBottom],
+            ['roundedBottomRight', roundedBottom],
+        );
+    }
+    if (roundedLeft != null) {
+        derivedProps.push(['roundedTopLeft', roundedLeft], ['roundedBottomLeft', roundedLeft]);
+    }
+    if (roundedRight != null) {
+        derivedProps.push(['roundedTopRight', roundedRight], ['roundedBottomRight', roundedRight]);
+    }
+
+    // if (roundedBottom) {
+    //     style.borderBottomLeftRadius = roundedBottom;
+    //     style.borderBottomRightRadius = roundedBottom;
+    // }
 
     if (col != null && rest.gridCol == null && rest.gridColumn == null) {
         derivedProps.push(['gridCol', `span ${col}`]);

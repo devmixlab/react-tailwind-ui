@@ -1,46 +1,16 @@
 import React, { useEffect, useState, forwardRef, useMemo } from 'react';
-import { Button as HeadlessButton } from '@headlessui/react';
 import clsx from 'clsx';
-// import { type View, type LodaingPosition } from '../tokens/__button';
-// import { buttonStyles as bs } from './Button.styles';
-// import { type Size, type Radius } from '../tokens/common';
 import { Box, type BoxProps } from '../Box/Box';
-import { CLASS_PREFIX } from '../constants';
 import { createPolymorphic } from '../types/polymorphic';
+import { LoadingPosition, Size, Intent, Variant } from './button.tokens';
+import { isLongNumber, prefix } from './button.helpers';
 
-export type LoadingPosition = 'start' | 'center' | 'end';
-export const sizes = ['xs', 'sm', 'md', 'lg', 'xl'] as const;
-
-export type Size = (typeof sizes)[number];
-
-type Variant = 'base' | 'solid' | 'outlined' | 'subtle' | 'ghost' | 'link';
-type Intent = 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info';
-
-export const prefix = (name: string = '') => {
-    return `${CLASS_PREFIX}--button${name}`;
-};
-
-const isLongNumber = (value?: number, length = 2) => {
-    // if (value === undefined || isNaN(value)) return false;
-    // return value.toString().length > length; // true if 3 or more digits
-
-    if (value === undefined || value === null) return false;
-
-    // Convert to string for length check
-    const str = value.toString();
-
-    // Check if it contains only digits
-    if (!/^\d+$/.test(str)) return false;
-
-    // Return true if length exceeds threshold
-    return str.length > length;
-};
-
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLElement> {
+// export type ButtonProps = React.ButtonHTMLAttributes<HTMLElement> & {
+export type ButtonProps = {
     className?: string;
     children?: React.ReactNode;
-    as?: React.ElementType;
-    type?: 'button' | 'submit' | 'reset';
+    // as?: React.ElementType;
+    // type?: 'button' | 'submit' | 'reset';
     intent?: Intent;
     variant?: Variant;
     size?: Size;
@@ -56,7 +26,15 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLElement> {
     loading?: boolean;
     loadingPosition?: LoadingPosition;
     spinnerDelay?: number;
-}
+};
+
+type ButtonImplProps = ButtonProps & {
+    as?: React.ElementType;
+    type?: 'button' | 'submit' | 'reset';
+} & {
+    onClick?: React.MouseEventHandler<any>;
+    onKeyDown?: React.KeyboardEventHandler<any>;
+};
 
 const ButtonImpl = (
     {
@@ -72,7 +50,7 @@ const ButtonImpl = (
         active = false,
         noInteraction = false,
         // fullWidth = false,
-        rounded = 'sm',
+        rounded = 'md',
         iconOnly = false,
         startIcon,
         endIcon,
@@ -80,10 +58,15 @@ const ButtonImpl = (
         loadingPosition = 'center',
         spinnerDelay = 150,
         ...props
-    }: ButtonProps,
+    }: ButtonImplProps,
     ref: React.Ref<any>,
 ) => {
     const [showSpinner, setShowSpinner] = useState(false);
+
+    const isButton = as === 'button';
+    const isDisabled = disabled || loading || noInteraction;
+
+    const { onClick, onKeyDown, ...restProps } = props;
 
     const cl = clsx(
         className,
@@ -92,7 +75,7 @@ const ButtonImpl = (
         prefix(`--${intent}`),
         prefix(`--size-${size}`),
         {
-            [prefix(`--numeric`)]: number,
+            [prefix(`--numeric`)]: number != null,
             [prefix(`--long`)]: isLongNumber(number, 2),
             [prefix(`--disabled`)]: disabled,
             [prefix(`--active`)]: active,
@@ -100,24 +83,9 @@ const ButtonImpl = (
             // [bs.fullWidth]: fullWidth,
             [prefix(`--icon-only`)]: iconOnly,
             [prefix(`--loading`)]: showSpinner,
-            [prefix(`--loading-pos-${loadingPosition}`)]: showSpinner,
+            [prefix(`--loading-${loadingPosition}`)]: showSpinner,
         },
     );
-
-    // useEffect(() => {
-    //     let t: NodeJS.Timeout;
-    //
-    //     if (loading) {
-    //         t = setTimeout(() => setShowSpinner(true), spinnerDelay);
-    //     } else {
-    //         // defer state update to next tick
-    //         // setTimeout(() => setShowSpinner(false), 0);
-    //         const frame = requestAnimationFrame(() => setShowSpinner(false));
-    //         return () => cancelAnimationFrame(frame);
-    //     }
-    //
-    //     return () => clearTimeout(t);
-    // }, [loading, spinnerDelay]);
 
     useEffect(() => {
         let timeoutId: ReturnType<typeof setTimeout> | null = null;
@@ -139,29 +107,59 @@ const ButtonImpl = (
         };
     }, [loading, spinnerDelay]);
 
-    const handleClick = (e: React.MouseEvent<HTMLElement>) => {
-        if (disabled || loading) {
+    const handleClick = (e: React.MouseEvent<any>) => {
+        if (isDisabled) {
             e.preventDefault();
             e.stopPropagation();
             return;
         }
-        props.onClick?.(e);
+        onClick?.(e);
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<any>) => {
+        if (isDisabled) {
+            e.preventDefault();
+            return;
+        }
+
+        if (!isButton && (e.key === 'Enter' || e.key === ' ')) {
+            e.preventDefault();
+            handleClick(e as any);
+        }
+
+        onKeyDown?.(e);
     };
 
     return (
         <Box
             aria-busy={showSpinner}
-            aria-disabled={disabled || showSpinner}
+            aria-disabled={isDisabled}
+            role={!isButton ? 'button' : undefined}
+            tabIndex={!isButton && !isDisabled ? 0 : undefined}
             as={as}
+            type={isButton ? type : undefined}
             ref={ref}
             className={cl}
-            disabled={as === 'button' ? disabled : undefined}
-            {...props}
+            disabled={isButton ? isDisabled : undefined}
+            rounded={rounded}
+            {...restProps}
             onClick={handleClick}
+            onKeyDown={handleKeyDown}
         >
-            {number != null ? number : children}
+            {/* START ICON */}
+            {startIcon && loadingPosition !== 'start' && (
+                <span className={prefix(`__icon`)}>{startIcon}</span>
+            )}
+
+            {/* CONTENT */}
+            <span className={prefix(`__content`)}>{number != null ? number : children}</span>
+
+            {/* END ICON */}
+            {endIcon && loadingPosition !== 'end' && (
+                <span className={prefix(`__icon`)}>{endIcon}</span>
+            )}
         </Box>
     );
 };
 
-export const Button = createPolymorphic<ButtonProps, 'div'>(forwardRef(ButtonImpl), 'Button');
+export const Button = createPolymorphic<ButtonProps, 'button'>(forwardRef(ButtonImpl), 'Button');

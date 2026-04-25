@@ -1,6 +1,9 @@
 @use '../../abstracts/config' as *;
 @use '../../abstracts/mixins' as *;
 
+@use '../../abstracts/palette' as *;
+@use 'sass:map';
+
 $button-sizes: (
     xs: (height: 28px, padding-x: 10px, font-size: 0.75rem),
     sm: (height: 32px, padding-x: 12px, font-size: 0.875rem),
@@ -9,9 +12,140 @@ $button-sizes: (
     xl: (height: 56px, padding-x: 24px, font-size: 1.1rem),
 );
 
-$intents: (primary, secondary, info, warning, success, danger);
+//$button-sizes: (
+//    xs: (height: 28px, padding-x: 10px, font-size: 0.75rem),
+//    sm: (height: 32px, padding-x: 12px, font-size: 0.875rem),
+//    md: (height: 40px, padding-x: 16px, font-size: 1rem),
+//    lg: (height: 48px, padding-x: 20px, font-size: 1.125rem),
+//    xl: (height: 56px, padding-x: 24px, font-size: 1.25rem),
+//);
+
+@mixin intent-vars($palette) {
+    @each $step, $value in $palette {
+        --intent-#{$step}: #{$value};
+    }
+}
+
+@keyframes dru-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+$intents: (brown, primary, secondary, info, warning, success, danger);
+$intent-palette-map: (
+    brown: $yellow,
+    primary: $blue,
+    secondary: $slate,
+    info: $cyan,
+    warning: $amber,
+    success: $green,
+    danger: $red,
+);
+
+//@mixin radius($only: null, $setRadius: null) {
+//    @each $size, $radius in $radiuses {
+//        $final-radius: $setRadius;
+//        @if ($final-radius == null) {
+//            $final-radius: $radius;
+//        }
+//
+//        &#{$p}#{'radius-' + $size} {
+//            @if ($only == 'left') {
+//                border-top-left-radius: $final-radius;
+//                border-bottom-left-radius: $final-radius;
+//            } @else if ($only == 'top') {
+//                border-top-left-radius: $final-radius;
+//                border-top-right-radius: $final-radius;
+//            } @else if ($only == 'right') {
+//                border-top-right-radius: $final-radius;
+//                border-bottom-right-radius: $final-radius;
+//            } @else if ($only == 'bottom') {
+//                border-bottom-left-radius: $final-radius;
+//                border-bottom-right-radius: $final-radius;
+//            } @else {
+//                border-radius: $final-radius;
+//            }
+//        }
+//    }
+//}
+
+.dru--button-group {
+    display: inline-flex;
+
+    &--orientation-vertical {
+        flex-direction: column;
+
+        //.dru--button:not(:last-child) {
+        //    border-bottom: none;
+        //}
+
+        .dru--button:not(:last-child):not(.dru--button--active) {
+            border-bottom: none;
+        }
+        .dru--button.dru--button--active:not(:last-child):has(+ .dru--button--active) {
+            border-bottom: none;
+        }
+        .dru--button--active + .dru--button:not(.dru--button--active) {
+            border-top: none;
+        }
+    }
+
+    &--orientation-horizontal {
+        flex-direction: row;
+
+        //.dru--button:not(:last-child):not(.dru--button--active) {
+        //    border-right: none;
+        //}
+        //.dru--button:not(:last-child)
+        //:not(.dru--button--active)
+        //:has(+ .dru--button:has(.dru--button--active)) {
+        //    border-right: none;
+        //}
+        .dru--button:not(:last-child):not(.dru--button--active) {
+            border-right: none;
+        }
+        .dru--button.dru--button--active:not(:last-child):has(+ .dru--button--active) {
+            border-right: none;
+        }
+        .dru--button--active + .dru--button:not(.dru--button--active) {
+            border-left: none;
+        }
+    }
+
+    &--full-width {
+        display: flex;
+        width: 100%;
+
+        .dru--button {
+            flex: 1;
+        }
+    }
+
+    &--equal-width {
+        display: flex;
+
+        .dru--button {
+            flex: 1;
+        }
+    }
+
+    .dru--button {
+        position: relative;
+
+        &:focus,
+        &:focus-visible,
+        &.is-active {
+            z-index: 2;
+        }
+        &:hover {
+            z-index: 3;
+        }
+    }
+}
 
 .dru--button {
+
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -23,7 +157,7 @@ $intents: (primary, secondary, info, warning, success, danger);
     white-space: nowrap;
 
     border: 1px solid var(--dru-button-border);
-    border-radius: var(--dru-button-radius, 0.5rem);
+    //border-radius: var(--dru-button-radius, 0.5rem);
 
     cursor: pointer;
     user-select: none;
@@ -38,10 +172,76 @@ $intents: (primary, secondary, info, warning, success, danger);
     border-color 0.15s ease,
     box-shadow 0.15s ease;
 
+    &--loading {
+        pointer-events: none;
+        cursor: wait;
+        position: relative;
+
+        &::before,
+        &::after {
+            content: '';
+            pointer-events: none;
+
+            width: 1em;
+            height: 1em;
+
+            border: 0.12em solid currentColor;
+            border-right-color: transparent;
+            border-radius: 50%;
+
+            animation: dru-spin 0.6s linear infinite;
+        }
+
+        // hide both by default
+        &::before,
+        &::after {
+            display: none;
+        }
+    }
+
+    &--loading-center {
+        &::after {
+            display: block;
+            position: absolute;
+            inset: 0;
+            margin: auto;
+        }
+
+        .dru--button__content {
+            visibility: hidden;
+        }
+    }
+
+    &--loading-start {
+        &::before {
+            display: inline-block;
+            margin-right: 0.5em;
+        }
+    }
+
+    &--loading-end {
+        &::after {
+            display: inline-block;
+            margin-left: 0.5em;
+        }
+    }
+
     //&:focus-visible {
     //    outline: none;
     //    box-shadow: 0 0 0 2px var(--dru-focus-ring, rgba(0, 0, 0, 0.2));
     //}
+
+    > svg,
+    > .MuiSvgIcon-root {
+        width: 1.2em;
+        height: 1.2em;
+        //width: 1em;
+        //height: 1em;
+        //width: 1em;
+        //height: 1em;
+        font-size: 1em;
+        display: block;
+    }
 
     &:focus-visible {
         outline: 2px solid var(--dru-button-ring);
@@ -61,7 +261,7 @@ $intents: (primary, secondary, info, warning, success, danger);
         transition: none;
     }
 
-    &:disabled,
+    //&:disabled,
     &.dru--button--disabled {
         cursor: not-allowed;
         opacity: 0.7;
@@ -76,10 +276,27 @@ $intents: (primary, secondary, info, warning, success, danger);
     &--icon-only {
         padding: 0;
         aspect-ratio: 1;
+        > svg,
+        > .MuiSvgIcon-root {
+            width: 1.2em;
+            height: 1.2em;
+        }
+    }
+
+    &__icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
 
     &--numeric {
         font-variant-numeric: tabular-nums;
+        padding-inline: 0;
+        aspect-ratio: 1;
+        &.dru--button--long {
+            aspect-ratio: auto;
+            padding: 0 0.5rem;
+        }
     }
 
     @each $size, $props in $button-sizes {
@@ -90,26 +307,11 @@ $intents: (primary, secondary, info, warning, success, danger);
         }
     }
 
-    //&:not(.dru--button--static):not(:disabled) {
-    //    &:hover {
-    //        --dru-button-bg: var(--dru-button-bg-ghost-hover);
-    //    }
-    //}
-
     &:not(.dru--button--static):not(:disabled) {
         &:hover {
             --dru-button-bg: var(--dru-button-bg-hover);
         }
     }
-
-    //&--base, &--solid, &--outlined {
-    //    //--dru-button-bg: transparent;
-    //    &:not(.dru--button--static):not(:disabled) {
-    //        &:hover {
-    //            --dru-button-bg: var(--dru-button-bg-hover);
-    //        }
-    //    }
-    //}
 
     // OUTLINED
     &--outlined {
@@ -121,23 +323,12 @@ $intents: (primary, secondary, info, warning, success, danger);
         --dru-button-bg: var(--dru-button-bg-subtle);
         --dru-button-border: transparent;
         --dru-button-bg-subtle-hover: transparent;
-
-        //&:not(.dru--button--static):not(:disabled) {
-        //    &:hover {
-        //        --dru-button-bg: var(--dru-button-bg-subtle-hover);
-        //    }
-        //}
     }
 
      //GHOST (no bg, only on hover)
     &--ghost {
         --dru-button-bg: transparent;
         --dru-button-border: transparent;
-        //&:not(.dru--button--static):not(:disabled) {
-        //    &:hover {
-        //        --dru-button-bg: var(--dru-button-bg-ghost-hover);
-        //    }
-        //}
     }
 
      //LINK
@@ -156,37 +347,36 @@ $intents: (primary, secondary, info, warning, success, danger);
         }
     }
 
+
+
     @each $intent in $intents {
-        @if $intent == primary {
+        &--#{$intent}{
+            @include intent-vars(map.get($intent-palette-map, $intent));
 
-            &--#{$intent} {
-                --dru-button-ring: rgba(37, 99, 235, 0.6);
-            }
+            //--dru-button-ring: rgba(37, 99, 235, 0.6);
+            --dru-button-ring: var(--intent-600);
 
-            &--solid.dru--button--#{$intent} {
-                --dru-button-bg: #2563eb;        // 600
-                --dru-button-bg-hover: #1d4ed8;  // 700
+            &.dru--button--solid {
+                --dru-button-bg: var(--intent-600);
+                --dru-button-bg-hover: var(--intent-700);
                 --dru-button-text: #fff;
                 --dru-button-border: transparent;
 
                 &:not(:disabled):not(.dru--button--disabled) {
-                    // PRESS (mouse down)
-                    &:active { //transform: translateY(1px);
-                        filter: brightness(0.95); // slightly darker
+                    &:active {
+                        filter: brightness(0.95);
                     }
                 }
 
                 &.dru--button--active {
-                    --dru-button-bg: #1e40af;        // 800
-                    --dru-button-bg-hover: #1e3a8a;  // 900
+                    --dru-button-bg: var(--intent-800);
+                    --dru-button-bg-hover: var(--intent-900);
 
                     &:not(:disabled):not(.dru--button--disabled) {
-                        // keep stable on hover
                         &:hover {
-                            --dru-button-bg-hover: #1e40af;
+                            --dru-button-bg-hover: var(--intent-800);
                         }
 
-                        // press still works on active button
                         &:active {
                             filter: brightness(0.95);
                         }
@@ -194,31 +384,28 @@ $intents: (primary, secondary, info, warning, success, danger);
                 }
             }
 
-            &--base.dru--button--#{$intent} {
-                --dru-button-bg: #bfdbfe;        // 200
-                --dru-button-bg-hover: #93c5fd;  // 300
-                --dru-button-text: #1e3a8a;      // 900
-                --dru-button-border: #60a5fa;    // 400
+            &.dru--button--base {
+                --dru-button-bg: var(--intent-200);
+                --dru-button-bg-hover: var(--intent-300);
+                --dru-button-text: var(--intent-900);
+                --dru-button-border: var(--intent-400);
 
                 &:not(:disabled):not(.dru--button--disabled) {
-                    // 🔥 PRESS (mouse down)
                     &:active {
-                        filter: brightness(0.97); // slightly lighter effect than solid
+                        filter: brightness(0.97);
                     }
                 }
 
                 &.dru--button--active {
-                    --dru-button-bg: #93c5fd;        // 300
-                    --dru-button-bg-hover: #60a5fa;  // 400
-                    --dru-button-border: #3b82f6;    // 500
+                    --dru-button-bg: var(--intent-300);
+                    --dru-button-bg-hover: var(--intent-400);
+                    --dru-button-border: var(--intent-500);
 
                     &:not(:disabled):not(.dru--button--disabled) {
-                        // prevent hover change
                         &:hover {
-                            --dru-button-bg-hover: #93c5fd;
+                            --dru-button-bg-hover: var(--intent-300);
                         }
 
-                        // press still works when selected
                         &:active {
                             filter: brightness(0.97);
                         }
@@ -226,37 +413,86 @@ $intents: (primary, secondary, info, warning, success, danger);
                 }
             }
 
-            &--outlined.dru--button--#{$intent} {
-                --dru-button-bg: transparent;
-                --dru-button-bg-hover: #dbeafe;  // 100
-                --dru-button-text: #2563eb;      // 600
-                --dru-button-border: #93c5fd;    // 300
+            //&.dru--button--outlined {
+            //    --dru-button-bg: transparent;
+            //    --dru-button-bg-hover: var(--intent-100);
+            //    --dru-button-text: var(--intent-600);
+            //    --dru-button-border: var(--intent-300);
+            //
+            //    &:not(:disabled):not(.dru--button--disabled) {
+            //        &:hover {
+            //            --dru-button-border: var(--intent-600);
+            //        }
+            //
+            //        &:active {
+            //            filter: brightness(0.98);
+            //        }
+            //    }
+            //
+            //    &.dru--button--active {
+            //        --dru-button-bg: var(--intent-100);
+            //        --dru-button-border: var(--intent-600);
+            //        --dru-button-text: var(--intent-700);
+            //
+            //        &:not(:disabled):not(.dru--button--disabled) {
+            //            &:hover {
+            //                --dru-button-bg-hover: var(--intent-100);
+            //            }
+            //
+            //            &:active {
+            //                filter: brightness(0.98);
+            //            }
+            //        }
+            //    }
+            //}
 
-                //&:hover {
-                //    --dru-button-border: #2563eb;  // 600
-                //}
+            &.dru--button--outlined {
+                --dru-button-bg: transparent;
+                --dru-button-bg-hover: var(--intent-100);
+                --dru-button-text: var(--intent-600);
+                --dru-button-border: var(--intent-300);
+
+                position: relative;
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    inset: -1px;
+                    border-radius: inherit;
+
+                    border: 1px solid transparent;
+                    pointer-events: none;
+
+                    opacity: 0;
+                    transition: border-color 0.15s ease, opacity 0.15s ease;
+                }
+
                 &:not(:disabled):not(.dru--button--disabled) {
-                    &:hover {
-                        --dru-button-border: #2563eb;
+                    &:hover::after {
+                        border-color: var(--intent-500); // smoother jump
+                        opacity: 1;
                     }
 
-                    // 🔥 PRESS (very subtle)
                     &:active {
                         filter: brightness(0.98);
                     }
                 }
 
                 &.dru--button--active {
-                    --dru-button-bg: #dbeafe;      // 100
-                    --dru-button-border: #2563eb;  // 600
-                    --dru-button-text: #1d4ed8;    // 700
+                    --dru-button-bg: var(--intent-100);
+                    --dru-button-border: var(--intent-600);
+                    --dru-button-text: var(--intent-700);
 
                     &:not(:disabled):not(.dru--button--disabled) {
                         &:hover {
-                            --dru-button-bg-hover: #dbeafe; // stable
+                            --dru-button-bg-hover: var(--intent-100);
                         }
 
-                        // press still works when selected
+                        &:hover::after {
+                            border-color: var(--intent-600); // stable
+                            opacity: 1;
+                        }
+
                         &:active {
                             filter: brightness(0.98);
                         }
@@ -265,25 +501,24 @@ $intents: (primary, secondary, info, warning, success, danger);
             }
 
             // 🔥 Ghost now covers "subtle-ish" usage
-            &--ghost.dru--button--#{$intent} {
+            &.dru--button--ghost {
                 --dru-button-bg: transparent;
-                --dru-button-bg-hover: #dbeafe;  // 100
-                --dru-button-text: #2563eb;      // 600
+                --dru-button-bg-hover: var(--intent-100);
+                --dru-button-text: var(--intent-600);
 
                 &:not(:disabled):not(.dru--button--disabled) {
                     &:hover {
-                        --dru-button-text: #1d4ed8; // 700
+                        --dru-button-text: var(--intent-700);
                     }
 
-                    // 🔥 PRESS (very subtle)
                     &:active {
                         filter: brightness(0.99);
                     }
                 }
 
                 &.dru--button--active {
-                    --dru-button-bg: #dbeafe;      // 100
-                    --dru-button-text: #1d4ed8;    // 700
+                    --dru-button-bg: var(--intent-100);
+                    --dru-button-text: var(--intent-700);
 
                     &:not(:disabled):not(.dru--button--disabled) {
                         &:active {
@@ -293,26 +528,26 @@ $intents: (primary, secondary, info, warning, success, danger);
                 }
             }
 
-            &--link.dru--button--#{$intent} {
-                --dru-button-text: #2563eb; // 600
+            &.dru--button--link {
+                --dru-button-text: var(--intent-600);
 
                 &:not(:disabled):not(.dru--button--disabled) {
                     &:hover {
-                        --dru-button-text: #1d4ed8; // 700
+                        --dru-button-text: var(--intent-700);
                         text-decoration: underline;
                     }
 
-                    // 🔥 PRESS (very subtle)
                     &:active {
                         filter: brightness(0.97);
                     }
                 }
 
                 &.dru--button--active {
-                    --dru-button-text: #1e40af; // 800
+                    --dru-button-text: var(--intent-800);
 
                     &:not(:disabled):not(.dru--button--disabled) {
                         text-decoration: underline;
+
                         &:active {
                             filter: brightness(0.97);
                         }
@@ -321,29 +556,27 @@ $intents: (primary, secondary, info, warning, success, danger);
             }
 
             @include dark {
-                &--#{$intent} {
-                    --dru-button-ring: rgba(96, 165, 250, 0.7); // lighter blue for dark bg
-                }
+                --dru-button-ring: var(--intent-400); // lighter for dark bg
 
-                &--solid.dru--button--#{$intent} {
-                    --dru-button-bg: #3b82f6;        // 500
-                    --dru-button-bg-hover: #60a5fa;  // 400 (lighter on hover)
-                    --dru-button-text: #0b1220;      // dark text for contrast
+                &.dru--button--solid {
+                    --dru-button-bg: var(--intent-500);
+                    --dru-button-bg-hover: var(--intent-400);
+                    --dru-button-text: #0b1220;
                     --dru-button-border: transparent;
 
                     &:not(:disabled):not(.dru--button--disabled) {
                         &:active {
-                            filter: brightness(1.08); // 🔥 lighter on press in dark mode
+                            filter: brightness(1.08);
                         }
                     }
 
                     &.dru--button--active {
-                        --dru-button-bg: #2563eb;        // 600 (stronger)
-                        --dru-button-bg-hover: #3b82f6;  // 500
+                        --dru-button-bg: var(--intent-600);
+                        --dru-button-bg-hover: var(--intent-500);
 
                         &:not(:disabled):not(.dru--button--disabled) {
                             &:hover {
-                                --dru-button-bg-hover: #2563eb; // stable
+                                --dru-button-bg-hover: var(--intent-600);
                             }
 
                             &:active {
@@ -353,26 +586,26 @@ $intents: (primary, secondary, info, warning, success, danger);
                     }
                 }
 
-                &--base.dru--button--#{$intent} {
-                    --dru-button-bg: #1e3a8a;        // 900
-                    --dru-button-bg-hover: #1d4ed8;  // 700 (lighter)
-                    --dru-button-text: #bfdbfe;      // 200
-                    --dru-button-border: #3b82f6;    // 500
+                &.dru--button--base {
+                    --dru-button-bg: var(--intent-900);
+                    --dru-button-bg-hover: var(--intent-700);
+                    --dru-button-text: var(--intent-200);
+                    --dru-button-border: var(--intent-500);
 
                     &:not(:disabled):not(.dru--button--disabled) {
                         &:active {
-                            filter: brightness(1.05); // 🔥 lighter press
+                            filter: brightness(1.05);
                         }
                     }
 
                     &.dru--button--active {
-                        --dru-button-bg: #1d4ed8;        // 700
-                        --dru-button-bg-hover: #3b82f6;  // 500
-                        --dru-button-border: #60a5fa;    // 400
+                        --dru-button-bg: var(--intent-700);
+                        --dru-button-bg-hover: var(--intent-500);
+                        --dru-button-border: var(--intent-400);
 
                         &:not(:disabled):not(.dru--button--disabled) {
                             &:hover {
-                                --dru-button-bg-hover: #1d4ed8;
+                                --dru-button-bg-hover: var(--intent-700);
                             }
 
                             &:active {
@@ -382,15 +615,64 @@ $intents: (primary, secondary, info, warning, success, danger);
                     }
                 }
 
-                &--outlined.dru--button--#{$intent} {
+                //&.dru--button--outlined {
+                //    --dru-button-bg: transparent;
+                //    --dru-button-bg-hover: color-mix(in srgb, var(--intent-500) 15%, transparent);
+                //    --dru-button-text: var(--intent-400);
+                //    --dru-button-border: var(--intent-500);
+                //
+                //    &:not(:disabled):not(.dru--button--disabled) {
+                //        &:hover {
+                //            --dru-button-border: var(--intent-300);
+                //        }
+                //
+                //        &:active {
+                //            filter: brightness(1.05);
+                //        }
+                //    }
+                //
+                //    &.dru--button--active {
+                //        --dru-button-bg: color-mix(in srgb, var(--intent-500) 20%, transparent);
+                //        --dru-button-border: var(--intent-300);
+                //        --dru-button-text: var(--intent-200);
+                //
+                //        &:not(:disabled):not(.dru--button--disabled) {
+                //            &:hover {
+                //                --dru-button-bg-hover: color-mix(in srgb, var(--intent-500) 20%, transparent);
+                //            }
+                //
+                //            &:active {
+                //                filter: brightness(1.05);
+                //            }
+                //        }
+                //    }
+                //}
+
+                &.dru--button--outlined {
                     --dru-button-bg: transparent;
-                    --dru-button-bg-hover: rgba(59, 130, 246, 0.15); // softer than 100
-                    --dru-button-text: #60a5fa;      // 400
-                    --dru-button-border: #3b82f6;    // 500
+                    --dru-button-bg-hover: color-mix(in srgb, var(--intent-500) 15%, transparent);
+                    --dru-button-text: var(--intent-400);
+                    --dru-button-border: var(--intent-500);
+
+                    position: relative;
+
+                    &::after {
+                        content: '';
+                        position: absolute;
+                        inset: -1px;
+                        border-radius: inherit;
+
+                        border: 1px solid transparent;
+                        pointer-events: none;
+
+                        transition: border-color 0.15s ease, opacity 0.15s ease;
+                        opacity: 0;
+                    }
 
                     &:not(:disabled):not(.dru--button--disabled) {
-                        &:hover {
-                            --dru-button-border: #93c5fd; // 300 (lighter)
+                        &:hover::after {
+                            border-color: var(--intent-300);
+                            opacity: 1;
                         }
 
                         &:active {
@@ -399,13 +681,14 @@ $intents: (primary, secondary, info, warning, success, danger);
                     }
 
                     &.dru--button--active {
-                        --dru-button-bg: rgba(59, 130, 246, 0.2);
-                        --dru-button-border: #93c5fd;
-                        --dru-button-text: #bfdbfe;
+                        --dru-button-bg: color-mix(in srgb, var(--intent-500) 20%, transparent);
+                        --dru-button-border: var(--intent-300);
+                        --dru-button-text: var(--intent-200);
 
                         &:not(:disabled):not(.dru--button--disabled) {
-                            &:hover {
-                                --dru-button-bg-hover: rgba(59, 130, 246, 0.2);
+                            &:hover::after {
+                                border-color: var(--intent-200);
+                                opacity: 1;
                             }
 
                             &:active {
@@ -415,14 +698,14 @@ $intents: (primary, secondary, info, warning, success, danger);
                     }
                 }
 
-                &--ghost.dru--button--#{$intent} {
+                &.dru--button--ghost {
                     --dru-button-bg: transparent;
-                    --dru-button-bg-hover: rgba(59, 130, 246, 0.15);
-                    --dru-button-text: #60a5fa; // 400
+                    --dru-button-bg-hover: color-mix(in srgb, var(--intent-500) 15%, transparent);
+                    --dru-button-text: var(--intent-400);
 
                     &:not(:disabled):not(.dru--button--disabled) {
                         &:hover {
-                            --dru-button-text: #93c5fd; // 300
+                            --dru-button-text: var(--intent-300);
                         }
 
                         &:active {
@@ -431,8 +714,8 @@ $intents: (primary, secondary, info, warning, success, danger);
                     }
 
                     &.dru--button--active {
-                        --dru-button-bg: rgba(59, 130, 246, 0.2);
-                        --dru-button-text: #bfdbfe;
+                        --dru-button-bg: color-mix(in srgb, var(--intent-500) 20%, transparent);
+                        --dru-button-text: var(--intent-200);
 
                         &:not(:disabled):not(.dru--button--disabled) {
                             &:active {
@@ -442,12 +725,12 @@ $intents: (primary, secondary, info, warning, success, danger);
                     }
                 }
 
-                &--link.dru--button--#{$intent} {
-                    --dru-button-text: #60a5fa; // 400
+                &.dru--button--link {
+                    --dru-button-text: var(--intent-400);
 
                     &:not(:disabled):not(.dru--button--disabled) {
                         &:hover {
-                            --dru-button-text: #93c5fd; // 300
+                            --dru-button-text: var(--intent-300);
                             text-decoration: underline;
                         }
 
@@ -457,7 +740,7 @@ $intents: (primary, secondary, info, warning, success, danger);
                     }
 
                     &.dru--button--active {
-                        --dru-button-text: #bfdbfe; // 200
+                        --dru-button-text: var(--intent-200);
 
                         &:not(:disabled):not(.dru--button--disabled) {
                             text-decoration: underline;
@@ -470,7 +753,7 @@ $intents: (primary, secondary, info, warning, success, danger);
                 }
             }
 
-
         }
+        //}
     }
 }

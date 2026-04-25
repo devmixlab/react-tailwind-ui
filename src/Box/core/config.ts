@@ -230,7 +230,28 @@ export const resolveTransformTranslate = (v: string) => {
 
 export const config: OriginPropConfig[] = [
     { key: 'boxShadow', prefix: 'shadow', tokens: shadowsTokens },
-    { key: 'borderRadius', prefix: 'rounded', tokens: radiiTokens },
+
+    // Rounding
+    ...(
+        [
+            ['borderRadius', 'rounded'],
+            ['borderTopLeftRadius', 'rounded-top-left'],
+            ['borderTopRightRadius', 'rounded-top-right'],
+            ['borderBottomLeftRadius', 'rounded-bottom-left'],
+            ['borderBottomRightRadius', 'rounded-bottom-right'],
+
+            ['roundedLeft', 'rounded-left'],
+            ['roundedTop', 'rounded-top'],
+            ['roundedRight', 'rounded-right'],
+            ['roundedBottom', 'rounded-bottom'],
+        ] as const
+    ).map(([key, prefix]) => ({
+        key: key,
+        prefix: prefix ?? key,
+        tokens: gapsTokens,
+    })),
+
+    // { key: 'borderRadius', prefix: 'rounded', tokens: radiiTokens },
 
     // Typography
     { key: 'fontSize', prefix: 'fs', tokens: fontSizesTokens },
