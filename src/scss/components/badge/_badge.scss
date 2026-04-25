@@ -1,142 +1,123 @@
 @use '../../abstracts/config' as *;
-@use '../../abstracts/variables' as *;
 @use '../../abstracts/mixins' as *;
 
-@use './variables' as *;
-
+@use '../../abstracts/palette' as *;
 @use 'sass:map';
-@use 'sass:color';
 
-@function text-color-map($name, $mode: 'light', $default: #fff) {
-    @if ($mode == 'light') {
-        @if index((light, yellow), $name) {
-            @return #1f2937;
-        }
-    } @else {
-        //@return map.get($dark-palette-colors-text, $name);
-        @if index((dark, warning, info, zinc, neutral, stone, amber, yellow, lime, green, emerald, teal, cyan, sky), $name) {
-            @return #111827;
-        }
-    }
-
-    @return $default;
-}
-
-@function hover-solid-color($color, $mode: 'light') {
-    @if $mode == 'light' {
-        @return color.adjust($color, $lightness: -3%);
-    } @else {
-        @return color.adjust($color, $lightness: 10%);
-    }
-}
-
-@function hover-outlined-color($color, $mode: 'light') {
-    @if $mode == 'light' {
-        @return color.adjust($color, $lightness: -3%);
-    } @else {
-        @return color.adjust($color, $lightness: -20%);
-    }
-}
-
-@mixin perColorPalette ($color-palette, $mode: 'light') {
-    @each $name, $color in $color-palette {
-        &#{$p}#{"" + $name} {
-            background-color: $color;
-            color: text-color-map($name, $mode);
-            border-color: $color;
-            &#{$p}outlined {
-                background-color: color.change($color, $alpha: 20%);
-                border-color: color.change($color, $alpha: 30%);
-                @if($mode == 'dark') {
-                    color: color.adjust($color, $lightness: 20%);
-                    @if ($name == light) {
-                        color: color.adjust($color, $lightness: 60%);
-                    } @else if index((slate, gray), $name) {
-                        color: color.adjust($color, $lightness: 30%);
-                    }
-                } @else {
-                    color: color.adjust($color, $lightness: -20%);
-                    @if ($name == light) {
-                        color: color.adjust($color, $lightness: -60%);
-                    } @else if index((slate, gray), $name) {
-                        color: color.adjust($color, $lightness: -20%);
-                    }
-                }
-            }
-            &#{$p}interactive {
-                &:hover {
-                    background-color: hover-solid-color($color, $mode);
-                    cursor: pointer;
-                }
-                &#{$p}outlined {
-                    &:hover {
-                        background-color: color.change($color, $alpha: 30%);
-                    }
-                }
-            }
-        }
-    }
-}
-
-$sizes: (
-    sm: (minHeight: 1.38rem, fontSize: 0.75rem, lineHeight: 1rem, padding: 0.125rem 0.375rem),
-    lg: (minHeight: 1.74rem, fontSize: 0.875rem, lineHeight: 1.25rem, padding: 0.1875rem 0.4375rem),
+$badge-sizes: (
+    xs: (font-size: 0.65rem, padding-x: 0.35em, padding-y: 0.1em),
+    sm: (font-size: 0.7rem, padding-x: 0.4em, padding-y: 0.12em),
+    md: (font-size: 0.75rem, padding-x: 0.5em, padding-y: 0.15em),
+    lg: (font-size: 0.85rem, padding-x: 0.6em, padding-y: 0.2em),
+    xl: (font-size: 0.95rem, padding-x: 0.7em, padding-y: 0.25em),
 );
 
-#{$p}badge{
-    transition: background-color 0.2s, box-shadow 0.2s, color 0.2s, opacity 0.1s;
-    //font-size: 0.75rem;
-    //line-height: 1rem;
-    //padding: 0.125rem 0.375rem;
-    border-radius: $border-radius;
-    background-color: red;
-    //font-weight: bold;
-    font-weight: 600;
+$dot-scale: (
+    xs: 0.45em,
+    sm: 0.5em,
+    md: 0.55em,
+    lg: 0.6em,
+    xl: 0.65em,
+);
+
+$intents: (primary, secondary, info, warning, success, danger);
+
+$intent-palette-map: (
+    primary: $blue,
+    secondary: $slate,
+    info: $cyan,
+    warning: $amber,
+    success: $green,
+    danger: $red,
+);
+
+@mixin intent-vars($palette) {
+    @each $step, $value in $palette {
+        --intent-#{$step}: #{$value};
+    }
+}
+
+$compPrefix: 'dru--badge';
+
+.#{$compPrefix} {
+
     border: 1px solid transparent;
-    vertical-align: middle;
+
     display: inline-flex;
     align-items: center;
     justify-content: center;
 
-    &#{$p}pill{
-        border-radius: 9999px;
+    line-height: 1;
+    font-weight: 500;
+    white-space: nowrap;
+
+    &--numeric {
+        min-width: 1.5em;
+        .#{$compPrefix}--content {
+            font-variant-numeric: tabular-nums;
+        }
     }
 
-    @each $size, $values in $sizes {
-        &#{$p}#{$size}{
-            font-size: map.get($values, fontSize);
-            line-height: map.get($values, lineHeight);
-            padding: map.get($values, padding);
-            min-height: map.get($values, minHeight);;
-            &#{$p}icon-only {
-                @if($size == sm) {
-                    @include iconOnly(1.38rem);
-                } @else {
-                    @include iconOnly(1.74rem);
-                }
-            }
-            &#{$p}text-icon {
-                @if($size == sm) {
-                    @include textIcon(0.3rem, .6em);
-                } @else {
-                    @include textIcon(0.4rem, .8em);
-                }
+    &--dot {
+        padding: 0;
+        width: 0.5em;
+        height: 0.5em;
+        border-radius: 50%;
+        flex-shrink: 0;
+
+        @each $size, $values in $badge-sizes {
+            &.#{$compPrefix}--size-#{$size} {
+                padding: 0;
             }
         }
     }
 
-    //&#{$p}size{
-    //
-    //}
-
-    @include perColorPalette($palette-colors, 'light');
-    @include dark {
-        @include perColorPalette($dark-palette-colors, 'dark');
+    @each $size, $value in $dot-scale {
+        &--size-#{$size}.#{$compPrefix}--dot {
+            width: $value;
+            height: $value;
+        }
     }
-    //@each $name, $color in $dark-palette-colors {
-    //    &#{$p}#{$name} {
-    //        background-color: $color;
-    //        color: text-color-map($name, 'dark');
-    //    }
-    //}
+
+    @each $size, $values in $badge-sizes {
+        &--size-#{$size} {
+            font-size: map-get($values, font-size);
+            padding: map-get($values, padding-y) map-get($values, padding-x);
+        }
+    }
+
+    @each $intent in $intents {
+        &--#{$intent} {
+            @include intent-vars(map.get($intent-palette-map, $intent));
+
+            // SOLID (strong)
+            &.#{$compPrefix}--solid {
+                background-color: var(--intent-500);
+                color: white;
+            }
+
+            // BASE (default subtle)
+            &.#{$compPrefix}--base {
+                background-color: var(--intent-100);
+                color: var(--intent-700);
+            }
+
+            // OUTLINED
+            &.#{$compPrefix}--outlined {
+                background-color: transparent;
+                color: var(--intent-600);
+                border: 1px solid var(--intent-300);
+            }
+
+            // GHOST (very minimal)
+            &.#{$compPrefix}--ghost {
+                background-color: transparent;
+                color: var(--intent-600);
+            }
+
+            &.#{$compPrefix}--dot {
+                background-color: var(--intent-500);
+            }
+        }
+    }
 }

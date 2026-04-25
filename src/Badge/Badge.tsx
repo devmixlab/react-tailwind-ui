@@ -1,55 +1,64 @@
+import React from 'react';
 import clsx from 'clsx';
-import { useMemo, ElementType, ComponentPropsWithoutRef } from 'react';
-import { badgeStyles as bs } from './Badge.styles';
-import { type Variant } from '../tokens/common';
-import { type View, type Size } from '../tokens/badge';
+import { Box, type BoxProps } from '../Box/Box';
+import { Size, Intent, Variant } from './badge.tokens';
+import { prefix } from './badge.helpers';
 
-type BadgeOwnProps = {
-    children: React.ReactNode;
-    variant?: Variant;
-    view?: View;
+export type BadgeProps = {
+    children?: React.ReactNode;
     className?: string;
+
+    intent?: Intent;
+    variant?: Variant;
     size?: Size;
-    pill?: boolean;
-    iconOnly?: boolean;
-    textIcon?: boolean;
+    rounded?: BoxProps['rounded'];
+
+    // special cases
+    dot?: boolean; // small dot __badge
+    max?: number; // 99+
 };
 
-type BadgeProps<T extends ElementType> = BadgeOwnProps & {
-    as?: T;
-} & ComponentPropsWithoutRef<T>;
-
-const Badge = <T extends ElementType = 'span'>({
-    as,
-    className,
+const Badge = ({
     children,
-    variant = 'primary',
-    view = 'solid',
-    size = 'sm',
-    pill = false,
-    iconOnly = false,
-    textIcon = false,
-    ...rest
-}: BadgeProps<T>) => {
-    const Component = as || 'span';
+    className,
 
-    const isInteractive = as === 'a' || 'onClick' in rest || 'href' in rest;
+    intent = 'primary',
+    variant = 'base',
+    size = 'md',
+    rounded = 'sm',
 
-    const badgeClass = useMemo(
-        () =>
-            clsx(className, bs.base, bs.view[view], bs.variant[variant], bs.size[size], {
-                [bs.pill]: pill,
-                [bs.iconOnly]: iconOnly,
-                [bs.textIcon]: textIcon,
-                [bs.interactive]: isInteractive,
-            }),
-        [className, view, variant, size, pill, iconOnly, textIcon, isInteractive],
-    );
+    dot = false,
+    max,
+
+    ...props
+}: BadgeProps) => {
+    const isDot = dot;
+
+    if (isDot && children != null) {
+        console.warn('Badge: `dot` is true but `children` were provided.');
+    }
+
+    const isExceedsMax = typeof children === 'number' && max != null && children > max;
+
+    const content = isDot ? null : isExceedsMax ? `${max}+` : children;
+
+    if (!isDot && content == null) return null;
+
+    const cl = clsx(className, prefix(), prefix(`--${intent}`), prefix(`--size-${size}`), {
+        [prefix(`--${variant}`)]: !isDot,
+        [prefix('--dot')]: isDot,
+    });
 
     return (
-        <Component className={badgeClass} {...rest}>
-            {children}
-        </Component>
+        <Box
+            title={isExceedsMax ? String(children) : undefined}
+            className={cl}
+            rounded={isDot ? undefined : rounded}
+            aria-hidden={isDot ? true : undefined}
+            {...props}
+        >
+            {!isDot && <span className={prefix('__content')}>{content}</span>}
+        </Box>
     );
 };
 
