@@ -43,42 +43,11 @@ $intent-palette-map: (
     danger: $red,
 );
 
-//@mixin radius($only: null, $setRadius: null) {
-//    @each $size, $radius in $radiuses {
-//        $final-radius: $setRadius;
-//        @if ($final-radius == null) {
-//            $final-radius: $radius;
-//        }
-//
-//        &#{$p}#{'radius-' + $size} {
-//            @if ($only == 'left') {
-//                border-top-left-radius: $final-radius;
-//                border-bottom-left-radius: $final-radius;
-//            } @else if ($only == 'top') {
-//                border-top-left-radius: $final-radius;
-//                border-top-right-radius: $final-radius;
-//            } @else if ($only == 'right') {
-//                border-top-right-radius: $final-radius;
-//                border-bottom-right-radius: $final-radius;
-//            } @else if ($only == 'bottom') {
-//                border-bottom-left-radius: $final-radius;
-//                border-bottom-right-radius: $final-radius;
-//            } @else {
-//                border-radius: $final-radius;
-//            }
-//        }
-//    }
-//}
-
 .dru--button-group {
     display: inline-flex;
 
     &--orientation-vertical {
         flex-direction: column;
-
-        //.dru--button:not(:last-child) {
-        //    border-bottom: none;
-        //}
 
         .dru--button:not(:last-child):not(.dru--button--active) {
             border-bottom: none;
@@ -94,14 +63,6 @@ $intent-palette-map: (
     &--orientation-horizontal {
         flex-direction: row;
 
-        //.dru--button:not(:last-child):not(.dru--button--active) {
-        //    border-right: none;
-        //}
-        //.dru--button:not(:last-child)
-        //:not(.dru--button--active)
-        //:has(+ .dru--button:has(.dru--button--active)) {
-        //    border-right: none;
-        //}
         .dru--button:not(:last-child):not(.dru--button--active) {
             border-right: none;
         }
@@ -172,36 +133,22 @@ $intent-palette-map: (
     border-color 0.15s ease,
     box-shadow 0.15s ease;
 
+    &__loader {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        min-width: 1em;
+    }
+
     &--loading {
         pointer-events: none;
         cursor: wait;
         position: relative;
-
-        &::before,
-        &::after {
-            content: '';
-            pointer-events: none;
-
-            width: 1em;
-            height: 1em;
-
-            border: 0.12em solid currentColor;
-            border-right-color: transparent;
-            border-radius: 50%;
-
-            animation: dru-spin 0.6s linear infinite;
-        }
-
-        // hide both by default
-        &::before,
-        &::after {
-            display: none;
-        }
     }
 
     &--loading-center {
-        &::after {
-            display: block;
+        .dru--button__loader {
             position: absolute;
             inset: 0;
             margin: auto;
@@ -213,23 +160,16 @@ $intent-palette-map: (
     }
 
     &--loading-start {
-        &::before {
-            display: inline-block;
+        .dru--button__loader {
             margin-right: 0.5em;
         }
     }
 
     &--loading-end {
-        &::after {
-            display: inline-block;
+        .dru--button__loader {
             margin-left: 0.5em;
         }
     }
-
-    //&:focus-visible {
-    //    outline: none;
-    //    box-shadow: 0 0 0 2px var(--dru-focus-ring, rgba(0, 0, 0, 0.2));
-    //}
 
     > svg,
     > .MuiSvgIcon-root {

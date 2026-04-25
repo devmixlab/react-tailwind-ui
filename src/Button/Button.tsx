@@ -4,6 +4,7 @@ import { Box, type BoxProps } from '../Box/Box';
 import { createPolymorphic } from '../types/polymorphic';
 import { LoadingPosition, Size, Intent, Variant } from './button.tokens';
 import { isLongNumber, prefix } from './button.helpers';
+import { DefaultSpinner } from '../Spinner/DefaultSpinner';
 
 // export type ButtonProps = React.ButtonHTMLAttributes<HTMLElement> & {
 export type ButtonProps = {
@@ -26,6 +27,7 @@ export type ButtonProps = {
     loading?: boolean;
     loadingPosition?: LoadingPosition;
     spinnerDelay?: number;
+    loadingComponent?: React.ReactNode;
 };
 
 type ButtonImplProps = ButtonProps & {
@@ -57,11 +59,14 @@ const ButtonImpl = (
         loading = false,
         loadingPosition = 'center',
         spinnerDelay = 150,
+        loadingComponent,
         ...props
     }: ButtonImplProps,
     ref: React.Ref<any>,
 ) => {
     const [showSpinner, setShowSpinner] = useState(false);
+
+    const loader = loadingComponent ?? <DefaultSpinner />;
 
     const isButton = as === 'button';
     const isDisabled = disabled || loading || noInteraction;
@@ -147,16 +152,33 @@ const ButtonImpl = (
             onKeyDown={handleKeyDown}
         >
             {/* START ICON */}
-            {startIcon && loadingPosition !== 'start' && (
-                <span className={prefix(`__icon`)}>{startIcon}</span>
+            {startIcon &&
+                !(showSpinner && (loadingPosition === 'start' || loadingPosition === 'center')) && (
+                    <span className={prefix(`__icon`)}>{startIcon}</span>
+                )}
+
+            {/* START SPINNER */}
+            {showSpinner && loadingPosition === 'start' && (
+                <span className={prefix('__loader')}>{loader}</span>
             )}
 
             {/* CONTENT */}
             <span className={prefix(`__content`)}>{number != null ? number : children}</span>
 
             {/* END ICON */}
-            {endIcon && loadingPosition !== 'end' && (
-                <span className={prefix(`__icon`)}>{endIcon}</span>
+            {endIcon &&
+                !(showSpinner && (loadingPosition === 'end' || loadingPosition === 'center')) && (
+                    <span className={prefix(`__icon`)}>{endIcon}</span>
+                )}
+
+            {/* END SPINNER */}
+            {showSpinner && loadingPosition === 'end' && (
+                <span className={prefix('__loader')}>{loader}</span>
+            )}
+
+            {/* CENTER SPINNER */}
+            {showSpinner && loadingPosition === 'center' && (
+                <span className={prefix('__loader')}>{loader}</span>
             )}
         </Box>
     );
